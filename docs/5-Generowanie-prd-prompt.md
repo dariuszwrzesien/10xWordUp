@@ -1,3 +1,5 @@
+//agent sonnet 4.5
+
 Jesteś doświadczonym menedżerem produktu, którego zadaniem jest stworzenie kompleksowego dokumentu wymagań produktu (PRD) w oparciu o poniższe opisy:
 
 <project_description>
