@@ -1,94 +1,118 @@
-# 10x Astro Starter
+# 10xWordUp
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+A web application for saving and learning English vocabulary using a flashcard system. It helps users memorize new words by providing translations, phonetic pronunciation, audio examples, and an interactive quiz mode.
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+### Frontend
 
-## Prerequisites
+- **Astro 5**: For building fast, content-focused websites.
+- **React 19**: For creating interactive user interface components.
+- **TypeScript 5**: For strong typing and improved developer experience.
+- **Tailwind 4**: A utility-first CSS framework for rapid UI development.
+- **Shadcn/ui**: A collection of accessible and reusable UI components.
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+### Backend
 
-## Getting Started
+- **Supabase**: An open-source Firebase alternative providing:
+  - PostgreSQL Database
+  - Backend-as-a-Service (BaaS) SDK
+  - User Authentication
 
-1. Clone the repository:
+### CI/CD & Hosting
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+- **GitHub Actions**: For automating CI/CD pipelines.
+- **DigitalOcean**: For hosting the application via a Docker image.
 
-2. Install dependencies:
+## Getting Started Locally
 
-```bash
-npm install
-```
+Follow these steps to set up and run the project on your local machine.
 
-3. Run the development server:
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) version **22.14.0**. We recommend using a version manager like [nvm](https://github.com/nvm-sh/nvm).
+
+  ```bash
+  nvm use
+  ```
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/your-username/10xWordUp.git
+    cd 10xWordUp
+    ```
+
+2.  **Install dependencies:**
+
+    This project uses npm as its package manager.
+
+    ```bash
+    npm install
+    ```
+
+3.  **Set up environment variables:**
+
+    Create a `.env` file in the root of the project and add the necessary environment variables for Supabase. You can get these from your Supabase project dashboard.
+
+    ```env
+    PUBLIC_SUPABASE_URL="your-supabase-project-url"
+    PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+    ```
+
+    The application also uses the [Free Dictionary API](https://dictionaryapi.dev/), which does not require an API key.
+
+### Running the Application
+
+To start the development server, run:
 
 ```bash
 npm run dev
 ```
 
-4. Build for production:
-
-```bash
-npm run build
-```
+The application will be available at `http://localhost:4321`.
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+The following scripts are available in the `package.json`:
 
-## Project Structure
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm run preview`: Previews the production build locally.
+- `npm run lint`: Lints the codebase for errors.
+- `npm run lint:fix`: Lints the codebase and automatically fixes issues.
+- `npm run format`: Formats the code using Prettier.
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
+## Project Scope
 
-## AI Development Support
+### Key Features
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+- **User Authentication**: Secure user registration and login with email and password.
+- **Word Management**: Add, edit, and delete English words with Polish translations and optional tags.
+- **API Integration**: Automatically fetches phonetic pronunciation, audio files, and usage examples from `dictionaryapi.dev`.
+- **Word List**: Displays all saved words, sorted from newest to oldest.
+- **Tagging System**: Organize words with tags, with autocomplete for existing tags.
+- **Quiz Mode**:
+  - Two directions: English to Polish (EN→PL) and Polish to English (PL→EN).
+  - Filter words for the quiz by tag or include all words.
+  - Self-assessment mechanic ("I know" / "I don't know").
+- **Notifications**: Toast notifications to provide feedback on user actions.
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+## Project Status
 
-### Cursor IDE
-
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+This project is currently **in development**. It is not yet ready for production use.
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
