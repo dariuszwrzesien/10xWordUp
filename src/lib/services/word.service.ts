@@ -106,30 +106,14 @@ export class WordService {
 
     // Filtrowanie po tagu (jeśli podano)
     if (tag) {
-      // Najpierw znajdź ID tagu
-      const { data: tagData } = await this.supabase
-        .from("tags")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("name", tag)
-        .single();
+      // Znajdź IDs słów powiązanych z tym tagiem (tag jest już ID-kiem)
+      const { data: wordTagsData } = await this.supabase.from("word_tags").select("word_id").eq("tag_id", tag);
 
-      if (tagData) {
-        // Znajdź IDs słów powiązanych z tym tagiem
-        const { data: wordTagsData } = await this.supabase.from("word_tags").select("word_id").eq("tag_id", tagData.id);
-
-        if (wordTagsData && wordTagsData.length > 0) {
-          const wordIds = wordTagsData.map((wt: { word_id: string }) => wt.word_id);
-          query = query.in("id", wordIds);
-        } else {
-          // Brak słów z tym tagiem
-          return {
-            data: [],
-            pagination: { currentPage: page, totalPages: 0, total: 0 },
-          };
-        }
+      if (wordTagsData && wordTagsData.length > 0) {
+        const wordIds = wordTagsData.map((wt: { word_id: string }) => wt.word_id);
+        query = query.in("id", wordIds);
       } else {
-        // Tag nie istnieje
+        // Brak słów z tym tagiem
         return {
           data: [],
           pagination: { currentPage: page, totalPages: 0, total: 0 },
@@ -244,15 +228,21 @@ export class WordService {
    * Usuwa słowo
    */
   async deleteWord(userId: string, wordId: string): Promise<boolean> {
-    // 1. Usuń powiązania z tagami (kaskada powinna to obsłużyć, ale dla pewności)
+    // 1. Pobierz tagi przypisane do tego słowa przed jego usunięciem
+    const tagsToCheck = await this.getWordTags(wordId);
+
+    // 2. Usuń powiązania z tagami (kaskada powinna to obsłużyć, ale dla pewności)
     await this.supabase.from("word_tags").delete().eq("word_id", wordId);
 
-    // 2. Usuń słowo
+    // 3. Usuń słowo
     const { error } = await this.supabase.from("words").delete().eq("id", wordId).eq("user_id", userId);
 
     if (error) {
       throw new Error(`Failed to delete word: ${error.message}`);
     }
+
+    // 4. Sprawdź czy które z tagów stały się osierocone i usuń je
+    await this.deleteOrphanedTags(tagsToCheck);
 
     return true;
   }
@@ -284,8 +274,7 @@ export class WordService {
           .single();
 
         if (tagError || !newTag) {
-          console.error(`Failed to create tag ${tagName}:`, tagError);
-          continue;
+          throw new Error(`Failed to create tag ${tagName}: ${tagError?.message || "Unknown error"}`);
         }
 
         tag = newTag;
@@ -318,6 +307,33 @@ export class WordService {
     const { data: tags } = await this.supabase.from("tags").select("*").in("id", tagIds);
 
     return tags || [];
+  }
+
+  /**
+   * Usuwa tagi, które nie są już przypisane do żadnego słowa
+   */
+  private async deleteOrphanedTags(tags: TagRow[]): Promise<void> {
+    for (const tag of tags) {
+      // Sprawdź czy tag jest jeszcze przypisany do jakiegokolwiek słowa
+      const { data: wordTags, error } = await this.supabase
+        .from("word_tags")
+        .select("word_id")
+        .eq("tag_id", tag.id)
+        .limit(1);
+
+      if (error) {
+        throw new Error(`Failed to check orphaned tag ${tag.name}: ${error.message}`);
+      }
+
+      // Jeśli tag nie jest przypisany do żadnego słowa, usuń go
+      if (!wordTags || wordTags.length === 0) {
+        const { error: deleteError } = await this.supabase.from("tags").delete().eq("id", tag.id);
+
+        if (deleteError) {
+          throw new Error(`Failed to delete orphaned tag ${tag.name}: ${deleteError.message}`);
+        }
+      }
+    }
   }
 
   /**

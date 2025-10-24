@@ -93,7 +93,7 @@ Użytkownicy napotykają podczas czytania tekstów nieznane słowa lub zwroty, a
   Opis: Jako użytkownik, chcę zobaczyć listę moich słówek posortowaną od najnowszych, aby szybko odnaleźć ostatnio dodane.  
   Kryteria akceptacji:
   - Lista słówek wyświetla się chronologicznie od najnowszych.
-  - Brak paginacji; jeśli nie ma słówek, wyświetlany jest komunikat zachęcający do dodania.
+  - Jeśli nie ma słówek, wyświetlany jest komunikat zachęcający do dodania.
 
 - ID: US-008  
   Tytuł: Wybór zakresu do quizu  

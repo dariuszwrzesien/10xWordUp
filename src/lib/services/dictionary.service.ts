@@ -68,7 +68,6 @@ export class DictionaryService {
       if (!response.ok) {
         // Jeśli słowo nie zostało znalezione, zwracamy null
         if (response.status === 404) {
-          console.log(`Word "${word}" not found in dictionary API`);
           return null;
         }
         throw new Error(`Dictionary API error: ${response.status}`);

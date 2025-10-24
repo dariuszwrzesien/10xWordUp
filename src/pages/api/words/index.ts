@@ -25,7 +25,6 @@ export const POST: APIRoute = async (context) => {
     // 2. Parsowanie body
     let body;
     try {
-      console.log("Parsowanie", context);
       body = await context.request.json();
     } catch {
       return badRequest("Invalid JSON body");
@@ -42,7 +41,7 @@ export const POST: APIRoute = async (context) => {
     const word = await wordService.createWord(user.id, validation.data);
 
     // 5. Zwrócenie odpowiedzi
-    return created(word);
+    return created({ data: word });
   } catch (error) {
     console.error("Error creating word:", error);
     return internalServerError("Failed to create word", error);

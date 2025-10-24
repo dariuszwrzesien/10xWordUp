@@ -39,7 +39,7 @@ export const GET: APIRoute = async (context) => {
     }
 
     // 4. Zwrócenie odpowiedzi
-    return success(word);
+    return success({ data: word });
   } catch (error) {
     console.error("Error fetching word:", error);
     return internalServerError("Failed to fetch word", error);
@@ -85,7 +85,7 @@ export const PUT: APIRoute = async (context) => {
     }
 
     // 6. Zwrócenie odpowiedzi
-    return success(word);
+    return success({ data: word });
   } catch (error) {
     console.error("Error updating word:", error);
     return internalServerError("Failed to update word", error);

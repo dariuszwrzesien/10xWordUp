@@ -40,7 +40,7 @@ export const POST: APIRoute = async (context) => {
     const tagService = new TagService(context.locals.supabase);
     try {
       const tag = await tagService.createTag(user.id, validation.data);
-      return created(tag);
+      return created({ data: tag });
     } catch (error) {
       // Obsługa duplikatu nazwy tagu
       if (error instanceof Error && error.message.includes("already exists")) {
@@ -68,7 +68,7 @@ export const GET: APIRoute = async (context) => {
     const tags = await tagService.getTags(user.id);
 
     // 3. Zwrócenie odpowiedzi
-    return success(tags);
+    return success({ data: tags });
   } catch (error) {
     console.error("Error fetching tags:", error);
     return internalServerError("Failed to fetch tags", error);

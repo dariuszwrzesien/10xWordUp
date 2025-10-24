@@ -25,10 +25,13 @@ export const GET: APIRoute = async (context) => {
 
     // 2. Walidacja ID
     const tagId = context.params.id;
+    console.log("tagId", tagId);
     const idValidation = uuidParamSchema.safeParse(tagId);
     if (!idValidation.success) {
       return badRequest("Invalid tag ID format");
     }
+
+    console.log("idValidation.data", idValidation.data);
 
     // 3. Pobranie tagu
     const tagService = new TagService(context.locals.supabase);
@@ -39,7 +42,7 @@ export const GET: APIRoute = async (context) => {
     }
 
     // 4. Zwrócenie odpowiedzi
-    return success(tag);
+    return success({ data: tag });
   } catch (error) {
     console.error("Error fetching tag:", error);
     return internalServerError("Failed to fetch tag", error);
@@ -85,7 +88,7 @@ export const PUT: APIRoute = async (context) => {
         return notFound("Tag");
       }
 
-      return success(tag);
+      return success({ data: tag });
     } catch (error) {
       // Obsługa duplikatu nazwy tagu
       if (error instanceof Error && error.message.includes("already exists")) {

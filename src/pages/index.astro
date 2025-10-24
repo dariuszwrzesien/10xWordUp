@@ -1,8 +1,8 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
+import WordsListView from "../components/views/WordsListView";
 ---
 
 <Layout>
-  <Welcome />
+  <WordsListView client:only="react" />
 </Layout>

@@ -23,7 +23,7 @@
 ### Words Endpoints
 
 - **GET /api/words**
-  - Description: Retrieve a list of words for the authenticated user without pagination.
+  - Description: Retrieve a list of words
   - Query Parameters: sort (by creation date), and optional filter (by tag).
   - Response: { "data": [ word objects ] }
 
