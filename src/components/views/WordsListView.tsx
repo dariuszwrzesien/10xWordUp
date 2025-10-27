@@ -1,4 +1,4 @@
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Plus, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWordsManagement } from "@/hooks/useWordsManagement";
 import Providers from "@/components/Providers";
@@ -61,10 +61,18 @@ function WordsListContent() {
               )}
             </p>
           </div>
-          <Button onClick={handleAddWord} size="lg">
-            <Plus className="h-5 w-5 mr-2" />
-            Dodaj słówko
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button onClick={handleAddWord} size="lg" variant="outline">
+              <Plus className="h-5 w-5 mr-2" />
+              Dodaj słówko
+            </Button>
+            <Button asChild size="lg">
+              <a href="/quiz">
+                <Play className="h-5 w-5 mr-2" />
+                Rozpocznij Quiz
+              </a>
+            </Button>
+          </div>
         </div>
 
         {/* Filter */}

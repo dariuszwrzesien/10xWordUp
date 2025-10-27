@@ -21,7 +21,13 @@ export interface CreateWordCommand {
   phonetic?: string | null;
   audio_url?: string | null;
   // Przechowuje dodatkowe przykłady w formacie JSON
-  examples?: unknown;
+  examples?: {
+    definitions?: {
+      partOfSpeech: string;
+      definition: string;
+      example?: string;
+    }[];
+  } | null;
 }
 
 // Command Model dla aktualizacji słowa
@@ -32,7 +38,13 @@ export interface UpdateWordCommand {
   tags?: string[];
   phonetic?: string | null;
   audio_url?: string | null;
-  examples?: unknown;
+  examples?: {
+    definitions?: {
+      partOfSpeech: string;
+      definition: string;
+      example?: string;
+    }[];
+  } | null;
 }
 
 // Command Model dla tworzenia nowego tagu
@@ -54,6 +66,25 @@ export interface QuizQuestionDTO {
   word_pl: string;
   // Adres URL audio, może być null, jeśli nie dostępny
   audio: string | null;
-  // Dodatkowe przykłady w formacie JSON
-  examples: unknown;
+  // Dodatkowe przykłady
+  examples?: string[] | null;
+}
+
+// Stan widoku quizu, zarządza tym, co jest renderowane
+export type QuizState = "setup" | "loading" | "session" | "summary" | "error";
+
+// Kierunek tłumaczenia w quizie
+export type QuizDirection = "en_pl" | "pl_en";
+
+// Zakres słówek wybrany przez użytkownika
+export interface QuizScope {
+  type: "all" | "tag";
+  tagId?: string; // Ustawione tylko gdy type === 'tag'
+  tagName?: string; // Nazwa tagu do wyświetlenia
+}
+
+// Kompletne ustawienia sesji quizu
+export interface QuizSettings {
+  direction: QuizDirection;
+  scope: QuizScope;
 }
