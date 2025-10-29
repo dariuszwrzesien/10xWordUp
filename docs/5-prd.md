@@ -39,6 +39,7 @@ Użytkownicy napotykają podczas czytania tekstów nieznane słowa lub zwroty, a
   Tytuł: Rejestracja użytkownika  
   Opis: Jako nowy użytkownik, chcę założyć konto przy użyciu e-maila i hasła, aby zapisywać swoje słówka.  
   Kryteria akceptacji:
+  - Rejestracja odbywa się na dedykowanej stronie.
   - Formularz rejestracji zawiera pola e-mail i hasło oraz pole w którym należy ponownie wpisać hasło w celu weryfikacji.
   - Pola są walidowane: e-mail w poprawnym formacie, hasło min. 8 znaków.
   - Po poprawnym wypełnieniu i przesłaniu tworzone jest konto i użytkownik jest przekierowany na listę słówek.
@@ -48,10 +49,14 @@ Użytkownicy napotykają podczas czytania tekstów nieznane słowa lub zwroty, a
   Tytuł: Logowanie użytkownika  
   Opis: Jako zarejestrowany użytkownik, chcę zalogować się za pomocą e-maila i hasła, aby uzyskać dostęp do mojego konta.  
   Kryteria akceptacji:
+  - Logowanie odbywa się na dedykowanej stronie
   - Formularz logowania zawiera pola e-mail, hasło i opcję "pamiętaj mnie".
   - Poprawne dane logowania powodują utworzenie sesji trwającej do 30 dni.
   - Niepoprawne dane wyświetlają komunikat o błędnych poświadczeniach.
   - Po zalogowaniu użytkownik jest przekierowany na listę słówek.
+  - Użytkownik NIE MOŻE korzystać z żadnych funkcji aplikacji oprócz logowania i rejestracji.
+  - Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
+  - Reset hasła powinien być możliwy.
 
 - ID: US-003  
   Tytuł: Wylogowanie użytkownika  
