@@ -3,8 +3,8 @@ import AuthLayout from "@/layouts/AuthLayout.astro";
 import RegisterForm from "@/components/auth/RegisterForm";
 import Providers from "@/components/Providers";
 
-// TODO: Add server-side logic to check if user is already logged in
-// and redirect to / if they are
+// Server-side session check is handled by middleware
+// If user is already logged in, middleware will redirect to /
 ---
 
 <AuthLayout title="Rejestracja - 10xWordUp">

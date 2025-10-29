@@ -1,16 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import QuizView from "../components/views/quiz/QuizView";
+import { requireAuth } from "../lib/helpers/auth";
 
-// TODO: Replace with real authentication when implemented
-// For now, using a mocked user for development
-const isMockedAuth = true;
-const isAuthenticated = isMockedAuth; // Will be: const { data: { user } } = await Astro.locals.supabase.auth.getUser();
-
-// Redirect to login if not authenticated (currently disabled for development)
-if (!isAuthenticated && !isMockedAuth) {
-  return Astro.redirect("/login");
-}
+// Ensure user is authenticated - redirects to /login if not
+requireAuth(Astro);
 ---
 
 <Layout>

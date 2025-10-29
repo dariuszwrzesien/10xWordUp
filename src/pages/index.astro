@@ -1,6 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import WordsListView from "../components/views/WordsListView";
+import { requireAuth } from "../lib/helpers/auth";
+
+// Ensure user is authenticated - redirects to /login if not
+requireAuth(Astro);
 ---
 
 <Layout>

@@ -24,20 +24,25 @@ export default function ForgotPasswordForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Call /api/auth/forgot-password endpoint
-      // const response = await fetch('/api/auth/forgot-password', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email: data.email })
-      // });
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email }),
+      });
 
-      // Placeholder for now
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        toast.error(responseData.message || "Wystąpił błąd podczas wysyłania linku");
+        return;
+      }
+
+      // Success - always show the same message for security
       setIsSubmitted(true);
       toast.success("Jeśli konto istnieje, link został wysłany");
-      console.log("Password reset request:", { email: data.email });
-    } catch (error) {
+    } catch {
       toast.error("Wystąpił błąd podczas wysyłania linku");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

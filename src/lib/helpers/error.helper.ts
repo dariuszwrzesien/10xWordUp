@@ -115,15 +115,36 @@ export function mapSupabaseAuthError(error: { message: string; status?: number }
   }
 
   if (error.message.includes("Email not confirmed")) {
-    return "Adres e-mail nie został potwierdzony";
+    return "Adres e-mail nie został potwierdzony. Sprawdź swoją skrzynkę e-mail.";
   }
 
-  if (error.message.includes("User already registered")) {
+  if (error.message.includes("User already registered") || error.message.includes("already been registered")) {
     return "Użytkownik o tym adresie e-mail już istnieje";
   }
 
   if (error.message.includes("Password should be at least")) {
     return "Hasło musi mieć minimum 8 znaków";
+  }
+
+  if (error.message.includes("Signup requires a valid password")) {
+    return "Hasło jest wymagane";
+  }
+
+  if (error.message.includes("Unable to validate email address")) {
+    return "Nieprawidłowy format adresu e-mail";
+  }
+
+  if (error.message.includes("Email rate limit exceeded")) {
+    return "Zbyt wiele prób rejestracji. Spróbuj ponownie za chwilę.";
+  }
+
+  // Password reset specific errors
+  if (error.message.includes("same as the old password")) {
+    return "Nowe hasło nie może być takie samo jak stare";
+  }
+
+  if (error.message.includes("For security purposes") || error.message.includes("please try again")) {
+    return "Link resetujący wygasł. Poproś o nowy link.";
   }
 
   // Domyślny generyczny komunikat

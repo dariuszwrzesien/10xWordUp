@@ -2,22 +2,23 @@ import { defineMiddleware } from "astro:middleware";
 import { createSupabaseServerInstance } from "../db/supabase.client.ts";
 
 // Public paths - Auth API endpoints & Server-Rendered Astro Pages
+// These paths redirect logged-in users to home
 const PUBLIC_PATHS = [
   // Server-Rendered Astro Pages
   "/login",
   "/register",
   "/forgot-password",
-  "/reset-password",
   // Auth API endpoints
   "/api/auth/login",
   "/api/auth/register",
   "/api/auth/forgot-password",
-  "/api/auth/reset-password",
 ];
 
 // Paths that should always be accessible (no redirect logic)
 const UNRESTRICTED_PATHS = [
   "/api/auth/logout", // Logout must work for logged-in users
+  "/reset-password", // Password reset creates a temporary session, must complete flow
+  "/api/auth/reset-password", // Password reset API endpoint
 ];
 
 export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {

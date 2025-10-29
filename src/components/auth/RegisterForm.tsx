@@ -25,19 +25,42 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Call /api/auth/register endpoint
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email: data.email, password: data.password })
-      // });
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+        }),
+      });
 
-      // Placeholder for now
-      toast.info("Funkcja rejestracji zostanie wkrótce zaimplementowana");
-      console.log("Registration attempt:", { email: data.email });
-    } catch (error) {
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        toast.error(responseData.message || "Wystąpił błąd podczas rejestracji");
+        return;
+      }
+
+      // Success - show success message with email confirmation info
+      if (responseData.emailConfirmationRequired) {
+        toast.success(responseData.message || "Konto utworzone! Sprawdź email, aby potwierdzić rejestrację.", {
+          duration: 8000, // Show longer for important message
+        });
+
+        // Reset form after successful registration
+        form.reset();
+      } else {
+        toast.success(responseData.message || "Konto utworzone pomyślnie!");
+
+        // If no email confirmation required, redirect to login
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+      }
+    } catch {
       toast.error("Wystąpił błąd podczas rejestracji");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
