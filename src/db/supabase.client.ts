@@ -24,7 +24,14 @@ export const createSupabaseServerInstance = (context: { headers: Headers; cookie
         return parseCookieHeader(context.headers.get("Cookie") ?? "");
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => context.cookies.set(name, value, options));
+        cookiesToSet.forEach(({ name, value, options }) => {
+          // If value is empty or maxAge is 0, delete the cookie
+          if (!value || options.maxAge === 0) {
+            context.cookies.delete(name, { path: options.path || "/" });
+          } else {
+            context.cookies.set(name, value, options);
+          }
+        });
       },
     },
   });

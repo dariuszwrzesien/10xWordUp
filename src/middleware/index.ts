@@ -11,9 +11,13 @@ const PUBLIC_PATHS = [
   // Auth API endpoints
   "/api/auth/login",
   "/api/auth/register",
-  "/api/auth/logout",
   "/api/auth/forgot-password",
   "/api/auth/reset-password",
+];
+
+// Paths that should always be accessible (no redirect logic)
+const UNRESTRICTED_PATHS = [
+  "/api/auth/logout", // Logout must work for logged-in users
 ];
 
 export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {
@@ -38,6 +42,12 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
     };
   } else {
     locals.user = null;
+  }
+
+  // Check if current path is unrestricted (should always pass through)
+  const isUnrestrictedPath = UNRESTRICTED_PATHS.includes(url.pathname);
+  if (isUnrestrictedPath) {
+    return next();
   }
 
   // Check if current path is public

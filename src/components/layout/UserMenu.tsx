@@ -22,18 +22,22 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
     setIsLoggingOut(true);
 
     try {
-      // TODO: Call /api/auth/logout endpoint
-      // const response = await fetch('/api/auth/logout', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' }
-      // });
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
 
-      // Placeholder for now
-      toast.info("Funkcja wylogowania zostanie wkrótce zaimplementowana");
-      console.log("Logout attempt");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Wystąpił błąd podczas wylogowania");
+      }
+
+      toast.success("Wylogowano pomyślnie");
+      // Redirect to login page
+      window.location.href = "/login";
     } catch (error) {
-      toast.error("Wystąpił błąd podczas wylogowania");
-      console.error(error);
+      toast.error(error instanceof Error ? error.message : "Wystąpił błąd podczas wylogowania");
+      console.error("Logout error:", error);
     } finally {
       setIsLoggingOut(false);
     }
