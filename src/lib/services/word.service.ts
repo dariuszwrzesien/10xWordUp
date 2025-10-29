@@ -1,8 +1,8 @@
 import type { CreateWordCommand, UpdateWordCommand, WordDTO } from "../../types/dto.types";
 import type { Database } from "../../types/database.types";
+import type { SupabaseServerClient } from "../../db/supabase.client";
 
 import { dictionaryService } from "./dictionary.service";
-import type { SupabaseClient } from "@supabase/supabase-js";
 
 type WordRow = Database["public"]["Tables"]["words"]["Row"];
 type TagRow = Database["public"]["Tables"]["tags"]["Row"];
@@ -11,7 +11,7 @@ type TagRow = Database["public"]["Tables"]["tags"]["Row"];
  * Serwis do zarządzania słowami w bazie danych
  */
 export class WordService {
-  constructor(private supabase: SupabaseClient<Database>) {}
+  constructor(private supabase: SupabaseServerClient) {}
 
   /**
    * Tworzy nowe słowo wraz z powiązaniami do tagów

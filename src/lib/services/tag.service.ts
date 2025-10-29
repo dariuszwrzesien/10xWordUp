@@ -1,5 +1,4 @@
-import type { SupabaseClient } from "../../db/supabase.client";
-
+import type { SupabaseServerClient } from "../../db/supabase.client";
 import type { CreateTagCommand, TagDTO, UpdateTagCommand } from "../../types/dto.types";
 import type { Database } from "../../types/database.types";
 
@@ -9,7 +8,7 @@ type TagRow = Database["public"]["Tables"]["tags"]["Row"];
  * Serwis do zarządzania tagami w bazie danych
  */
 export class TagService {
-  constructor(private supabase: SupabaseClient) {}
+  constructor(private supabase: SupabaseServerClient) {}
 
   /**
    * Tworzy nowy tag

@@ -1,0 +1,14 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import RegisterForm from "@/components/auth/RegisterForm";
+import Providers from "@/components/Providers";
+
+// TODO: Add server-side logic to check if user is already logged in
+// and redirect to / if they are
+---
+
+<AuthLayout title="Rejestracja - 10xWordUp">
+  <Providers client:only="react">
+    <RegisterForm client:only="react" />
+  </Providers>
+</AuthLayout>

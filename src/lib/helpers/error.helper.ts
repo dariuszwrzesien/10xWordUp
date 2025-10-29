@@ -100,3 +100,32 @@ export function noContent(): Response {
     status: 204,
   });
 }
+
+/**
+ * Mapuje błędy Supabase Auth na polskie komunikaty
+ * Zwraca generyczny komunikat dla bezpieczeństwa
+ */
+export function mapSupabaseAuthError(error: { message: string; status?: number }): string {
+  // Generic error message for security - nie ujawniamy czy użytkownik istnieje
+  const genericLoginError = "Nieprawidłowy e-mail lub hasło";
+
+  // Mapowanie na podstawie komunikatu błędu Supabase
+  if (error.message.includes("Invalid login credentials")) {
+    return genericLoginError;
+  }
+
+  if (error.message.includes("Email not confirmed")) {
+    return "Adres e-mail nie został potwierdzony";
+  }
+
+  if (error.message.includes("User already registered")) {
+    return "Użytkownik o tym adresie e-mail już istnieje";
+  }
+
+  if (error.message.includes("Password should be at least")) {
+    return "Hasło musi mieć minimum 8 znaków";
+  }
+
+  // Domyślny generyczny komunikat
+  return genericLoginError;
+}
