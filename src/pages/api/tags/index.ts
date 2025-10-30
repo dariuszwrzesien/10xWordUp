@@ -1,12 +1,13 @@
 import type { APIRoute } from "astro";
 
-import { requireAuth } from "../../../lib/helpers/auth.helper";
+import { requireAuth, AuthenticationError } from "../../../lib/helpers/auth.helper";
 import {
   badRequest,
   created,
   createValidationErrorResponse,
   internalServerError,
   success,
+  unauthorized,
 } from "../../../lib/helpers/error.helper";
 import { createTagSchema } from "../../../lib/schemas/tag.schema";
 import { TagService } from "../../../lib/services/tag.service";
@@ -20,7 +21,7 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Parsowanie body
     let body;
@@ -49,6 +50,9 @@ export const POST: APIRoute = async (context) => {
       throw error;
     }
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error creating tag:", error);
     return internalServerError("Failed to create tag", error);
   }
@@ -61,7 +65,7 @@ export const POST: APIRoute = async (context) => {
 export const GET: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Pobranie tagów
     const tagService = new TagService(context.locals.supabase);
@@ -70,6 +74,9 @@ export const GET: APIRoute = async (context) => {
     // 3. Zwrócenie odpowiedzi
     return success({ data: tags });
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error fetching tags:", error);
     return internalServerError("Failed to fetch tags", error);
   }

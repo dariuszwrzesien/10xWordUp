@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-import { requireAuth } from "../../../lib/helpers/auth.helper";
+import { requireAuth, AuthenticationError } from "../../../lib/helpers/auth.helper";
 import {
   badRequest,
   createValidationErrorResponse,
@@ -8,6 +8,7 @@ import {
   noContent,
   notFound,
   success,
+  unauthorized,
 } from "../../../lib/helpers/error.helper";
 import { updateTagSchema, uuidParamSchema } from "../../../lib/schemas/tag.schema";
 import { TagService } from "../../../lib/services/tag.service";
@@ -21,7 +22,7 @@ export const prerender = false;
 export const GET: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Walidacja ID
     const tagId = context.params.id;
@@ -44,6 +45,9 @@ export const GET: APIRoute = async (context) => {
     // 4. Zwrócenie odpowiedzi
     return success({ data: tag });
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error fetching tag:", error);
     return internalServerError("Failed to fetch tag", error);
   }
@@ -56,7 +60,7 @@ export const GET: APIRoute = async (context) => {
 export const PUT: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Walidacja ID
     const tagId = context.params.id;
@@ -97,6 +101,9 @@ export const PUT: APIRoute = async (context) => {
       throw error;
     }
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error updating tag:", error);
     return internalServerError("Failed to update tag", error);
   }
@@ -109,7 +116,7 @@ export const PUT: APIRoute = async (context) => {
 export const DELETE: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Walidacja ID
     const tagId = context.params.id;
@@ -129,6 +136,9 @@ export const DELETE: APIRoute = async (context) => {
     // 4. Zwrócenie odpowiedzi (204 No Content)
     return noContent();
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error deleting tag:", error);
     return internalServerError("Failed to delete tag", error);
   }

@@ -1,6 +1,24 @@
 import { z } from "zod";
 
 /**
+ * Schema dla przykładów z dictionary API
+ */
+const examplesSchema = z
+  .object({
+    definitions: z
+      .array(
+        z.object({
+          partOfSpeech: z.string(),
+          definition: z.string(),
+          example: z.string().optional(),
+        })
+      )
+      .optional(),
+  })
+  .nullable()
+  .optional();
+
+/**
  * Schema walidacji dla tworzenia nowego słowa
  * Wymaga: word (string), translation (string)
  * Opcjonalnie: tags (array stringów), phonetic, audio_url, examples
@@ -11,7 +29,7 @@ export const createWordSchema = z.object({
   tags: z.array(z.string()).optional(),
   phonetic: z.string().nullable().optional(),
   audio_url: z.string().url("Invalid audio URL").nullable().optional(),
-  examples: z.unknown().optional(),
+  examples: examplesSchema,
 });
 
 /**
@@ -28,7 +46,7 @@ export const updateWordSchema = z.object({
   tags: z.array(z.string()).optional(),
   phonetic: z.string().nullable().optional(),
   audio_url: z.string().url("Invalid audio URL").nullable().optional(),
-  examples: z.unknown().optional(),
+  examples: examplesSchema,
 });
 
 /**

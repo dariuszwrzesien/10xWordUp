@@ -1,35 +1,37 @@
-import { DEFAULT_USER_ID } from "../../db/supabase.client";
-
 /**
  * Interfejs dla uwierzytelnionego użytkownika
  */
 export interface AuthenticatedUser {
   id: string;
-  email?: string;
+  email: string;
 }
 
 /**
- * TYMCZASOWE: Zwraca mockowanego użytkownika dla celów rozwoju
- * TODO: Zintegrować z prawdziwym Supabase Auth w przyszłości
- *
- * @returns Dane mockowanego użytkownika
+ * Błąd uwierzytelnienia
  */
-export async function authenticateUser(): Promise<AuthenticatedUser> {
-  // Na razie ignorujemy token i zawsze zwracamy DEFAULT_USER_ID
-  // W przyszłości tutaj będzie prawdziwa weryfikacja JWT przez Supabase Auth
+export class AuthenticationError extends Error {
+  constructor(message = "Unauthorized") {
+    super(message);
+    this.name = "AuthenticationError";
+  }
+}
+
+/**
+ * Wymaga uwierzytelnienia użytkownika
+ * Rzuca AuthenticationError jeśli użytkownik nie jest zalogowany
+ *
+ * @param locals - Obiekt locals z Astro zawierający informacje o użytkowniku
+ * @returns Dane uwierzytelnionego użytkownika
+ * @throws AuthenticationError jeśli użytkownik nie jest zalogowany
+ */
+export function requireAuth(locals: App.Locals): AuthenticatedUser {
+  // Sprawdź czy użytkownik jest zalogowany (ustawione przez middleware)
+  if (!locals.user) {
+    throw new AuthenticationError("Musisz być zalogowany aby wykonać tę akcję");
+  }
 
   return {
-    id: DEFAULT_USER_ID,
-    email: "dev@10xwordup.com", // Mockowany email
+    id: locals.user.id,
+    email: locals.user.email,
   };
-}
-
-/**
- * TYMCZASOWE: Guard middleware - na razie zawsze zwraca mockowanego użytkownika
- * TODO: Dodać prawdziwą walidację tokenu w przyszłości
- *
- * @returns Zawsze mockowanego użytkownika (nigdy nie zwraca błędu 401)
- */
-export async function requireAuth(): Promise<AuthenticatedUser> {
-  return await authenticateUser();
 }

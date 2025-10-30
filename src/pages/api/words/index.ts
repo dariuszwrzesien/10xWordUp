@@ -1,12 +1,13 @@
 import type { APIRoute } from "astro";
 
-import { requireAuth } from "../../../lib/helpers/auth.helper";
+import { requireAuth, AuthenticationError } from "../../../lib/helpers/auth.helper";
 import {
   badRequest,
   created,
   createValidationErrorResponse,
   internalServerError,
   success,
+  unauthorized,
 } from "../../../lib/helpers/error.helper";
 import { createWordSchema, getWordsQuerySchema } from "../../../lib/schemas/word.schema";
 import { WordService } from "../../../lib/services/word.service";
@@ -20,7 +21,7 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Parsowanie body
     let body;
@@ -43,6 +44,9 @@ export const POST: APIRoute = async (context) => {
     // 5. Zwrócenie odpowiedzi
     return created({ data: word });
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error creating word:", error);
     return internalServerError("Failed to create word", error);
   }
@@ -55,7 +59,7 @@ export const POST: APIRoute = async (context) => {
 export const GET: APIRoute = async (context) => {
   try {
     // 1. Uwierzytelnienie
-    const user = await requireAuth();
+    const user = requireAuth(context.locals);
 
     // 2. Parsowanie i walidacja parametrów query
     const url = new URL(context.request.url);
@@ -79,6 +83,9 @@ export const GET: APIRoute = async (context) => {
     // 4. Zwrócenie odpowiedzi
     return success(result);
   } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return unauthorized(error.message);
+    }
     console.error("Error fetching words:", error);
     return internalServerError("Failed to fetch words", error);
   }

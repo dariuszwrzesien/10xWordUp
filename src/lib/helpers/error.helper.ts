@@ -16,8 +16,11 @@ export function createErrorResponse(status: number, error: string, message: stri
   const body: ApiError = {
     error,
     message,
-    ...(details && { details }),
   };
+  
+  if (details) {
+    body.details = details;
+  }
 
   return new Response(JSON.stringify(body), {
     status,
