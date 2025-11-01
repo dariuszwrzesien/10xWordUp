@@ -33,6 +33,12 @@ A web application for saving and learning English vocabulary using a flashcard s
 - **GitHub Actions**: For automating CI/CD pipelines.
 - **DigitalOcean**: For hosting the application via a Docker image.
 
+### Testing
+
+- **Vitest**: For fast unit and integration testing.
+- **React Testing Library**: For testing React components in a user-centric way.
+- **Playwright**: For reliable end-to-end testing across all modern browsers.
+
 ## Getting Started Locally
 
 Follow these steps to set up and run the project on your local machine.
@@ -93,6 +99,17 @@ The following scripts are available in the `package.json`:
 - `npm run lint`: Lints the codebase for errors.
 - `npm run lint:fix`: Lints the codebase and automatically fixes issues.
 - `npm run format`: Formats the code using Prettier.
+
+### Testing Commands
+
+- `npm test`: Runs unit tests with Vitest.
+- `npm run test:watch`: Runs unit tests in watch mode.
+- `npm run test:ui`: Opens Vitest UI for interactive testing.
+- `npm run test:coverage`: Generates code coverage report.
+- `npm run test:e2e`: Runs end-to-end tests with Playwright.
+- `npm run test:e2e:ui`: Opens Playwright UI for interactive E2E testing.
+- `npm run test:e2e:debug`: Runs E2E tests in debug mode.
+- `npm run test:e2e:report`: Shows the Playwright test report.
 
 ## Project Scope
 
