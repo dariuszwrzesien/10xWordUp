@@ -78,7 +78,11 @@ export class WordFormDialogComponent extends BasePage {
 
   // Actions
   async waitForDialog(): Promise<void> {
-    await this.waitForElement('word-form-dialog');
+    // Wait for dialog with a longer timeout since it's rendered in a portal
+    await this.page.waitForSelector('[data-testid="word-form-dialog"]', {
+      state: 'visible',
+      timeout: 10000
+    });
   }
 
   async fillWord(word: string): Promise<void> {
@@ -130,6 +134,7 @@ export class WordFormDialogComponent extends BasePage {
   }
 
   async createWord(word: string, translation: string, tags?: string[]): Promise<void> {
+    await this.waitForDialog();
     await this.fillWordForm(word, translation, tags);
     await this.clickSubmit();
   }
@@ -149,6 +154,7 @@ export class WordFormDialogComponent extends BasePage {
 
   // Assertions
   async expectDialogVisible(): Promise<void> {
+    await this.waitForDialog();
     await expect(this.dialog).toBeVisible();
   }
 
@@ -194,4 +200,5 @@ export class WordFormDialogComponent extends BasePage {
     await expect(this.submitButton).toBeEnabled();
   }
 }
+
 

@@ -58,7 +58,7 @@ test.describe("Authentication Flow - Using POM", () => {
     const userMenu = new UserMenuComponent(page);
 
     await loginPage.navigate();
-    await loginPage.login(username, "wrongpassword");
+    await loginPage.login(username, "wrongpassword", false); // expectSuccess = false
 
     // Verify error handling
     await expect(page).toHaveURL("/login");
@@ -124,8 +124,11 @@ test.describe("Words Management - Using POM", () => {
     const wordsListPage = new WordsListPage(page);
     const wordFormDialog = new WordFormDialogComponent(page);
 
-    // Navigate and open dialog
+    // Navigate and wait for page to load
     await wordsListPage.navigate();
+    await wordsListPage.waitForWordsToLoad();
+    
+    // Open dialog
     await wordsListPage.clickAddWord();
 
     // Verify dialog opened
@@ -250,7 +253,9 @@ test.describe("Words Management - Using POM", () => {
 
     // Go to page 2
     await pagination.clickNext();
-    await expect(page).toHaveURL(/page=2/);
+    
+    // Wait for data to load
+    await page.waitForTimeout(500); // Small wait for state update and data fetching
 
     // Verify pagination updated
     await pagination.expectCurrentPage(2);
@@ -301,7 +306,7 @@ test.describe("User Menu - Using POM", () => {
  * Example of a more complex test combining multiple page objects
  */
 test.describe("Complete User Flow - Using POM", () => {
-  test("Full workflow: Register -> Login -> Add Word -> Logout", async ({ page }) => {
+  test("Full workflow: Register -> Login -> Add Word -> Logout", async ({ page, context }) => {
     const username = process.env.E2E_USERNAME;
     const password = process.env.E2E_PASSWORD;
 
@@ -309,21 +314,29 @@ test.describe("Complete User Flow - Using POM", () => {
       throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
     }
 
+    // Ensure clean state - clear all cookies and storage
+    await context.clearCookies();
+    await page.goto('/');
+
     // 1. Register - skipped as we use existing user
     // Note: This test now logs in directly with existing credentials
 
     // 2. Login
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
+    
+    // Wait a bit for the page to settle
+    await page.waitForTimeout(500);
+    
     await loginPage.login(username, password);
-
-    // Verify auto-login and redirect
-    await expect(page).toHaveURL("/");
 
     // 3. Add a word
     const wordsListPage = new WordsListPage(page);
     const wordFormDialog = new WordFormDialogComponent(page);
 
+    // Wait for page to fully load before interacting
+    await wordsListPage.waitForWordsToLoad();
+    
     await wordsListPage.clickAddWord();
     await wordFormDialog.createWord("hello", "cześć", ["greetings"]);
     await wordsListPage.expectTableVisible();

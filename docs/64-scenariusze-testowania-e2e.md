@@ -7,6 +7,7 @@ Data utworzenia: 2025-11-02
 ### 1.1. Cel dokumentu
 
 Dokument ten zawiera dogłębną analizę aplikacji 10xWordUp pod kątem testowania End-to-End (E2E) oraz szczegółowe scenariusze testowe dla wszystkich kluczowych funkcjonalności. Analiza opiera się na:
+
 - Strukturze aplikacji opisanej w `59-struktura-aplikacji-ASCII.md`
 - Planie testów z dokumentu `54-test-plan.md`
 - Architekturze warstw i przepływie danych w aplikacji
@@ -68,6 +69,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth → Database
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/register`
 2. Użytkownik wpisuje unikalny email (np. `newuser@test.com`)
 3. Użytkownik wpisuje hasło spełniające wymagania (min. 8 znaków)
@@ -78,13 +80,15 @@ PostgreSQL + RLS
 8. System przekierowuje użytkownika na stronę główną `/`
 
 **Oczekiwany rezultat:**
+
 - Użytkownik widzi toast z sukcesem rejestracji
 - Użytkownik jest zalogowany automatycznie
 - Użytkownik znajduje się na stronie głównej
 - W bazie danych istnieje nowy użytkownik
 
 **Weryfikacja:**
-- URL: `http://localhost:4321/`
+
+- URL: `http://localhost:3000/`
 - Widoczny UserMenu w headerze
 - Brak błędów w konsoli
 
@@ -96,6 +100,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/register`
 2. Użytkownik wpisuje email już zarejestrowany w systemie
 3. Użytkownik wpisuje hasło
@@ -103,15 +108,17 @@ PostgreSQL + RLS
 5. Użytkownik klika przycisk "Zarejestruj się"
 
 **Oczekiwany rezultat:**
+
 - Formularz wyświetla błąd walidacji
 - Toast notification: "Ten adres e-mail jest już zarejestrowany"
 - Użytkownik pozostaje na stronie `/register`
 - Nie tworzy się nowy rekord w bazie danych
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu pod polem email
 - Przycisk submit jest nadal aktywny
-- URL: `http://localhost:4321/register`
+- URL: `http://localhost:3000/register`
 
 ---
 
@@ -121,17 +128,20 @@ PostgreSQL + RLS
 **Warstwy:** UI → Zod Validation
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/register`
 2. Użytkownik wpisuje poprawny email
 3. Użytkownik wpisuje hasło krótsze niż 8 znaków (np. `pass123`)
 4. Użytkownik próbuje przejść do następnego pola
 
 **Oczekiwany rezultat:**
+
 - Walidacja Zod blokuje formularz
 - Pod polem hasła wyświetla się błąd: "Hasło musi mieć minimum 8 znaków"
 - Przycisk submit jest nieaktywny lub blokuje wysłanie
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu
 - Formularz nie zostaje wysłany
 
@@ -143,6 +153,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → Zod Validation
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/register`
 2. Użytkownik wpisuje poprawny email
 3. Użytkownik wpisuje hasło: `password123`
@@ -150,11 +161,13 @@ PostgreSQL + RLS
 5. Użytkownik klika przycisk "Zarejestruj się"
 
 **Oczekiwany rezultat:**
+
 - Walidacja Zod wykrywa niezgodność
 - Komunikat błędu: "Hasła muszą być identyczne"
 - Formularz nie zostaje wysłany
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu pod polem potwierdzenia hasła
 - Użytkownik pozostaje na stronie `/register`
 
@@ -168,6 +181,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth → Middleware
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/login`
 2. Użytkownik wpisuje zarejestrowany email
 3. Użytkownik wpisuje poprawne hasło
@@ -177,13 +191,15 @@ PostgreSQL + RLS
 7. Middleware przekierowuje na stronę główną
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Zalogowano pomyślnie"
 - Użytkownik jest przekierowany na `/`
 - W headerze widoczny UserMenu z emailem użytkownika
 - Session token zapisany w cookie/localStorage
 
 **Weryfikacja:**
-- URL: `http://localhost:4321/`
+
+- URL: `http://localhost:3000/`
 - Widoczny UserMenu
 - Możliwość dostępu do chronionych zasobów
 
@@ -195,20 +211,23 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/login`
 2. Użytkownik wpisuje zarejestrowany email
 3. Użytkownik wpisuje niepoprawne hasło
 4. Użytkownik klika przycisk "Zaloguj się"
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Niepoprawny email lub hasło"
 - Użytkownik pozostaje na stronie `/login`
 - Formularz jest czysty lub pola pozostają wypełnione (zależnie od UX decision)
 - Nie tworzy się sesja
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu
-- URL: `http://localhost:4321/login`
+- URL: `http://localhost:3000/login`
 - Brak session token
 
 ---
@@ -219,17 +238,20 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/login`
 2. Użytkownik wpisuje email nieistniejący w systemie
 3. Użytkownik wpisuje dowolne hasło
 4. Użytkownik klika przycisk "Zaloguj się"
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Niepoprawny email lub hasło"
 - Użytkownik pozostaje na stronie `/login`
 - Nie tworzy się sesja
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu
 - Brak przekierowania
 
@@ -243,6 +265,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth → Middleware
 
 **Kroki:**
+
 1. Użytkownik jest zalogowany i znajduje się na `/`
 2. Użytkownik klika na UserMenu w headerze
 3. Z rozwijanego menu użytkownik wybiera "Wyloguj"
@@ -251,13 +274,15 @@ PostgreSQL + RLS
 6. Middleware przekierowuje na `/login`
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Wylogowano pomyślnie"
 - Session token jest usunięty
 - Użytkownik jest przekierowany na `/login`
 - Próba dostępu do chronionych tras skutkuje przekierowaniem
 
 **Weryfikacja:**
-- URL: `http://localhost:4321/login`
+
+- URL: `http://localhost:3000/login`
 - Brak UserMenu w headerze
 - Brak dostępu do `/` bez logowania
 
@@ -271,6 +296,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth → Email Service
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę `/forgot-password`
 2. Użytkownik wpisuje zarejestrowany email
 3. Użytkownik klika przycisk "Wyślij link resetujący"
@@ -278,11 +304,13 @@ PostgreSQL + RLS
 5. Supabase wysyła email z linkiem resetującym
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Link resetujący został wysłany na email"
 - Użytkownik widzi informację o sprawdzeniu skrzynki email
 - Email z linkiem resetującym zostaje wysłany (weryfikacja w test inbox)
 
 **Weryfikacja:**
+
 - Widoczna informacja zwrotna
 - W test inbox pojawia się email z linkiem
 
@@ -294,6 +322,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik klika w link z emaila (z tokenem resetującym)
 2. Użytkownik jest przekierowany na `/reset-password?token=...`
 3. Użytkownik wpisuje nowe hasło (min. 8 znaków)
@@ -302,12 +331,14 @@ PostgreSQL + RLS
 6. System weryfikuje token i aktualizuje hasło
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Hasło zostało zmienione"
 - Użytkownik jest przekierowany na `/login`
 - Stare hasło nie działa
 - Nowe hasło umożliwia logowanie
 
 **Weryfikacja:**
+
 - Możliwość zalogowania się nowym hasłem
 - Brak możliwości zalogowania starym hasłem
 
@@ -319,15 +350,18 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Auth → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik próbuje otworzyć `/reset-password?token=invalid_token`
 2. System weryfikuje token w Supabase
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Link resetujący jest niepoprawny lub wygasł"
 - Użytkownik jest przekierowany na `/forgot-password`
 - Możliwość ponownego wysłania linku
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu
 - Przekierowanie na właściwą stronę
 
@@ -341,17 +375,20 @@ PostgreSQL + RLS
 **Warstwy:** Middleware → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik nie jest zalogowany (brak session)
 2. Użytkownik próbuje otworzyć chronioną trasę `/` (dashboard)
 3. Middleware sprawdza sesję
 4. Brak ważnej sesji → redirect
 
 **Oczekiwany rezultat:**
+
 - Użytkownik jest automatycznie przekierowany na `/login`
 - Toast notification (opcjonalnie): "Musisz się zalogować"
 
 **Weryfikacja:**
-- URL: `http://localhost:4321/login`
+
+- URL: `http://localhost:3000/login`
 - Brak dostępu do treści strony głównej
 
 ---
@@ -362,17 +399,20 @@ PostgreSQL + RLS
 **Warstwy:** Middleware → Supabase Auth
 
 **Kroki:**
+
 1. Użytkownik jest zalogowany
 2. Użytkownik próbuje otworzyć `/login` przez wpisanie URL
 3. Middleware sprawdza sesję
 4. Sesja istnieje → redirect
 
 **Oczekiwany rezultat:**
+
 - Użytkownik jest automatycznie przekierowany na `/`
 - Nie widzi formularza logowania
 
 **Weryfikacja:**
-- URL: `http://localhost:4321/`
+
+- URL: `http://localhost:3000/`
 - Widoczny dashboard z listą słówek
 
 ---
@@ -387,18 +427,21 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Supabase DB
 
 **Kroki:**
+
 1. Nowy użytkownik loguje się do systemu (brak słówek w DB)
 2. System wykonuje query `GET /api/words`
 3. word.service filtruje po `user_id` (RLS)
 4. Zwracana jest pusta tablica
 
 **Oczekiwany rezultat:**
+
 - Widoczny komponent EmptyState
 - Komunikat: "Nie masz jeszcze żadnych słówek"
 - Przycisk "Dodaj pierwsze słówko"
 - Brak tabeli WordsTable
 
 **Weryfikacja:**
+
 - Widoczny EmptyState component
 - Przycisk CTA jest klikalny
 - Brak błędów w konsoli
@@ -411,22 +454,26 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Supabase DB
 
 **Preconditions:**
+
 - Użytkownik ma 25 słówek w bazie danych
 - Limit na stronie: 10 słówek
 
 **Kroki:**
+
 1. Użytkownik otwiera stronę główną `/`
 2. System wykonuje query `GET /api/words?page=1&limit=10`
 3. word.service zwraca pierwsze 10 słówek + metadata paginacji
 4. Komponent WordsListView renderuje WordsTable i WordsPagination
 
 **Oczekiwany rezultat:**
+
 - Widoczna tabela z 10 słówkami
 - Kolumny: Słówko (EN), Tłumaczenie (PL), Tagi, Audio, Akcje
 - Komponent paginacji pokazuje "Strona 1 z 3"
 - Przyciski: "Poprzednia" (disabled), "Następna" (enabled)
 
 **Weryfikacja:**
+
 - Dokładnie 10 wierszy w tabeli
 - Paginacja działa poprawnie
 - Dane są posortowane (np. po dacie dodania, DESC)
@@ -439,22 +486,26 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → TanStack Query
 
 **Preconditions:**
+
 - Użytkownik ma 25 słówek w bazie danych
 - Użytkownik jest na stronie 1
 
 **Kroki:**
+
 1. Użytkownik klika przycisk "Następna" w paginacji
 2. URL zmienia się na `/?page=2`
 3. useWordsManagement wykonuje nowe query `GET /api/words?page=2&limit=10`
 4. TanStack Query cachuje wyniki
 
 **Oczekiwany rezultat:**
+
 - Tabela wyświetla słówka 11-20
 - Paginacja pokazuje "Strona 2 z 3"
 - Przyciski "Poprzednia" i "Następna" są enabled
 - Przejście między stronami jest płynne (dzięki cachowaniu)
 
 **Weryfikacja:**
+
 - URL zawiera `?page=2`
 - Inne słówka niż na stronie 1
 - Brak flickera przy przełączaniu
@@ -467,21 +518,25 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service
 
 **Preconditions:**
+
 - Użytkownik ma słówka z różnymi tagami: "business", "travel", "food"
 
 **Kroki:**
+
 1. Użytkownik otwiera dropdown TagFilter
 2. Użytkownik wybiera tag "business"
 3. useWordsManagement wykonuje query `GET /api/words?page=1&limit=10&tag=business`
 4. word.service filtruje słówka przez join z word_tags
 
 **Oczekiwany rezultat:**
+
 - Tabela wyświetla tylko słówka z tagiem "business"
 - Liczba stron w paginacji może się zmienić
 - Aktywny filtr jest wizualnie zaznaczony
 - Przycisk "Wyczyść filtr" jest widoczny
 
 **Weryfikacja:**
+
 - URL zawiera `?tag=business`
 - Wszystkie wyświetlone słówka mają tag "business"
 - Możliwość wyczyszczenia filtra
@@ -496,6 +551,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Dictionary API → Supabase DB
 
 **Kroki:**
+
 1. Użytkownik klika przycisk "Dodaj słówko"
 2. Otwiera się modal WordFormDialog
 3. Użytkownik wpisuje słówko (EN): `apple`
@@ -510,6 +566,7 @@ PostgreSQL + RLS
 9. TanStack Query invaliduje cache i refetchuje listę
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Słówko zostało dodane"
 - Modal się zamyka
 - Nowe słówko pojawia się na liście
@@ -519,6 +576,7 @@ PostgreSQL + RLS
   - Examples (jeśli dostępne)
 
 **Weryfikacja:**
+
 - Nowy wiersz w tabeli WordsTable
 - Dane są kompletne
 - Audio można odtworzyć (Howler.js)
@@ -532,6 +590,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Dictionary API (error) → Supabase DB
 
 **Kroki:**
+
 1. Symulacja: Dictionary API jest niedostępne lub słowo nie istnieje w API
 2. Użytkownik dodaje słówko "xyzabc" z tłumaczeniem "test"
 3. word.service próbuje pobrać dane z Dictionary API
@@ -539,12 +598,14 @@ PostgreSQL + RLS
 5. word.service zapisuje słówko z pustymi polami phonetic/audio/examples
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Słówko dodane, ale nie udało się pobrać danych fonetycznych"
 - Słówko zostaje zapisane do DB
 - Pola phonetic, audio_url, examples są puste/null
 - Użytkownik może ręcznie uzupełnić te dane później (edycja)
 
 **Weryfikacja:**
+
 - Słówko jest na liście
 - Brak ikony audio
 - Brak danych fonetycznych
@@ -557,18 +618,21 @@ PostgreSQL + RLS
 **Warstwy:** UI → Zod Validation
 
 **Kroki:**
+
 1. Użytkownik klika "Dodaj słówko"
 2. Użytkownik pozostawia pole "Słówko (EN)" puste
 3. Użytkownik wpisuje tylko tłumaczenie
 4. Użytkownik próbuje zapisać
 
 **Oczekiwany rezultat:**
+
 - Walidacja Zod blokuje wysłanie formularza
 - Pod pustym polem wyświetla się błąd: "Pole jest wymagane"
 - Przycisk "Zapisz" może być disabled lub kliknięcie nie wysyła requesta
 - Modal pozostaje otwarty
 
 **Weryfikacja:**
+
 - Widoczny komunikat błędu
 - Formularz nie zostaje wysłany
 - Żaden request POST nie jest wykonany
@@ -581,6 +645,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Supabase DB (word_tags)
 
 **Kroki:**
+
 1. Użytkownik otwiera modal dodawania słówka
 2. Użytkownik wpisuje słówko i tłumaczenie
 3. Użytkownik wybiera wiele tagów: `business`, `formal`, `vocabulary`
@@ -588,12 +653,14 @@ PostgreSQL + RLS
 5. word.service zapisuje słówko i tworzy powiązania w word_tags
 
 **Oczekiwany rezultat:**
+
 - Słówko jest zapisane w tabeli `words`
 - W tabeli `word_tags` powstają 3 rekordy (word_id + tag_id)
 - W liście słówek widoczne są wszystkie 3 tagi przy danym słówku
 - Filtrowanie po dowolnym z tych tagów pokaże to słówko
 
 **Weryfikacja:**
+
 - Kolumna "Tagi" pokazuje badges: "business", "formal", "vocabulary"
 - Słówko pojawia się przy filtrowaniu po każdym z tych tagów
 
@@ -607,6 +674,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Supabase DB
 
 **Kroki:**
+
 1. Użytkownik klika ikonę "Edytuj" przy słówku na liście
 2. Modal WordFormDialog otwiera się z wypełnionymi danymi
 3. Użytkownik zmienia tłumaczenie z "jabłko" na "jabłko owoc"
@@ -617,12 +685,14 @@ PostgreSQL + RLS
 8. TanStack Query invaliduje cache
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Słówko zostało zaktualizowane"
 - Modal się zamyka
 - Zaktualizowane dane są widoczne w tabeli
 - Nie zmienia się kolejność słówka na liście (o ile sort nie jest po updated_at)
 
 **Weryfikacja:**
+
 - Nowe tłumaczenie jest widoczne
 - Nowy tag jest widoczny w kolumnie Tagi
 - Timestamp `updated_at` jest zaktualizowany w DB
@@ -635,6 +705,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Dictionary API → Supabase DB
 
 **Kroki:**
+
 1. Użytkownik edytuje słówko "apple"
 2. Użytkownik zmienia słówko EN na "orange"
 3. Użytkownik zapisuje
@@ -643,12 +714,14 @@ PostgreSQL + RLS
 6. Aktualizuje phonetic, audio_url, examples
 
 **Oczekiwany rezultat:**
+
 - Nowe dane fonetyczne dla słowa "orange"
 - Nowy audio URL
 - Nowe przykłady (jeśli dostępne)
 - Toast notification: "Słówko zaktualizowane"
 
 **Weryfikacja:**
+
 - Phonetic: `/ˈɒr.ɪndʒ/` (lub podobne)
 - Audio można odtworzyć (nowy plik)
 - Examples są zaktualizowane
@@ -661,18 +734,21 @@ PostgreSQL + RLS
 **Warstwy:** API Words → word.service → Supabase RLS
 
 **Kroki:**
+
 1. User A jest zalogowany
 2. Symulacja: User A próbuje wywołać `PUT /api/words/{id_slowka_user_b}`
 3. word.service wykonuje query do Supabase
 4. RLS (Row Level Security) blokuje operację (user_id nie pasuje)
 
 **Oczekiwany rezultat:**
+
 - Request zwraca błąd 403 Forbidden lub 404 Not Found (zależnie od implementacji)
 - Toast notification: "Nie masz uprawnień do edycji tego słówka"
 - Żadne dane nie są zmieniane w DB
 - User A nie widzi słówek User B na swojej liście
 
 **Weryfikacja:**
+
 - Brak zmian w bazie danych
 - Odpowiedni kod błędu HTTP
 - RLS działa poprawnie
@@ -687,6 +763,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → word.service → Supabase DB
 
 **Kroki:**
+
 1. Użytkownik klika ikonę "Usuń" przy słówku
 2. Otwiera się modal DeleteWordDialog z potwierdzeniem
 3. Modal wyświetla: "Czy na pewno chcesz usunąć słówko: apple?"
@@ -696,6 +773,7 @@ PostgreSQL + RLS
 7. TanStack Query invaliduje cache i refetchuje listę
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Słówko zostało usunięte"
 - Modal się zamyka
 - Słówko znika z listy
@@ -703,6 +781,7 @@ PostgreSQL + RLS
 - Powiązania w word_tags są automatycznie usunięte (cascade)
 
 **Weryfikacja:**
+
 - Brak usuniętego słówka na liście
 - Paginacja się przelicza (jeśli było 11 słówek, teraz jest 10)
 - W DB brak rekordu
@@ -715,17 +794,20 @@ PostgreSQL + RLS
 **Warstwy:** UI
 
 **Kroki:**
+
 1. Użytkownik klika ikonę "Usuń" przy słówku
 2. Otwiera się modal DeleteWordDialog
 3. Użytkownik klika "Anuluj" lub X (zamknięcie modala)
 
 **Oczekiwany rezultat:**
+
 - Modal się zamyka
 - Żaden request nie jest wysyłany
 - Słówko pozostaje na liście
 - Brak zmian w DB
 
 **Weryfikacja:**
+
 - Słówko nadal widoczne
 - Brak requestu DELETE w network tab
 
@@ -737,21 +819,25 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Words → Paginacja
 
 **Preconditions:**
+
 - Użytkownik ma 21 słówek (strona 1: 10, strona 2: 10, strona 3: 1)
 - Użytkownik jest na stronie 3 (widzi 1 słówko)
 
 **Kroki:**
+
 1. Użytkownik usuwa jedyne słówko na stronie 3
 2. useWordsManagement wykrywa pustą stronę
 3. Automatycznie przekierowuje na stronę 2 (ostatnią niepustą)
 
 **Oczekiwany rezultat:**
+
 - Słówko zostaje usunięte
 - Użytkownik jest automatycznie przekierowany na stronę 2
 - URL: `/?page=2`
 - Widocznych 10 słówek
 
 **Weryfikacja:**
+
 - Brak błędu "brak słówek"
 - Płynne przekierowanie
 
@@ -765,6 +851,7 @@ PostgreSQL + RLS
 **Warstwy:** UI → API Tags → tag.service → Supabase DB
 
 **Kroki:**
+
 1. Użytkownik otwiera modal dodawania słówka
 2. W polu "Tagi" użytkownik wpisuje nowy tag: "medicine"
 3. System pokazuje opcję "Utwórz tag: medicine"
@@ -774,12 +861,14 @@ PostgreSQL + RLS
 7. Nowy tag jest automatycznie przypisany do tworzonego słówka
 
 **Oczekiwany rezultat:**
+
 - Nowy tag "medicine" jest tworzony w tabeli `tags`
 - Tag jest unikalny per user (walidacja)
 - Tag jest natychmiast dostępny w dropdownie TagFilter
 - Słówko ma przypisany nowy tag
 
 **Weryfikacja:**
+
 - W DB nowy rekord w tabeli `tags`
 - Tag widoczny w filterze
 - Powiązanie w `word_tags`
@@ -792,15 +881,18 @@ PostgreSQL + RLS
 **Warstwy:** API Tags → tag.service → Supabase DB
 
 **Kroki:**
+
 1. Użytkownik próbuje utworzyć tag "business", który już istnieje
 2. tag.service wykrywa duplikat (unique constraint per user_id)
 
 **Oczekiwany rezultat:**
+
 - Toast notification: "Tag o tej nazwie już istnieje"
 - Formularz nie tworzy duplikatu
 - Istniejący tag jest używany zamiast tworzenia nowego
 
 **Weryfikacja:**
+
 - Brak duplikatu w bazie
 - Unique constraint działa
 
@@ -816,9 +908,11 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz → API Words
 
 **Preconditions:**
+
 - Użytkownik ma co najmniej 10 słówek w bazie
 
 **Kroki:**
+
 1. Użytkownik klika "Quiz" w menu nawigacyjnym
 2. Otwiera się strona `/quiz` w stanie "setup"
 3. Komponent QuizSetup wyświetla formularz konfiguracji:
@@ -831,6 +925,7 @@ PostgreSQL + RLS
 7. Użytkownik klika "Rozpocznij Quiz"
 
 **Oczekiwany rezultat:**
+
 - useQuiz przełącza stan z "setup" na "session"
 - Wykonuje się query `GET /api/words?limit=all` (lub z parametrami)
 - word.service zwraca słówka użytkownika
@@ -838,6 +933,7 @@ PostgreSQL + RLS
 - Renderuje się komponent QuizSession z pierwszym pytaniem
 
 **Weryfikacja:**
+
 - Stan: "session"
 - Widoczny QuizHeader z postępem: "Pytanie 1/5"
 - Widoczny QuizCard z pierwszym słówkiem (EN)
@@ -851,19 +947,23 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz → API Words
 
 **Preconditions:**
+
 - Użytkownik NIE MA żadnych słówek w bazie
 
 **Kroki:**
+
 1. Użytkownik otwiera `/quiz`
 2. useQuiz wykonuje query po słówka
 3. Zwracana jest pusta tablica
 
 **Oczekiwany rezultat:**
+
 - Widoczny komunikat: "Nie masz jeszcze słówek. Dodaj słówka, aby rozpocząć quiz."
 - Przycisk CTA: "Dodaj słówka" → przekierowanie na `/`
 - Przycisk "Rozpocznij Quiz" jest disabled lub niewidoczny
 
 **Weryfikacja:**
+
 - Brak możliwości rozpoczęcia quizu
 - Pomocny komunikat dla użytkownika
 
@@ -875,9 +975,11 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz → API Words
 
 **Preconditions:**
+
 - Użytkownik ma słówka z różnymi tagami: "business" (5 słówek), "travel" (3 słówka)
 
 **Kroki:**
+
 1. Użytkownik otwiera `/quiz`
 2. Użytkownik wybiera filtr po tagu: "business"
 3. Użytkownik ustawia liczbę pytań: 5
@@ -886,11 +988,13 @@ PostgreSQL + RLS
 6. Zwracanych jest 5 słówek z tagu "business"
 
 **Oczekiwany rezultat:**
+
 - Quiz zawiera tylko słówka z tagu "business"
 - Liczba pytań: 5
 - Kierunek zgodnie z wyborem
 
 **Weryfikacja:**
+
 - Wszystkie pytania dotyczą słówek z tagu "business"
 - Weryfikacja w DB: word_tags join
 
@@ -902,20 +1006,24 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz
 
 **Preconditions:**
+
 - Użytkownik ma tylko 3 słówka
 
 **Kroki:**
+
 1. Użytkownik otwiera `/quiz`
 2. Użytkownik próbuje ustawić liczbę pytań: 10
 3. useQuiz wykrywa, że dostępnych jest tylko 3 słówka
 
 **Oczekiwany rezultat:**
+
 - Slider/input automatycznie ogranicza max do 3
 - LUB
 - Toast notification: "Masz tylko 3 słówka. Quiz będzie miał 3 pytania."
 - Quiz rozpoczyna się z 3 pytaniami
 
 **Weryfikacja:**
+
 - Quiz ma tyle pytań, ile jest dostępnych słówek
 - Brak błędu
 
@@ -929,10 +1037,12 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz
 
 **Preconditions:**
+
 - Quiz rozpoczęty, kierunek: EN→PL
 - Pierwsze pytanie: "apple"
 
 **Kroki:**
+
 1. Użytkownik widzi pytanie: "apple"
 2. Użytkownik wpisuje tłumaczenie: "jabłko"
 3. Użytkownik wybiera self-assessment: "Wiem" (przycisk zielony)
@@ -940,12 +1050,14 @@ PostgreSQL + RLS
 5. useQuiz przechodzi do następnego pytania
 
 **Oczekiwany rezultat:**
+
 - Licznik poprawnych odpowiedzi: +1
 - Progress bar się aktualizuje: "Pytanie 2/5"
 - Widoczne następne pytanie
 - Poprzednia odpowiedź jest zapisana w stanie
 
 **Weryfikacja:**
+
 - Stan quizu zawiera: `{ wordId: "...", userAnswer: "jabłko", selfAssessment: "knows" }`
 - Progress: 1/5 → 2/5
 
@@ -957,20 +1069,24 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz
 
 **Preconditions:**
+
 - Quiz rozpoczęty
 - Pytanie: "orange"
 
 **Kroki:**
+
 1. Użytkownik wpisuje: "pomarańcza"
 2. Użytkownik wybiera self-assessment: "Nie wiem" (przycisk czerwony)
 3. useQuiz zapisuje odpowiedź jako niepoprawną
 
 **Oczekiwany rezultat:**
+
 - Licznik niepoprawnych odpowiedzi: +1
 - Progress bar się aktualizuje
 - Następne pytanie
 
 **Weryfikacja:**
+
 - Stan: `{ selfAssessment: "doesNotKnow" }`
 - Licznik błędów: 1
 
@@ -982,17 +1098,20 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz
 
 **Kroki:**
+
 1. Użytkownik widzi pytanie
 2. Użytkownik nie wpisuje odpowiedzi
 3. Użytkownik klika przycisk "Pomiń" (jeśli dostępny)
 4. LUB użytkownik klika "Nie wiem" bez wpisywania odpowiedzi
 
 **Oczekiwany rezultat:**
+
 - Pytanie jest traktowane jako pominięte/błędne
 - useQuiz przechodzi do następnego pytania
 - W stanie zapisane: `{ userAnswer: "", selfAssessment: "doesNotKnow" }`
 
 **Weryfikacja:**
+
 - Możliwość przejścia dalej bez wpisania odpowiedzi
 - Pytanie jest liczone jako błędne w podsumowaniu
 
@@ -1004,20 +1123,24 @@ PostgreSQL + RLS
 **Warstwy:** UI → Howler.js
 
 **Preconditions:**
+
 - Quiz w trakcie
 - Aktualne słówko ma wypełnione `audio_url`
 
 **Kroki:**
+
 1. Użytkownik widzi pytanie z ikoną audio (głośnik)
 2. Użytkownik klika ikonę audio
 3. Howler.js odtwarza audio
 
 **Oczekiwany rezultat:**
+
 - Audio jest odtwarzane
 - Użytkownik słyszy wymowę słówka
 - Możliwość wielokrotnego odsłuchania
 
 **Weryfikacja:**
+
 - Audio działa (brak błędów)
 - Ikona zmienia stan (loading/playing/stopped)
 
@@ -1031,15 +1154,18 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz
 
 **Preconditions:**
+
 - Użytkownik odpowiedział na wszystkie 5 pytań
 - Wyniki: 3 poprawne, 2 niepoprawne
 
 **Kroki:**
+
 1. Użytkownik odpowiada na ostatnie (5.) pytanie
 2. useQuiz przełącza stan z "session" na "summary"
 3. Renderuje się komponent QuizSummary
 
 **Oczekiwany rezultat:**
+
 - Widoczny ekran podsumowania
 - Nagłówek: "Gratulacje! Quiz zakończony"
 - Statystyki:
@@ -1053,6 +1179,7 @@ PostgreSQL + RLS
   - "Powrót do listy słówek" (navigate to `/`)
 
 **Weryfikacja:**
+
 - Poprawne obliczenie procentu
 - Widoczne wszystkie odpowiedzi
 - Przyciski działają poprawnie
@@ -1065,18 +1192,21 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz
 
 **Kroki:**
+
 1. Użytkownik jest na ekranie podsumowania
 2. Użytkownik klika "Powtórz quiz"
 3. useQuiz resetuje stan
 4. Użytkownik wraca do ekranu QuizSetup
 
 **Oczekiwany rezultat:**
+
 - Stan quizu: "setup"
 - Formularz konfiguracji jest widoczny
 - Poprzednie ustawienia mogą być zapamiętane (opcjonalnie)
 - Możliwość rozpoczęcia nowego quizu
 
 **Weryfikacja:**
+
 - Czysty stan quizu
 - Możliwość wyboru nowych parametrów
 
@@ -1088,17 +1218,20 @@ PostgreSQL + RLS
 **Warstwy:** UI → useQuiz → Router
 
 **Kroki:**
+
 1. Użytkownik jest w trakcie quizu (pytanie 3/5)
 2. Użytkownik klika "Zakończ quiz" lub nawiguje do innej strony (np. `/`)
 3. (Opcjonalnie) Wyświetla się modal potwierdzenia: "Czy na pewno chcesz przerwać quiz?"
 
 **Oczekiwany rezultat:**
+
 - Quiz zostaje przerwany
 - Stan quizu jest resetowany
 - Użytkownik jest przekierowany na wybraną stronę
 - Brak zapisywania częściowych wyników (zgodnie z PRD: stateless quiz)
 
 **Weryfikacja:**
+
 - Możliwość opuszczenia quizu
 - Brak błędów przy nawigacji
 
@@ -1114,20 +1247,24 @@ PostgreSQL + RLS
 **Warstwy:** API Words → word.service → Supabase RLS
 
 **Preconditions:**
+
 - User A ma 10 słówek
 - User B ma 5 słówek
 
 **Kroki:**
+
 1. User A loguje się i otwiera `/`
 2. useWordsManagement wykonuje `GET /api/words`
 3. RLS filtruje: `WHERE user_id = User A`
 
 **Oczekiwany rezultat:**
+
 - User A widzi tylko swoje 10 słówek
 - User A NIE WIDZI słówek User B
 - Query zwraca tylko rekordy z `user_id = User A`
 
 **Weryfikacja:**
+
 - Liczba słówek: 10
 - Weryfikacja w DB: wszystkie mają user_id = User A
 - Brak przecieków danych
@@ -1140,19 +1277,23 @@ PostgreSQL + RLS
 **Warstwy:** API Words → Supabase RLS
 
 **Preconditions:**
+
 - User A zna ID słówka należącego do User B
 
 **Kroki:**
+
 1. User A jest zalogowany
 2. User A próbuje wykonać request: `GET /api/words/{id_slowka_user_b}`
 3. RLS blokuje dostęp
 
 **Oczekiwany rezultat:**
+
 - Response: 404 Not Found (słówko "nie istnieje" z perspektywy User A)
 - LUB Response: 403 Forbidden
 - Żadne dane User B nie są zwracane
 
 **Weryfikacja:**
+
 - Brak dostępu do cudzych danych
 - RLS działa poprawnie
 
@@ -1164,15 +1305,18 @@ PostgreSQL + RLS
 **Warstwy:** API Tags → tag.service → Supabase RLS
 
 **Kroki:**
+
 1. User A loguje się
 2. Wykonuje query `GET /api/tags`
 3. RLS: `WHERE user_id = User A`
 
 **Oczekiwany rezultat:**
+
 - User A widzi tylko swoje tagi
 - Tagi innych użytkowników są niewidoczne
 
 **Weryfikacja:**
+
 - Liczba tagów zgodna z własnymi
 - Brak przecieków
 
@@ -1186,20 +1330,24 @@ PostgreSQL + RLS
 **Warstwy:** API Words → word.service → Paginacja
 
 **Preconditions:**
+
 - Użytkownik ma 500 słówek w bazie
 
 **Kroki:**
+
 1. Użytkownik otwiera `/`
 2. Query: `GET /api/words?page=1&limit=10`
 3. Czas odpowiedzi API
 
 **Oczekiwany rezultat:**
+
 - Czas odpowiedzi < 500ms
 - Zwracanych tylko 10 słówek (nie 500)
 - Paginacja działa efektywnie
 - UI renderuje się płynnie (brak lagów)
 
 **Weryfikacja:**
+
 - Network tab: response time
 - Brak obciążenia przeglądarki
 - Indeksy DB na user_id i created_at
@@ -1212,17 +1360,20 @@ PostgreSQL + RLS
 **Warstwy:** UI → TanStack Query
 
 **Kroki:**
+
 1. Użytkownik otwiera `/` (query: fetch words)
 2. Użytkownik nawiguje do `/quiz`
 3. Użytkownik wraca do `/`
 4. TanStack Query sprawdza cache
 
 **Oczekiwany rezultat:**
+
 - Przy powrocie na `/` dane są ładowane z cache
 - Brak ponownego requesta (jeśli cache jest świeży)
 - Szybkie wyświetlenie listy (instant)
 
 **Weryfikacja:**
+
 - Network tab: brak nowego requesta
 - UI renderuje się natychmiast
 - Cache działa poprawnie
@@ -1241,10 +1392,12 @@ PostgreSQL + RLS
 **Viewport:** 375x667 (iPhone SE)
 
 **Kroki:**
+
 1. Użytkownik otwiera `/` na urządzeniu mobilnym
 2. Lista słówek renderuje się w widoku mobile
 
 **Oczekiwany rezultat:**
+
 - Tabela WordsTable jest responsywna (karty zamiast tabeli?)
 - LUB tabela ma horizontal scroll
 - Przyciski są dobrze widoczne i klikalne (min. 44x44px)
@@ -1252,6 +1405,7 @@ PostgreSQL + RLS
 - Paginacja jest czytelna
 
 **Weryfikacja:**
+
 - Brak overflow
 - UI jest użyteczny na małym ekranie
 - Touch targets są odpowiednie
@@ -1264,16 +1418,19 @@ PostgreSQL + RLS
 **Viewport:** 375x667
 
 **Kroki:**
+
 1. Użytkownik otwiera modal dodawania słówka na mobile
 2. Formularz WordFormDialog renderuje się
 
 **Oczekiwany rezultat:**
+
 - Modal zajmuje odpowiednią część ekranu (fullscreen lub 90% height)
 - Input fields są dobrze widoczne
 - Klawiatura nie zasłania inputów (auto-scroll)
 - Przyciski "Zapisz" i "Anuluj" są dostępne
 
 **Weryfikacja:**
+
 - Formularze działają na mobile
 - UX jest płynny
 
@@ -1287,6 +1444,7 @@ PostgreSQL + RLS
 **Viewport:** 768x1024 (iPad)
 
 **Oczekiwany rezultat:**
+
 - Layout wykorzystuje dostępną przestrzeń
 - Tabela WordsTable jest czytelna
 - Brak nadmiernych marginesów
@@ -1299,6 +1457,7 @@ PostgreSQL + RLS
 **Viewport:** 1920x1080
 
 **Oczekiwany rezultat:**
+
 - Zawartość jest wycentrowana lub ma max-width
 - Nie rozciąga się na całą szerokość (poor UX)
 - Wszystkie elementy są dobrze widoczne
@@ -1315,6 +1474,7 @@ PostgreSQL + RLS
 Jako tester, chcę mieć zautomatyzowane testy E2E dla procesu rejestracji użytkownika, aby zapewnić, że nowi użytkownicy mogą bez problemów założyć konto.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-AUTH-001: Pomyślna rejestracja nowego użytkownika
 - [ ] Test TC-AUTH-002: Rejestracja z istniejącym emailem
 - [ ] Test TC-AUTH-003: Rejestracja z za krótkim hasłem
@@ -1323,6 +1483,7 @@ Jako tester, chcę mieć zautomatyzowane testy E2E dla procesu rejestracji użyt
 - [ ] Dane testowe są automatycznie czyszczone po testach
 
 **Tasks:**
+
 - [ ] Utworzenie pliku `e2e/auth/register.spec.ts`
 - [ ] Implementacja fixtures dla testowych użytkowników
 - [ ] Mockowanie emaili (test inbox)
@@ -1338,6 +1499,7 @@ Jako tester, chcę mieć zautomatyzowane testy E2E dla procesu rejestracji użyt
 Jako tester, chcę mieć testy E2E dla logowania i wylogowania, aby upewnić się, że mechanizmy sesji działają poprawnie.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-AUTH-005: Pomyślne logowanie
 - [ ] Test TC-AUTH-006: Logowanie z niepoprawnym hasłem
 - [ ] Test TC-AUTH-007: Logowanie z niezarejestrowanym emailem
@@ -1346,6 +1508,7 @@ Jako tester, chcę mieć testy E2E dla logowania i wylogowania, aby upewnić si�
 - [ ] Test TC-AUTH-013: Redirect gdy użytkownik już zalogowany
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/auth/login.spec.ts`
 - [ ] Utworzenie `e2e/auth/logout.spec.ts`
 - [ ] Fixture dla zalogowanego użytkownika (auth.fixture.ts - już istnieje?)
@@ -1361,12 +1524,14 @@ Jako tester, chcę mieć testy E2E dla logowania i wylogowania, aby upewnić si�
 Jako tester, chcę mieć testy E2E dla procesu resetowania hasła, aby sprawdzić, że użytkownicy mogą odzyskać dostęp do konta.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-AUTH-009: Żądanie resetu hasła
 - [ ] Test TC-AUTH-010: Zmiana hasła przez link
 - [ ] Test TC-AUTH-011: Niepoprawny/wygasły token
 - [ ] Mockowanie email service (test inbox)
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/auth/password-reset.spec.ts`
 - [ ] Integracja z test email service
 - [ ] Ekstrakcja tokenu z emaila w teście
@@ -1383,6 +1548,7 @@ Jako tester, chcę mieć testy E2E dla procesu resetowania hasła, aby sprawdzi�
 Jako tester, chcę mieć testy E2E dla wyświetlania listy słówek, aby upewnić się, że paginacja i filtrowanie działają poprawnie.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-WORDS-001: Pusta lista (EmptyState)
 - [ ] Test TC-WORDS-002: Lista z paginacją
 - [ ] Test TC-WORDS-003: Nawigacja po stronach
@@ -1390,6 +1556,7 @@ Jako tester, chcę mieć testy E2E dla wyświetlania listy słówek, aby upewni�
 - [ ] Seedowanie DB testowymi słówkami
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/words/list.spec.ts`
 - [ ] Seed script dla testowych słówek
 - [ ] Test helpers: createTestWord(), createTestTag()
@@ -1405,6 +1572,7 @@ Jako tester, chcę mieć testy E2E dla wyświetlania listy słówek, aby upewni�
 Jako tester, chcę mieć testy E2E dla dodawania nowych słówek, włączając integrację z Dictionary API.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-WORDS-005: Dodanie słówka (z Dictionary API)
 - [ ] Test TC-WORDS-006: Dodanie słówka (Dictionary API offline)
 - [ ] Test TC-WORDS-007: Walidacja pustych pól
@@ -1412,6 +1580,7 @@ Jako tester, chcę mieć testy E2E dla dodawania nowych słówek, włączając i
 - [ ] Test TC-WORDS-015: Tworzenie nowego taga
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/words/create.spec.ts`
 - [ ] Mockowanie Dictionary API (MSW lub Playwright intercept)
 - [ ] Test formularza WordFormDialog
@@ -1427,11 +1596,13 @@ Jako tester, chcę mieć testy E2E dla dodawania nowych słówek, włączając i
 Jako tester, chcę mieć testy E2E dla edycji słówek, włączając re-fetch z Dictionary API przy zmianie słówka EN.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-WORDS-009: Edycja słówka
 - [ ] Test TC-WORDS-010: Zmiana słówka EN (re-fetch API)
 - [ ] Test TC-WORDS-011: Próba edycji cudzego słówka (security)
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/words/edit.spec.ts`
 - [ ] Test permissions (multi-user scenario)
 - [ ] Weryfikacja RLS
@@ -1446,11 +1617,13 @@ Jako tester, chcę mieć testy E2E dla edycji słówek, włączając re-fetch z 
 Jako tester, chcę mieć testy E2E dla usuwania słówek, włączając edge case'y z paginacją.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-WORDS-012: Usunięcie słówka
 - [ ] Test TC-WORDS-013: Anulowanie usunięcia
 - [ ] Test TC-WORDS-014: Usunięcie ostatniego słówka na stronie
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/words/delete.spec.ts`
 - [ ] Test DeleteWordDialog
 - [ ] Test paginacji po usunięciu
@@ -1467,12 +1640,14 @@ Jako tester, chcę mieć testy E2E dla usuwania słówek, włączając edge case
 Jako tester, chcę mieć testy E2E dla konfiguracji quizu, aby upewnić się, że użytkownicy mogą dostosować parametry.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-QUIZ-001: Konfiguracja i rozpoczęcie quizu
 - [ ] Test TC-QUIZ-002: Brak słówek w bazie
 - [ ] Test TC-QUIZ-003: Quiz z filtrem po tagu
 - [ ] Test TC-QUIZ-004: Liczba pytań > dostępnych słówek
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/quiz/setup.spec.ts`
 - [ ] Seed słówek z różnymi tagami
 - [ ] Test formularza QuizSetup
@@ -1487,12 +1662,14 @@ Jako tester, chcę mieć testy E2E dla konfiguracji quizu, aby upewnić się, ż
 Jako tester, chcę mieć testy E2E dla przebiegu quizu, aby sprawdzić poprawność logiki odpowiedzi i self-assessment.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-QUIZ-005: Poprawna odpowiedź
 - [ ] Test TC-QUIZ-006: Niepoprawna odpowiedź
 - [ ] Test TC-QUIZ-007: Pomijanie pytania
 - [ ] Test TC-QUIZ-008: Odtwarzanie audio (jeśli dostępne)
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/quiz/session.spec.ts`
 - [ ] Test QuizCard interactions
 - [ ] Test progress bar
@@ -1508,11 +1685,13 @@ Jako tester, chcę mieć testy E2E dla przebiegu quizu, aby sprawdzić poprawno�
 Jako tester, chcę mieć testy E2E dla ekranu podsumowania quizu, aby sprawdzić poprawność obliczeń i akcji po quizie.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-QUIZ-009: Wyświetlenie podsumowania
 - [ ] Test TC-QUIZ-010: Powtórzenie quizu
 - [ ] Test TC-QUIZ-011: Przerwanie quizu w trakcie
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/quiz/summary.spec.ts`
 - [ ] Test QuizSummary component
 - [ ] Test akcji: "Powtórz quiz", "Powrót"
@@ -1529,11 +1708,13 @@ Jako tester, chcę mieć testy E2E dla ekranu podsumowania quizu, aby sprawdzić
 Jako tester, chcę mieć testy E2E weryfikujące RLS, aby zapewnić, że użytkownicy nie mają dostępu do cudzych danych.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-SEC-001: User widzi tylko swoje słówka
 - [ ] Test TC-SEC-002: Próba dostępu do cudzego słówka (API)
 - [ ] Test TC-SEC-003: User widzi tylko swoje tagi
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/security/rls.spec.ts`
 - [ ] Multi-user scenario (2 użytkowników w teście)
 - [ ] Weryfikacja response codes (403/404)
@@ -1549,11 +1730,13 @@ Jako tester, chcę mieć testy E2E weryfikujące RLS, aby zapewnić, że użytko
 Jako tester, chcę mieć testy E2E sprawdzające wydajność kluczowych operacji, aby upewnić się, że aplikacja działa płynnie.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-PERF-001: Ładowanie listy (100+ słówek)
 - [ ] Test TC-PERF-002: Cachowanie przez TanStack Query
 - [ ] Metryki: response time, render time
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/performance/load-time.spec.ts`
 - [ ] Seed 500 słówek
 - [ ] Pomiar czasów w Playwright
@@ -1571,12 +1754,14 @@ Jako tester, chcę mieć testy E2E sprawdzające wydajność kluczowych operacji
 Jako tester, chcę mieć testy E2E sprawdzające RWD, aby upewnić się, że aplikacja działa na mobile, tablet i desktop.
 
 **Acceptance Criteria:**
+
 - [ ] Test TC-RWD-001: Lista słówek na mobile (375px)
 - [ ] Test TC-RWD-002: Formularz na mobile
 - [ ] Test TC-RWD-003: Widok tablet (768px)
 - [ ] Test TC-RWD-004: Widok desktop (1920px)
 
 **Tasks:**
+
 - [ ] Utworzenie `e2e/responsive/mobile.spec.ts`
 - [ ] Utworzenie `e2e/responsive/tablet.spec.ts`
 - [ ] Utworzenie `e2e/responsive/desktop.spec.ts`
@@ -1700,48 +1885,48 @@ e2e/
 **playwright.config.ts:**
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: "html",
   use: {
-    baseURL: 'http://localhost:4321',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
+    baseURL: "http://localhost:3000",
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
   },
 
   projects: [
     // Desktop
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
-    
+
     // Mobile
     {
-      name: 'mobile-chrome',
-      use: { ...devices['iPhone 12'] },
+      name: "mobile-chrome",
+      use: { ...devices["iPhone 12"] },
     },
-    
+
     // Tablet
     {
-      name: 'tablet',
-      use: { ...devices['iPad Pro'] },
+      name: "tablet",
+      use: { ...devices["iPad Pro"] },
     },
   ],
 
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:4321',
+    command: "npm run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
   },
 });
@@ -1786,33 +1971,33 @@ export const test = base.extend({
       process.env.PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_KEY! // Service role key for admin access
     );
-    
+
     // Cleanup
     await supabase.from('word_tags').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabase.from('words').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabase.from('tags').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    
+
     await use();
-    
+
     // Cleanup after test (optional)
   },
-  
+
   // Seed test data
   seedWords: async ({ cleanDb }, use) => {
     const supabase = createClient(...);
-    
+
     // Create test user
     const { data: { user } } = await supabase.auth.signUp({
       email: 'test@example.com',
       password: 'testpass123',
     });
-    
+
     // Seed words
     await supabase.from('words').insert([
       { user_id: user.id, word: 'apple', translation: 'jabłko' },
       // ... more test data
     ]);
-    
+
     await use({ userId: user.id, supabase });
   },
 });
@@ -1859,20 +2044,20 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      
+
       - name: Run E2E tests
         run: npm run test:e2e
         env:
           PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -1901,6 +2086,7 @@ User stories zostały podzielone na 13 zadań implementacyjnych, spriorytetyzowa
 ---
 
 **Następne kroki:**
+
 1. Review dokumentu z zespołem
 2. Akceptacja scenariuszy i user stories
 3. Setup infrastruktury testowej (fixtures, helpers, Page Objects)
@@ -1911,4 +2097,3 @@ User stories zostały podzielone na 13 zadań implementacyjnych, spriorytetyzowa
 **Autor:** AI Assistant  
 **Data:** 2025-11-02  
 **Wersja:** 1.0
-

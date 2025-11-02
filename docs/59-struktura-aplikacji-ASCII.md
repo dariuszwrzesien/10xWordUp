@@ -318,3 +318,4 @@ UI RE-RENDER
 - **Query Caching** - TanStack Query
 - **Code Splitting** - automatyczne przez Astro
 - **Image Optimization** - Astro Image
+

@@ -571,3 +571,4 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 **Końcowy rezultat:**  
 Solidna podstawa unit testów dla krytycznej logiki biznesowej, uzupełniona E2E testami dla user flows.
+

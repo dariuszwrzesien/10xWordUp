@@ -73,10 +73,24 @@ export class LoginPage extends BasePage {
     await this.registerLink.click();
   }
 
-  async login(email: string, password: string): Promise<void> {
+  async login(email: string, password: string, expectSuccess = true): Promise<void> {
     await this.fillEmail(email);
     await this.fillPassword(password);
-    await this.clickSubmit();
+    
+    // Wait for navigation after successful login
+    if (expectSuccess) {
+      // Wait for the navigation to start - this handles the setTimeout in the frontend
+      // Use waitForNavigation to properly wait for the redirect
+      await Promise.all([
+        this.page.waitForURL("/", { 
+          timeout: 15000,
+          waitUntil: 'networkidle' // Wait for network to be idle to ensure page is fully loaded
+        }),
+        this.clickSubmit(),
+      ]);
+    } else {
+      await this.clickSubmit();
+    }
   }
 
   // Assertions
@@ -108,4 +122,5 @@ export class LoginPage extends BasePage {
     await expect(this.submitButton).toBeEnabled();
   }
 }
+
 

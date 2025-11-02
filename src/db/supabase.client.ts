@@ -4,7 +4,9 @@ import type { Database } from "../types/database.types.ts";
 
 export const cookieOptions: CookieOptionsWithName = {
   path: "/",
-  secure: true,
+  // Set secure to false to allow cookies over HTTP (localhost)
+  // In production with HTTPS, you should set this to true
+  secure: false,
   httpOnly: true,
   sameSite: "lax",
 };

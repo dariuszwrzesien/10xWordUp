@@ -96,6 +96,7 @@ export default function WordsPagination({ currentPage, totalPages, onPageChange 
             href="#"
             onClick={handlePreviousClick}
             className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            aria-disabled={currentPage === 1}
             data-testid="pagination-previous"
           />
         </PaginationItem>
@@ -125,6 +126,7 @@ export default function WordsPagination({ currentPage, totalPages, onPageChange 
             href="#"
             onClick={handleNextClick}
             className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            aria-disabled={currentPage === totalPages}
             data-testid="pagination-next"
           />
         </PaginationItem>

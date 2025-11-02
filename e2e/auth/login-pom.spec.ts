@@ -43,7 +43,7 @@ test.describe('Authentication - Login Flow', () => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await loginPage.login(username, 'wrongpassword');
+    await loginPage.login(username, 'wrongpassword', false);
 
     // Should stay on login page with error
     await expect(page).toHaveURL('/login');
@@ -54,7 +54,7 @@ test.describe('Authentication - Login Flow', () => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await loginPage.login('nonexistent@example.com', 'password123');
+    await loginPage.login('nonexistent@example.com', 'password123', false);
 
     // Should stay on login page with error
     await expect(page).toHaveURL('/login');

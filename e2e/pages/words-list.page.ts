@@ -73,6 +73,8 @@ export class WordsListPage extends BasePage {
 
   async clickAddWord(): Promise<void> {
     await this.addWordButton.click();
+    // Wait a bit for React state to update and dialog to render
+    await this.page.waitForTimeout(300);
   }
 
   async clickAddFirstWord(): Promise<void> {
