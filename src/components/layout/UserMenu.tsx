@@ -46,12 +46,12 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2" data-testid="user-menu-trigger">
           <User className="h-4 w-4" />
-          <span className="hidden sm:inline">{userEmail}</span>
+          <span className="hidden sm:inline" data-testid="user-email">{userEmail}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56" data-testid="user-menu-content">
         <DropdownMenuLabel>
           <div className="flex flex-col gap-1">
             <p className="text-sm font-medium">Twoje konto</p>
@@ -59,7 +59,7 @@ export default function UserMenu({ userEmail }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut} className="cursor-pointer">
+        <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut} className="cursor-pointer" data-testid="logout-button">
           <LogOut className="h-4 w-4 mr-2" />
           {isLoggingOut ? "Wylogowywanie..." : "Wyloguj się"}
         </DropdownMenuItem>

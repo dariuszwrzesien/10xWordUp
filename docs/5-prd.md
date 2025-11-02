@@ -10,12 +10,12 @@ Użytkownicy napotykają podczas czytania tekstów nieznane słowa lub zwroty, a
 
 ## 3. Wymagania funkcjonalne
 
-- Rejestracja i logowanie użytkownika za pomocą adresu e-mail i hasła. Sesja utrzymywana do 30 dni (funkcja "pamiętaj mnie").
+- Rejestracja i logowanie użytkownika za pomocą adresu e-mail i hasła.
 - Dodawanie nowych słówek (język angielski, tłumaczenie na polski) z opcjonalnymi tagami, walidacja pól.
 - Automatyczne pobieranie wymowy fonetycznej, linku do pliku audio i przykładów użycia z API dictionaryapi.dev (pierwszy wynik).
 - Edycja słówek, przy czym zmiana słowa angielskiego powoduje ponowne pobranie danych z API.
 - Usuwanie słówek z potwierdzeniem.
-- Wyświetlanie listy słówek posortowanej od najnowszych (brak paginacji).
+- Wyświetlanie listy słówek posortowanej od najnowszych (z paginacji).
 - System tagów jako pole tekstowe z autouzupełnianiem istniejących tagów.
 - Tryb nauki (quiz) z wyborem kierunku (EN→PL lub PL→EN) i zakresu (wszystkie słówka lub z wybranego taga), mechanika samooceny ("Znam"/"Nie znam"), losowe kolejności, brak zapisu stanu sesji.
 - Powiadomienia typu toast potwierdzające sukces lub informujące o błędach operacji.
@@ -25,7 +25,6 @@ Użytkownicy napotykają podczas czytania tekstów nieznane słowa lub zwroty, a
 
 - Nie jest obsługiwany zaawansowany algorytm powtórek (np. SM-2).
 - Brak trybu offline – aplikacja wymaga połączenia internetowego.
-- Brak paginacji listy słówek.
 - Brak procesu onboardingu dla nowych użytkowników.
 - Brak trybu ciemnego i tej opcji w ustawieniach.
 - Brak importu i eksportu słówek.

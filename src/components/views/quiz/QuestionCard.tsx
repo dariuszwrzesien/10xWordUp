@@ -62,18 +62,18 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
   }, [question.audio]);
 
   return (
-    <Card className="relative overflow-hidden">
+    <Card className="relative overflow-hidden" data-testid="question-card">
       <CardContent className="p-8">
         {/* Question Section - Always visible */}
         <div className="text-center mb-8">
-          <p className="text-sm text-muted-foreground mb-2">
+          <p className="text-sm text-muted-foreground mb-2" data-testid="question-prompt">
             {direction === "en_pl" ? "Jak przetłumaczysz:" : "Jak powiedzieć po angielsku:"}
           </p>
-          <h2 className="text-4xl font-bold mb-4">{questionWord}</h2>
+          <h2 className="text-4xl font-bold mb-4" data-testid="question-word">{questionWord}</h2>
 
           {/* Audio button - only for English words */}
           {direction === "en_pl" && question.audio && (
-            <Button variant="outline" size="sm" onClick={handlePlayAudio} className="gap-2">
+            <Button variant="outline" size="sm" onClick={handlePlayAudio} className="gap-2" data-testid="question-play-audio-button">
               <Volume2 className="h-4 w-4" />
               Posłuchaj wymowy
             </Button>
@@ -83,7 +83,7 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
         {/* Reveal Button - shown when answer is hidden */}
         {!isRevealed && (
           <div className="text-center">
-            <Button onClick={handleReveal} size="lg" className="gap-2">
+            <Button onClick={handleReveal} size="lg" className="gap-2" data-testid="question-reveal-button">
               <Eye className="h-5 w-5" />
               Pokaż odpowiedź
             </Button>
@@ -92,15 +92,15 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
 
         {/* Answer Section - shown after reveal */}
         {isRevealed && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300" data-testid="question-answer-section">
             {/* Divider */}
             <div className="border-t pt-6">
               <p className="text-sm text-muted-foreground text-center mb-2">Poprawna odpowiedź:</p>
-              <h3 className="text-3xl font-bold text-center text-primary mb-4">{answerWord}</h3>
+              <h3 className="text-3xl font-bold text-center text-primary mb-4" data-testid="question-answer">{answerWord}</h3>
               {/* Audio for answer (Polish->English direction) */}
               {direction === "pl_en" && question.audio && (
                 <div className="flex justify-center mb-4">
-                  <Button variant="outline" size="sm" onClick={handlePlayAudio} className="gap-2">
+                  <Button variant="outline" size="sm" onClick={handlePlayAudio} className="gap-2" data-testid="answer-play-audio-button">
                     <Volume2 className="h-4 w-4" />
                     Posłuchaj wymowy
                   </Button>
@@ -109,7 +109,7 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
 
               {/* Examples section */}
               {question.examples?.length ? (
-                <div>
+                <div data-testid="question-examples">
                   <p className="text-sm font-medium mb-2">Przykłady użycia:</p>
                   <div className="space-y-2">
                     {question.examples.map((example: string, idx: number) => (
@@ -129,6 +129,7 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
                 variant="outline"
                 size="lg"
                 className="gap-2 border-destructive text-destructive hover:bg-destructive hover:text-white"
+                data-testid="question-answer-dont-know-button"
               >
                 <XCircle className="h-5 w-5" />
                 Nie znałem
@@ -138,6 +139,7 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
                 variant="default"
                 size="lg"
                 className="gap-2 bg-green-600 hover:bg-green-700"
+                data-testid="question-answer-know-button"
               >
                 <CheckCircle2 className="h-5 w-5" />
                 Znałem

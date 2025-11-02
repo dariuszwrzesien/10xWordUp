@@ -110,7 +110,7 @@ export default function ResetPasswordForm() {
   // Show loading state while checking token
   if (isCheckingToken) {
     return (
-      <Card>
+      <Card data-testid="reset-password-checking-card">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Sprawdzanie linku...</CardTitle>
           <CardDescription>Proszę czekać</CardDescription>
@@ -125,7 +125,7 @@ export default function ResetPasswordForm() {
   // Show error state if token is invalid
   if (!hasValidToken) {
     return (
-      <Card>
+      <Card data-testid="reset-password-invalid-token-card">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -133,7 +133,9 @@ export default function ResetPasswordForm() {
             </div>
           </div>
           <CardTitle className="text-2xl">Link jest nieprawidłowy</CardTitle>
-          <CardDescription>Link resetujący hasło wygasł lub jest nieprawidłowy</CardDescription>
+          <CardDescription data-testid="reset-password-invalid-token-message">
+            Link resetujący hasło wygasł lub jest nieprawidłowy
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="rounded-lg bg-muted p-4 text-sm text-muted-foreground">
@@ -142,11 +144,15 @@ export default function ResetPasswordForm() {
           </div>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button asChild className="w-full" size="lg">
+          <Button asChild className="w-full" size="lg" data-testid="reset-password-request-new-link-button">
             <a href="/forgot-password">Wyślij nowy link</a>
           </Button>
           <div className="text-sm text-muted-foreground text-center">
-            <a href="/login" className="text-primary hover:underline font-medium">
+            <a
+              href="/login"
+              className="text-primary hover:underline font-medium"
+              data-testid="reset-password-back-to-login-link"
+            >
               Powrót do logowania
             </a>
           </div>
@@ -158,7 +164,7 @@ export default function ResetPasswordForm() {
   // Show success state
   if (isSuccess) {
     return (
-      <Card>
+      <Card data-testid="reset-password-success-card">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -166,7 +172,9 @@ export default function ResetPasswordForm() {
             </div>
           </div>
           <CardTitle className="text-2xl">Hasło zostało zmienione!</CardTitle>
-          <CardDescription>Zostałeś automatycznie zalogowany</CardDescription>
+          <CardDescription data-testid="reset-password-success-message">
+            Zostałeś automatycznie zalogowany
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Button
@@ -177,6 +185,7 @@ export default function ResetPasswordForm() {
               // Redirect to home page after successful password reset
               window.location.href = "/";
             }}
+            data-testid="reset-password-go-to-app-button"
           >
             <a href="/">Przejdź do aplikacji</a>
           </Button>
@@ -186,7 +195,7 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <Card>
+    <Card data-testid="reset-password-form-card">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -198,7 +207,7 @@ export default function ResetPasswordForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="reset-password-form">
             <FormField
               control={form.control}
               name="password"
@@ -209,10 +218,16 @@ export default function ResetPasswordForm() {
                     Nowe hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="reset-password-password-input"
+                    />
                   </FormControl>
                   <FormDescription>Minimum 8 znaków</FormDescription>
-                  <FormMessage />
+                  <FormMessage data-testid="reset-password-password-error" />
                 </FormItem>
               )}
             />
@@ -227,14 +242,26 @@ export default function ResetPasswordForm() {
                     Potwierdź nowe hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="reset-password-confirm-password-input"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="reset-password-confirm-password-error" />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={isLoading}
+              data-testid="reset-password-submit-button"
+            >
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
@@ -252,7 +279,7 @@ export default function ResetPasswordForm() {
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <div className="text-sm text-muted-foreground text-center">
-          <a href="/login" className="text-primary hover:underline font-medium">
+          <a href="/login" className="text-primary hover:underline font-medium" data-testid="reset-password-login-link">
             Powrót do logowania
           </a>
         </div>

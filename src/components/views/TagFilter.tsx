@@ -10,13 +10,13 @@ interface TagFilterProps {
 export default function TagFilter({ tags, selectedTagId, onTagChange }: TagFilterProps) {
   return (
     <Select value={selectedTagId || "all"} onValueChange={(value) => onTagChange(value === "all" ? null : value)}>
-      <SelectTrigger className="w-[200px]">
+      <SelectTrigger className="w-[200px]" data-testid="tag-filter-trigger">
         <SelectValue placeholder="Filtruj po tagu" />
       </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">Wszystkie słówka</SelectItem>
+      <SelectContent data-testid="tag-filter-content">
+        <SelectItem value="all" data-testid="tag-filter-all">Wszystkie słówka</SelectItem>
         {tags.map((tag) => (
-          <SelectItem key={tag.id} value={tag.id}>
+          <SelectItem key={tag.id} value={tag.id} data-testid={`tag-filter-${tag.name}`}>
             {tag.name}
           </SelectItem>
         ))}

@@ -89,13 +89,14 @@ export default function WordsPagination({ currentPage, totalPages, onPageChange 
   const pageNumbers = getPageNumbers();
 
   return (
-    <Pagination className="mt-6">
+    <Pagination className="mt-6" data-testid="words-pagination">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
             href="#"
             onClick={handlePreviousClick}
             className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            data-testid="pagination-previous"
           />
         </PaginationItem>
 
@@ -111,6 +112,7 @@ export default function WordsPagination({ currentPage, totalPages, onPageChange 
                 onClick={handlePageClick(page)}
                 isActive={currentPage === page}
                 className="cursor-pointer"
+                data-testid={`pagination-page-${page}`}
               >
                 {page}
               </PaginationLink>
@@ -123,6 +125,7 @@ export default function WordsPagination({ currentPage, totalPages, onPageChange 
             href="#"
             onClick={handleNextClick}
             className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            data-testid="pagination-next"
           />
         </PaginationItem>
       </PaginationContent>

@@ -25,7 +25,7 @@ export default function WordsTable({
 }: WordsTableProps) {
   if (isLoading) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3" data-testid="words-table-loading">
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-16 w-full" />
         <Skeleton className="h-16 w-full" />
@@ -40,7 +40,7 @@ export default function WordsTable({
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border" data-testid="words-table">
       <Table>
         <TableHeader>
           <TableRow>

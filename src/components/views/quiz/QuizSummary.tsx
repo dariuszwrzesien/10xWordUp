@@ -10,7 +10,7 @@ interface QuizSummaryProps {
 
 export default function QuizSummary({ totalQuestions, onRepeat, onNew }: QuizSummaryProps) {
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4" data-testid="quiz-summary">
       <div className="max-w-2xl mx-auto">
         {/* Congratulations Section */}
         <div className="text-center mb-8">
@@ -22,17 +22,26 @@ export default function QuizSummary({ totalQuestions, onRepeat, onNew }: QuizSum
               </div>
             </div>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <h1
+            className="text-4xl font-bold tracking-tight mb-3 animate-in fade-in slide-in-from-bottom-4 duration-500"
+            data-testid="quiz-summary-title"
+          >
             Gratulacje!
           </h1>
-          <p className="text-xl text-muted-foreground animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+          <p
+            className="text-xl text-muted-foreground animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100"
+            data-testid="quiz-summary-message"
+          >
             Ukończyłeś quiz z {totalQuestions}{" "}
             {totalQuestions === 1 ? "słówkiem" : totalQuestions < 5 ? "słówkami" : "słówkami"}
           </p>
         </div>
 
         {/* Summary Card */}
-        <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+        <Card
+          className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200"
+          data-testid="quiz-summary-card"
+        >
           <CardHeader>
             <CardTitle>Co dalej?</CardTitle>
           </CardHeader>
@@ -44,17 +53,35 @@ export default function QuizSummary({ totalQuestions, onRepeat, onNew }: QuizSum
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <Button onClick={onRepeat} size="lg" className="w-full gap-2" variant="default">
+              <Button
+                onClick={onRepeat}
+                size="lg"
+                className="w-full gap-2"
+                variant="default"
+                data-testid="quiz-repeat-button"
+              >
                 <RotateCcw className="h-5 w-5" />
                 Powtórz quiz z tymi samymi słówkami
               </Button>
 
-              <Button onClick={onNew} size="lg" className="w-full gap-2" variant="outline">
+              <Button
+                onClick={onNew}
+                size="lg"
+                className="w-full gap-2"
+                variant="outline"
+                data-testid="quiz-new-button"
+              >
                 <Plus className="h-5 w-5" />
                 Skonfiguruj nowy quiz
               </Button>
 
-              <Button onClick={() => (window.location.href = "/")} size="lg" className="w-full gap-2" variant="ghost">
+              <Button
+                onClick={() => (window.location.href = "/")}
+                size="lg"
+                className="w-full gap-2"
+                variant="ghost"
+                data-testid="quiz-back-to-words-button"
+              >
                 <Home className="h-5 w-5" />
                 Wróć do moich słówek
               </Button>

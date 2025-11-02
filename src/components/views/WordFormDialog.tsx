@@ -114,9 +114,9 @@ export default function WordFormDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[525px]" data-testid="word-form-dialog">
         <DialogHeader>
-          <DialogTitle>{wordToEdit ? "Edytuj słówko" : "Dodaj nowe słówko"}</DialogTitle>
+          <DialogTitle data-testid="word-form-dialog-title">{wordToEdit ? "Edytuj słówko" : "Dodaj nowe słówko"}</DialogTitle>
           <DialogDescription>
             {wordToEdit
               ? "Wprowadź zmiany w słówku poniżej."
@@ -125,7 +125,7 @@ export default function WordFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="word-form">
             <FormField
               control={form.control}
               name="word"
@@ -133,9 +133,9 @@ export default function WordFormDialog({
                 <FormItem>
                   <FormLabel>Słówko (angielski)</FormLabel>
                   <FormControl>
-                    <Input placeholder="np. hello" {...field} disabled={isSaving} />
+                    <Input placeholder="np. hello" {...field} disabled={isSaving} data-testid="word-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="word-error" />
                 </FormItem>
               )}
             />
@@ -147,9 +147,9 @@ export default function WordFormDialog({
                 <FormItem>
                   <FormLabel>Tłumaczenie (polski)</FormLabel>
                   <FormControl>
-                    <Input placeholder="np. cześć" {...field} disabled={isSaving} />
+                    <Input placeholder="np. cześć" {...field} disabled={isSaving} data-testid="translation-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="translation-error" />
                 </FormItem>
               )}
             />
@@ -163,23 +163,26 @@ export default function WordFormDialog({
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   disabled={isSaving}
+                  data-testid="tag-input"
                 />
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={() => handleAddTag(tagInput)}
                   disabled={!tagInput.trim() || isSaving}
+                  data-testid="add-tag-button"
                 >
                   Dodaj
                 </Button>
               </div>
 
               {selectedTags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-wrap gap-2 mt-3" data-testid="selected-tags">
                   {selectedTags.map((tag) => (
                     <span
                       key={tag}
                       className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+                      data-testid={`selected-tag-${tag}`}
                     >
                       {tag}
                       <button
@@ -187,6 +190,7 @@ export default function WordFormDialog({
                         onClick={() => handleRemoveTag(tag)}
                         disabled={isSaving}
                         className="hover:text-primary/80"
+                        data-testid={`remove-tag-${tag}`}
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -208,7 +212,7 @@ export default function WordFormDialog({
               ) : allTags.length > 0 ? (
                 <div className="text-sm text-muted-foreground mt-2">
                   <p className="mb-1">Dostępne tagi:</p>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1" data-testid="available-tags">
                     {allTags
                       .filter((tag) => !selectedTags.includes(tag.name))
                       .map((tag) => (
@@ -218,6 +222,7 @@ export default function WordFormDialog({
                           onClick={() => handleAddTag(tag.name)}
                           disabled={isSaving}
                           className="text-xs px-2 py-1 rounded border border-border hover:bg-accent transition-colors"
+                          data-testid={`available-tag-${tag.name}`}
                         >
                           {tag.name}
                         </button>
@@ -228,10 +233,10 @@ export default function WordFormDialog({
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving} data-testid="word-form-cancel-button">
                 Anuluj
               </Button>
-              <Button type="submit" disabled={isSaving}>
+              <Button type="submit" disabled={isSaving} data-testid="word-form-submit-button">
                 {isSaving ? "Zapisywanie..." : "Zapisz"}
               </Button>
             </DialogFooter>

@@ -17,15 +17,15 @@ class LoginPage {
   }
 
   async fillEmail(email: string) {
-    await this.page.getByLabel(/email/i).fill(email);
+    await this.page.getByTestId('login-email-input').fill(email);
   }
 
   async fillPassword(password: string) {
-    await this.page.getByLabel(/password/i).fill(password);
+    await this.page.getByTestId('login-password-input').fill(password);
   }
 
   async clickLoginButton() {
-    await this.page.getByRole('button', { name: /login|sign in/i }).click();
+    await this.page.getByTestId('login-submit-button').click();
   }
 
   async login(email: string, password: string) {
@@ -44,9 +44,9 @@ test.describe('Login Page', () => {
   });
 
   test('should display login form', async ({ page }) => {
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-    await expect(page.getByLabel(/password/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: /login|sign in/i })).toBeVisible();
+    await expect(page.getByTestId('login-email-input')).toBeVisible();
+    await expect(page.getByTestId('login-password-input')).toBeVisible();
+    await expect(page.getByTestId('login-submit-button')).toBeVisible();
   });
 
   test('should show validation error for empty fields', async ({ page }) => {
@@ -55,12 +55,25 @@ test.describe('Login Page', () => {
     // Example: await expect(page.getByText(/email is required/i)).toBeVisible();
   });
 
-  test.skip('should login successfully with valid credentials', async ({ page }) => {
-    // This test is skipped by default - update with real test user credentials
-    await loginPage.login('test@example.com', 'testpassword123');
+  test('should login successfully with valid credentials', async ({ page }) => {
+    const username = process.env.E2E_USERNAME;
+    const password = process.env.E2E_PASSWORD;
+
+    if (!username || !password) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
+    }
+
+    await loginPage.login(username, password);
     
-    // Wait for navigation to dashboard/home after successful login
-    await expect(page).toHaveURL(/\/(dashboard|home|words)/);
+    // Wait for the success toast to appear
+    await expect(page.getByText(/logowanie pomyślne/i)).toBeVisible();
+    
+    // Wait for navigation to complete after successful login
+    // The LoginForm has a 500ms delay before redirecting to "/"
+    await page.waitForURL(/\/(dashboard|home|words)?$/, { timeout: 10000 });
+    
+    // Verify we're no longer on the login page
+    await expect(page).toHaveURL(/\/(dashboard|home|words)?$/);
   });
 });
 

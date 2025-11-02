@@ -50,7 +50,7 @@ export default function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <Card>
+      <Card data-testid="forgot-password-success-card">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -58,7 +58,7 @@ export default function ForgotPasswordForm() {
             </div>
           </div>
           <CardTitle className="text-2xl">Sprawdź swoją skrzynkę</CardTitle>
-          <CardDescription>
+          <CardDescription data-testid="forgot-password-success-message">
             Jeśli konto z tym adresem e-mail istnieje, wysłaliśmy link do resetowania hasła
           </CardDescription>
         </CardHeader>
@@ -76,11 +76,12 @@ export default function ForgotPasswordForm() {
               form.reset();
             }}
             className="w-full"
+            data-testid="forgot-password-resend-button"
           >
             Wyślij ponownie
           </Button>
           <div className="text-sm text-muted-foreground text-center">
-            <a href="/login" className="text-primary hover:underline font-medium inline-flex items-center gap-1">
+            <a href="/login" className="text-primary hover:underline font-medium inline-flex items-center gap-1" data-testid="forgot-password-back-to-login-link">
               <ArrowLeft className="h-3 w-3" />
               Powrót do logowania
             </a>
@@ -91,7 +92,7 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <Card>
+    <Card data-testid="forgot-password-form-card">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -103,7 +104,7 @@ export default function ForgotPasswordForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="forgot-password-form">
             <FormField
               control={form.control}
               name="email"
@@ -114,14 +115,14 @@ export default function ForgotPasswordForm() {
                     Adres e-mail
                   </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} />
+                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} data-testid="forgot-password-email-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="forgot-password-email-error" />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="forgot-password-submit-button">
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
@@ -139,7 +140,7 @@ export default function ForgotPasswordForm() {
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <div className="text-sm text-muted-foreground text-center">
-          <a href="/login" className="text-primary hover:underline font-medium inline-flex items-center gap-1">
+          <a href="/login" className="text-primary hover:underline font-medium inline-flex items-center gap-1" data-testid="forgot-password-login-link">
             <ArrowLeft className="h-3 w-3" />
             Powrót do logowania
           </a>

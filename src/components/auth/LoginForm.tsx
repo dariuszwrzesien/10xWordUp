@@ -54,7 +54,7 @@ export default function LoginForm() {
   };
 
   return (
-    <Card>
+    <Card data-testid="login-form-card">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -66,7 +66,7 @@ export default function LoginForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="login-form">
             <FormField
               control={form.control}
               name="email"
@@ -77,9 +77,9 @@ export default function LoginForm() {
                     Adres e-mail
                   </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} />
+                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} data-testid="login-email-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="login-email-error" />
                 </FormItem>
               )}
             />
@@ -94,9 +94,9 @@ export default function LoginForm() {
                     Hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} data-testid="login-password-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="login-password-error" />
                 </FormItem>
               )}
             />
@@ -105,12 +105,13 @@ export default function LoginForm() {
               <a
                 href="/forgot-password"
                 className="text-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                data-testid="login-forgot-password-link"
               >
                 Nie pamiętasz hasła?
               </a>
             </div>
 
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="login-submit-button">
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
@@ -129,7 +130,7 @@ export default function LoginForm() {
       <CardFooter className="flex-col gap-2">
         <div className="text-sm text-muted-foreground text-center">
           Nie masz jeszcze konta?{" "}
-          <a href="/register" className="text-primary hover:underline font-medium">
+          <a href="/register" className="text-primary hover:underline font-medium" data-testid="login-register-link">
             Zarejestruj się
           </a>
         </div>

@@ -1,0 +1,1 @@
+Na podstawie wygenerowanej struktury zależności @59-struktura-aplikacji-ASCII.md  oraz @54-test-plan.md  przeprowadz dogłębną analizę aplikacji pod kątem testowanie e2e. Zaproponuj scenariusze testowe w obrębie funkcjonalności. Wygeneruj user story pod kolejny krok którym będzie implementacja testów. Zapisz w pliku 64-scenariusze-testowania-e2e.md

@@ -67,7 +67,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <Card>
+    <Card data-testid="register-form-card">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -79,7 +79,7 @@ export default function RegisterForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="register-form">
             <FormField
               control={form.control}
               name="email"
@@ -90,9 +90,9 @@ export default function RegisterForm() {
                     Adres e-mail
                   </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} />
+                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} data-testid="register-email-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="register-email-error" />
                 </FormItem>
               )}
             />
@@ -107,10 +107,10 @@ export default function RegisterForm() {
                     Hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} data-testid="register-password-input" />
                   </FormControl>
                   <FormDescription>Minimum 8 znaków</FormDescription>
-                  <FormMessage />
+                  <FormMessage data-testid="register-password-error" />
                 </FormItem>
               )}
             />
@@ -125,14 +125,14 @@ export default function RegisterForm() {
                     Potwierdź hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} data-testid="register-confirm-password-input" />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage data-testid="register-confirm-password-error" />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="register-submit-button">
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
@@ -151,7 +151,7 @@ export default function RegisterForm() {
       <CardFooter className="flex-col gap-2">
         <div className="text-sm text-muted-foreground text-center">
           Masz już konto?{" "}
-          <a href="/login" className="text-primary hover:underline font-medium">
+          <a href="/login" className="text-primary hover:underline font-medium" data-testid="register-login-link">
             Zaloguj się
           </a>
         </div>
