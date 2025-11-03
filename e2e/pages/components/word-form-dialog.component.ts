@@ -1,66 +1,62 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect, Locator } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Word Form Dialog
  * Handles adding and editing words
  */
 export class WordFormDialogComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get dialog() {
-    return this.getByTestId('word-form-dialog');
+    return this.getByTestId("word-form-dialog");
   }
 
   get dialogTitle() {
-    return this.getByTestId('word-form-dialog-title');
+    return this.getByTestId("word-form-dialog-title");
   }
 
   get form() {
-    return this.getByTestId('word-form');
+    return this.getByTestId("word-form");
   }
 
   get wordInput() {
-    return this.getByTestId('word-input');
+    return this.getByTestId("word-input");
   }
 
   get wordError() {
-    return this.getByTestId('word-error');
+    return this.getByTestId("word-error");
   }
 
   get translationInput() {
-    return this.getByTestId('translation-input');
+    return this.getByTestId("translation-input");
   }
 
   get translationError() {
-    return this.getByTestId('translation-error');
+    return this.getByTestId("translation-error");
   }
 
   get tagInput() {
-    return this.getByTestId('tag-input');
+    return this.getByTestId("tag-input");
   }
 
   get addTagButton() {
-    return this.getByTestId('add-tag-button');
+    return this.getByTestId("add-tag-button");
   }
 
   get selectedTags() {
-    return this.getByTestId('selected-tags');
+    return this.getByTestId("selected-tags");
   }
 
   get availableTags() {
-    return this.getByTestId('available-tags');
+    return this.getByTestId("available-tags");
   }
 
   get cancelButton() {
-    return this.getByTestId('word-form-cancel-button');
+    return this.getByTestId("word-form-cancel-button");
   }
 
   get submitButton() {
-    return this.getByTestId('word-form-submit-button');
+    return this.getByTestId("word-form-submit-button");
   }
 
   // Tag-specific locators
@@ -80,8 +76,8 @@ export class WordFormDialogComponent extends BasePage {
   async waitForDialog(): Promise<void> {
     // Wait for dialog with a longer timeout since it's rendered in a portal
     await this.page.waitForSelector('[data-testid="word-form-dialog"]', {
-      state: 'visible',
-      timeout: 10000
+      state: "visible",
+      timeout: 10000,
     });
   }
 
@@ -125,7 +121,7 @@ export class WordFormDialogComponent extends BasePage {
   async fillWordForm(word: string, translation: string, tags?: string[]): Promise<void> {
     await this.fillWord(word);
     await this.fillTranslation(translation);
-    
+
     if (tags && tags.length > 0) {
       for (const tag of tags) {
         await this.addTag(tag);
@@ -142,13 +138,13 @@ export class WordFormDialogComponent extends BasePage {
   async editWord(word?: string, translation?: string, tags?: string[]): Promise<void> {
     if (word) await this.fillWord(word);
     if (translation) await this.fillTranslation(translation);
-    
+
     if (tags && tags.length > 0) {
       for (const tag of tags) {
         await this.addTag(tag);
       }
     }
-    
+
     await this.clickSubmit();
   }
 
@@ -200,5 +196,3 @@ export class WordFormDialogComponent extends BasePage {
     await expect(this.submitButton).toBeEnabled();
   }
 }
-
-

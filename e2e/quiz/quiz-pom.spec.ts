@@ -34,9 +34,16 @@ test.describe("Quiz - Setup and Configuration", () => {
       throw new Error("E2E_USERNAME_ID must be set in .env.test");
     }
 
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error("SUPABASE_URL and SUPABASE_KEY must be set");
+    }
+
     const config = {
-      url: process.env.SUPABASE_URL!,
-      key: process.env.SUPABASE_KEY!,
+      url: supabaseUrl,
+      key: supabaseKey,
     };
 
     // Clean up existing data first to ensure clean slate
@@ -54,18 +61,23 @@ test.describe("Quiz - Setup and Configuration", () => {
     const userId = process.env.E2E_USERNAME_ID;
     if (!userId) return;
 
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) return;
+
     const config = {
-      url: process.env.SUPABASE_URL!,
-      key: process.env.SUPABASE_KEY!,
+      url: supabaseUrl,
+      key: supabaseKey,
     };
 
     await cleanupUserData(userId, config);
   });
   /**
    * TC-QUIZ-001: Rozpoczęcie quizu - konfiguracja parametrów
-   * 
+   *
    * Preconditions: Użytkownik ma co najmniej 10 słówek w bazie
-   * 
+   *
    * Steps:
    * 1. Użytkownik klika "Quiz" w menu nawigacyjnym
    * 2. Otwiera się strona `/quiz` w stanie "setup"
@@ -73,7 +85,7 @@ test.describe("Quiz - Setup and Configuration", () => {
    * 4. Użytkownik wybiera kierunek: EN→PL
    * 5. Użytkownik ustawia zakres: wszystkie słówka (bez filtra po tagu)
    * 6. Użytkownik klika "Rozpocznij Quiz"
-   * 
+   *
    * Expected Result:
    * - useQuiz przełącza stan z "setup" na "session"
    * - Wykonuje się query po słówka użytkownika
@@ -81,6 +93,8 @@ test.describe("Quiz - Setup and Configuration", () => {
    * - Widoczny QuizHeader z postępem
    * - Widoczny QuizCard z pytaniem
    */
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   authenticatedTest("TC-QUIZ-001: Configure and start quiz", async ({ page, authenticatedUser }) => {
     const quizPage = new QuizPage(page);
     const quizSetup = new QuizSetupComponent(page);
@@ -88,10 +102,10 @@ test.describe("Quiz - Setup and Configuration", () => {
 
     // Step 1 & 2: Navigate to /quiz page
     await quizPage.navigate();
-    
+
     // Step 3: Verify setup form is visible
     await quizSetup.expectSetupVisible();
-    
+
     // Verify setup card components are present
     await expect(quizSetup.setupCard).toBeVisible();
     await expect(quizSetup.directionEnPl).toBeVisible();
@@ -101,13 +115,13 @@ test.describe("Quiz - Setup and Configuration", () => {
 
     // Step 4: Select direction EN→PL
     await quizSetup.selectDirectionEnPl();
-    
+
     // Step 5: Select scope "all words" (no tag filter)
     await quizSetup.selectScopeAll();
-    
+
     // Verify tag selector is not visible when "all" is selected
     await quizSetup.expectTagSelectorHidden();
-    
+
     // Verify start button is enabled
     await quizSetup.expectStartButtonEnabled();
 
@@ -118,30 +132,30 @@ test.describe("Quiz - Setup and Configuration", () => {
     // Wait for state transition from "setup" to "loading" to "session"
     // The quiz goes through: setup -> loading -> session states
     await quizSession.waitForSession();
-    
+
     // Verify quiz session is now visible
     await quizSession.expectSessionVisible();
-    
+
     // Verify session state is active
     expect(await quizPage.isSessionState()).toBe(true);
-    
+
     // Verify setup is no longer visible
     expect(await quizPage.isSetupState()).toBe(false);
-    
+
     // Verify progress bar and header are displayed
     await expect(quizSession.progressBar).toBeVisible();
     await expect(quizSession.progressText).toBeVisible();
     await expect(quizSession.directionDisplay).toBeVisible();
-    
+
     // Verify direction is displayed correctly (EN → PL)
     await quizSession.expectDirection("Angielski → Polski");
-    
+
     // Verify first question is displayed
     await expect(quizSession.questionNumber).toBeVisible();
-    
+
     // Verify quit button is available
     await expect(quizSession.quitButton).toBeVisible();
-    
+
     // Additional verification: Check that we have progress tracking
     const progressText = await quizSession.getProgressText();
     expect(progressText).toMatch(/Postęp: 0 \/ \d+/);
@@ -149,103 +163,116 @@ test.describe("Quiz - Setup and Configuration", () => {
 
   /**
    * TC-QUIZ-002: Próba rozpoczęcia quizu bez słówek w bazie
-   * 
+   *
    * Preconditions: Użytkownik NIE MA żadnych słówek w bazie
-   * 
+   *
    * Steps:
    * 1. Użytkownik otwiera `/quiz`
    * 2. Użytkownik konfiguruje quiz (kierunek EN→PL, zakres: wszystkie słówka)
    * 3. Użytkownik klika "Rozpocznij Quiz"
    * 4. useQuiz wykonuje query po słówka i zwraca pustą tablicę
    * 5. System wyświetla błąd i pozostaje w stanie setup
-   * 
+   *
    * Expected Result:
    * - Toast notification: "Brak słówek dla wybranego zakresu"
    * - Quiz pozostaje w stanie setup (nie przechodzi do session)
    * - Użytkownik może kliknąć "Powrót do listy słówek" aby dodać słówka
-   * 
+   *
    * Note: Current implementation checks for empty words AFTER user clicks Start,
    * not before. This is different from the original scenario but matches actual behavior.
    */
-  authenticatedTest("TC-QUIZ-002: No words available", async ({ page, authenticatedUser }) => {
-    // This test requires empty words database
-    const userId = process.env.E2E_USERNAME_ID;
-    if (!userId) {
-      throw new Error("E2E_USERNAME_ID must be set in .env.test");
+  authenticatedTest(
+    "TC-QUIZ-002: No words available",
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async ({ page, authenticatedUser }) => {
+      // This test requires empty words database
+      const userId = process.env.E2E_USERNAME_ID;
+      if (!userId) {
+        throw new Error("E2E_USERNAME_ID must be set in .env.test");
+      }
+
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const supabaseKey = process.env.SUPABASE_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error("SUPABASE_URL and SUPABASE_KEY must be set");
+      }
+
+      const config = {
+        url: supabaseUrl,
+        key: supabaseKey,
+      };
+
+      // Clean up all user data to ensure empty state (no words, no tags)
+      await cleanupUserData(userId, config);
+
+      const quizPage = new QuizPage(page);
+      const quizSetup = new QuizSetupComponent(page);
+
+      // Step 1: Navigate to /quiz page
+      await quizPage.navigate();
+
+      // Wait for setup to load
+      await quizSetup.expectSetupVisible();
+
+      // Step 2: Configure quiz - select direction EN→PL
+      await quizSetup.selectDirectionEnPl();
+
+      // Select scope "all words"
+      await quizSetup.selectScopeAll();
+
+      // Verify start button is enabled (user can try to start)
+      await quizSetup.expectStartButtonEnabled();
+
+      // Step 3: Click "Start Quiz"
+      // We need to handle this differently because clicking will trigger navigation
+      // and we want to verify the error state
+      await quizSetup.startButton.click();
+
+      // Step 4 & 5: System queries for words, gets empty array, shows error
+      // Wait for loading state to complete
+      await page.waitForTimeout(1000); // Brief wait for API call
+
+      // Expected Result: Quiz should stay in setup state (not transition to session)
+      // The error handling in useQuiz sets state back to 'setup' when no words found
+      await quizSetup.expectSetupVisible();
+      expect(await quizPage.isSetupState()).toBe(true);
+      expect(await quizPage.isSessionState()).toBe(false);
+
+      // Expected Result: Verify "Back to words" button is visible (CTA to add words)
+      await expect(quizSetup.backToWordsButton).toBeVisible();
+
+      // Verify clicking "Back to words" navigates to home page
+      await quizSetup.clickBackToWords();
+      await expect(page).toHaveURL("/");
     }
-
-    const config = {
-      url: process.env.SUPABASE_URL!,
-      key: process.env.SUPABASE_KEY!,
-    };
-
-    // Clean up all user data to ensure empty state (no words, no tags)
-    await cleanupUserData(userId, config);
-
-    const quizPage = new QuizPage(page);
-    const quizSetup = new QuizSetupComponent(page);
-
-    // Step 1: Navigate to /quiz page
-    await quizPage.navigate();
-    
-    // Wait for setup to load
-    await quizSetup.expectSetupVisible();
-
-    // Step 2: Configure quiz - select direction EN→PL
-    await quizSetup.selectDirectionEnPl();
-    
-    // Select scope "all words"
-    await quizSetup.selectScopeAll();
-    
-    // Verify start button is enabled (user can try to start)
-    await quizSetup.expectStartButtonEnabled();
-
-    // Step 3: Click "Start Quiz"
-    // We need to handle this differently because clicking will trigger navigation
-    // and we want to verify the error state
-    await quizSetup.startButton.click();
-    
-    // Step 4 & 5: System queries for words, gets empty array, shows error
-    // Wait for loading state to complete
-    await page.waitForTimeout(1000); // Brief wait for API call
-    
-    // Expected Result: Quiz should stay in setup state (not transition to session)
-    // The error handling in useQuiz sets state back to 'setup' when no words found
-    await quizSetup.expectSetupVisible();
-    expect(await quizPage.isSetupState()).toBe(true);
-    expect(await quizPage.isSessionState()).toBe(false);
-    
-    // Expected Result: Verify "Back to words" button is visible (CTA to add words)
-    await expect(quizSetup.backToWordsButton).toBeVisible();
-    
-    // Verify clicking "Back to words" navigates to home page
-    await quizSetup.clickBackToWords();
-    await expect(page).toHaveURL('/');
-  });
+  );
 
   /**
    * TC-QUIZ-003: Rozpoczęcie quizu z filtrem po tagu
-   * 
+   *
    * Preconditions: Użytkownik ma słówka z różnymi tagami: "business" (5 słówek), "greetings" (4 słówka)
    * Note: Test data is seeded in beforeEach - we use "greetings" tag which has 4 words
-   * 
+   *
    * Steps:
    * 1. Użytkownik otwiera `/quiz`
    * 2. Użytkownik wybiera kierunek: EN→PL
    * 3. Użytkownik wybiera zakres: z tagiem
    * 4. Użytkownik wybiera tag: "greetings"
    * 5. Użytkownik klika "Rozpocznij Quiz"
-   * 
+   *
    * Expected Result:
    * - Quiz zawiera tylko słówka z tagu "greetings"
    * - Kierunek zgodnie z wyborem (EN → PL)
    * - Quiz session się rozpoczyna
-   * 
+   *
    * Verification:
    * - Quiz przechodzi do stanu "session"
    * - Widoczne są komponenty sesji quizu
    * - Kierunek jest poprawnie wyświetlony
    */
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   authenticatedTest("TC-QUIZ-003: Start quiz with tag filter", async ({ page, authenticatedUser }) => {
     const quizPage = new QuizPage(page);
     const quizSetup = new QuizSetupComponent(page);
@@ -253,24 +280,24 @@ test.describe("Quiz - Setup and Configuration", () => {
 
     // Step 1: Navigate to /quiz page
     await quizPage.navigate();
-    
+
     // Wait for setup to load
     await quizSetup.expectSetupVisible();
 
     // Step 2: Select direction EN→PL
     await quizSetup.selectDirectionEnPl();
-    
+
     // Step 3: Select scope "tag" (filtered by tag)
     await quizSetup.selectScopeTag();
-    
+
     // Verify tag selector becomes visible when "tag" scope is selected
     await quizSetup.expectTagSelectorVisible();
-    
+
     // Step 4: Select tag "greetings" (from seeded test data)
     // The seedQuizTestData helper creates tags: "basic", "greetings", "nouns", "common"
     // and associates first 4 words with "greetings" tag
     await quizSetup.selectTag("greetings");
-    
+
     // Verify start button is enabled
     await quizSetup.expectStartButtonEnabled();
 
@@ -280,25 +307,25 @@ test.describe("Quiz - Setup and Configuration", () => {
     // Expected Result: Quiz session should start with filtered words
     // Wait for state transition from "setup" to "loading" to "session"
     await quizSession.waitForSession();
-    
+
     // Verify quiz session is now visible
     await quizSession.expectSessionVisible();
-    
+
     // Verify session state is active
     expect(await quizPage.isSessionState()).toBe(true);
-    
+
     // Verify setup is no longer visible
     expect(await quizPage.isSetupState()).toBe(false);
-    
+
     // Verify direction is displayed correctly (EN → PL)
     await expect(quizSession.directionDisplay).toBeVisible();
     await quizSession.expectDirection("Angielski → Polski");
-    
+
     // Verify quiz components are visible
     await expect(quizSession.progressBar).toBeVisible();
     await expect(quizSession.progressText).toBeVisible();
     await expect(quizSession.questionNumber).toBeVisible();
-    
+
     // Additional verification: Progress should show we have questions from the filtered set
     // With "greetings" tag, we should have 4 words available
     const progressText = await quizSession.getProgressText();
@@ -308,29 +335,31 @@ test.describe("Quiz - Setup and Configuration", () => {
 
   /**
    * TC-QUIZ-004: Próba rozpoczęcia quizu - liczba pytań większa niż dostępnych słówek
-   * 
+   *
    * Note: The current implementation doesn't have a "number of questions" input.
    * Instead, it uses ALL available words automatically. This test verifies that
    * the quiz works correctly when user has very few words (3 words).
-   * 
+   *
    * Preconditions: Użytkownik ma tylko 3 słówka
-   * 
+   *
    * Steps:
    * 1. Użytkownik otwiera `/quiz`
    * 2. Użytkownik konfiguruje quiz (kierunek: EN→PL, zakres: wszystkie słówka)
    * 3. Użytkownik klika "Rozpocznij Quiz"
    * 4. Quiz automatycznie używa wszystkich dostępnych słówek (3 pytania)
-   * 
+   *
    * Expected Result:
    * - Quiz rozpoczyna się z 3 pytaniami (wszystkie dostępne słówka)
    * - Brak błędu
    * - Progress pokazuje: "Postęp: 0 / 3"
-   * 
+   *
    * Verification:
    * - Quiz ma tyle pytań, ile jest dostępnych słówek (3)
    * - Session state is active
    * - Progress tracking works correctly
    */
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   authenticatedTest("TC-QUIZ-004: Quiz with limited words (3 words available)", async ({ page, authenticatedUser }) => {
     // This test requires exactly 3 words in database
     const userId = process.env.E2E_USERNAME_ID;
@@ -338,9 +367,16 @@ test.describe("Quiz - Setup and Configuration", () => {
       throw new Error("E2E_USERNAME_ID must be set in .env.test");
     }
 
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error("SUPABASE_URL and SUPABASE_KEY must be set");
+    }
+
     const config = {
-      url: process.env.SUPABASE_URL!,
-      key: process.env.SUPABASE_KEY!,
+      url: supabaseUrl,
+      key: supabaseKey,
     };
 
     // Clean up all existing data
@@ -360,16 +396,16 @@ test.describe("Quiz - Setup and Configuration", () => {
 
     // Step 1: Navigate to /quiz page
     await quizPage.navigate();
-    
+
     // Wait for setup to load
     await quizSetup.expectSetupVisible();
 
     // Step 2: Configure quiz - select direction EN→PL
     await quizSetup.selectDirectionEnPl();
-    
+
     // Select scope "all words"
     await quizSetup.selectScopeAll();
-    
+
     // Verify start button is enabled
     await quizSetup.expectStartButtonEnabled();
 
@@ -379,24 +415,24 @@ test.describe("Quiz - Setup and Configuration", () => {
     // Step 4: Expected Result - Quiz should start with 3 questions
     // Wait for state transition from "setup" to "loading" to "session"
     await quizSession.waitForSession();
-    
+
     // Verify quiz session is now visible
     await quizSession.expectSessionVisible();
-    
+
     // Verify session state is active
     expect(await quizPage.isSessionState()).toBe(true);
-    
+
     // Verify setup is no longer visible
     expect(await quizPage.isSetupState()).toBe(false);
-    
+
     // Verify progress shows 3 total questions (all available words)
     const progressText = await quizSession.getProgressText();
     expect(progressText).toBe("Postęp: 0 / 3");
-    
+
     // Verify direction is displayed correctly
     await expect(quizSession.directionDisplay).toBeVisible();
     await quizSession.expectDirection("Angielski → Polski");
-    
+
     // Verify all session components are visible
     await expect(quizSession.progressBar).toBeVisible();
     await expect(quizSession.progressText).toBeVisible();
@@ -508,7 +544,6 @@ test.describe("Quiz - Summary and Completion", () => {
 
   test.skip("TC-QUIZ-010: Repeat quiz from summary", async ({ page }) => {
     // This test requires completing a quiz first
-    const quizPage = new QuizPage(page);
     const quizSummary = new QuizSummaryComponent(page);
     const quizSetup = new QuizSetupComponent(page);
 
@@ -574,5 +609,3 @@ test.describe("Quiz - Different Directions", () => {
     await quizSession.expectDirection("PL → EN");
   });
 });
-
-

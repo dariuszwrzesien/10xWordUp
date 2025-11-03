@@ -1,73 +1,69 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { BasePage } from './base.page';
+import { expect, Locator } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 /**
  * Page Object Model for Words List Page
  * Handles main dashboard with words management
  */
 export class WordsListPage extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators - Main View
   get listView() {
-    return this.getByTestId('words-list-view');
+    return this.getByTestId("words-list-view");
   }
 
   get wordsCount() {
-    return this.getByTestId('words-count');
+    return this.getByTestId("words-count");
   }
 
   get addWordButton() {
-    return this.getByTestId('add-word-button');
+    return this.getByTestId("add-word-button");
   }
 
   get startQuizButton() {
-    return this.getByTestId('start-quiz-button');
+    return this.getByTestId("start-quiz-button");
   }
 
   get tagsLoading() {
-    return this.getByTestId('tags-loading');
+    return this.getByTestId("tags-loading");
   }
 
   get errorState() {
-    return this.getByTestId('words-error-state');
+    return this.getByTestId("words-error-state");
   }
 
   get reloadPageButton() {
-    return this.getByTestId('reload-page-button');
+    return this.getByTestId("reload-page-button");
   }
 
   // Locators - Empty State
   get emptyState() {
-    return this.getByTestId('empty-state');
+    return this.getByTestId("empty-state");
   }
 
   get emptyStateMessage() {
-    return this.getByTestId('empty-state-message');
+    return this.getByTestId("empty-state-message");
   }
 
   get addFirstWordButton() {
-    return this.getByTestId('empty-state-add-first-word-button');
+    return this.getByTestId("empty-state-add-first-word-button");
   }
 
   get emptyStateFiltered() {
-    return this.getByTestId('empty-state-filtered');
+    return this.getByTestId("empty-state-filtered");
   }
 
   // Locators - Table
   get tableLoading() {
-    return this.getByTestId('words-table-loading');
+    return this.getByTestId("words-table-loading");
   }
 
   get wordsTable() {
-    return this.getByTestId('words-table');
+    return this.getByTestId("words-table");
   }
 
   // Actions
   async navigate(): Promise<void> {
-    await this.goto('/');
+    await this.goto("/");
     await this.waitForPageLoad();
   }
 
@@ -90,16 +86,16 @@ export class WordsListPage extends BasePage {
   }
 
   async getWordsCount(): Promise<string> {
-    return await this.wordsCount.textContent() || '0';
+    return (await this.wordsCount.textContent()) || "0";
   }
 
   async waitForWordsToLoad(): Promise<void> {
     // Wait for either the table, empty state, or error state to be visible
     await this.page.waitForSelector(
-      '[data-testid="words-table"], [data-testid="empty-state"], [data-testid="words-error-state"]', 
-      { 
-        state: 'visible',
-        timeout: 10000 
+      '[data-testid="words-table"], [data-testid="empty-state"], [data-testid="words-error-state"]',
+      {
+        state: "visible",
+        timeout: 10000,
       }
     );
   }
@@ -114,15 +110,15 @@ export class WordsListPage extends BasePage {
   }
 
   getPlayAudioButton(wordId: string): Locator {
-    return this.getWordRow(wordId).getByTestId('play-audio-button');
+    return this.getWordRow(wordId).getByTestId("play-audio-button");
   }
 
   getEditButton(wordId: string): Locator {
-    return this.getWordRow(wordId).getByTestId('edit-word-button');
+    return this.getWordRow(wordId).getByTestId("edit-word-button");
   }
 
   getDeleteButton(wordId: string): Locator {
-    return this.getWordRow(wordId).getByTestId('delete-word-button');
+    return this.getWordRow(wordId).getByTestId("delete-word-button");
   }
 
   async clickPlayAudio(wordId: string): Promise<void> {
@@ -173,4 +169,3 @@ export class WordsListPage extends BasePage {
     await expect(this.wordsCount).toContainText(count.toString());
   }
 }
-

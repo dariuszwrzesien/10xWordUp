@@ -1,60 +1,56 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 /**
  * Page Object Model for Register Page
  * Handles all interactions with the registration form
  */
 export class RegisterPage extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get formCard() {
-    return this.getByTestId('register-form-card');
+    return this.getByTestId("register-form-card");
   }
 
   get form() {
-    return this.getByTestId('register-form');
+    return this.getByTestId("register-form");
   }
 
   get emailInput() {
-    return this.getByTestId('register-email-input');
+    return this.getByTestId("register-email-input");
   }
 
   get emailError() {
-    return this.getByTestId('register-email-error');
+    return this.getByTestId("register-email-error");
   }
 
   get passwordInput() {
-    return this.getByTestId('register-password-input');
+    return this.getByTestId("register-password-input");
   }
 
   get passwordError() {
-    return this.getByTestId('register-password-error');
+    return this.getByTestId("register-password-error");
   }
 
   get confirmPasswordInput() {
-    return this.getByTestId('register-confirm-password-input');
+    return this.getByTestId("register-confirm-password-input");
   }
 
   get confirmPasswordError() {
-    return this.getByTestId('register-confirm-password-error');
+    return this.getByTestId("register-confirm-password-error");
   }
 
   get submitButton() {
-    return this.getByTestId('register-submit-button');
+    return this.getByTestId("register-submit-button");
   }
 
   get loginLink() {
-    return this.getByTestId('register-login-link');
+    return this.getByTestId("register-login-link");
   }
 
   // Actions
   async navigate(): Promise<void> {
-    await this.goto('/register');
-    await this.waitForElement('register-form-card');
+    await this.goto("/register");
+    await this.waitForElement("register-form-card");
   }
 
   async fillEmail(email: string): Promise<void> {
@@ -121,8 +117,3 @@ export class RegisterPage extends BasePage {
     await expect(this.submitButton).toBeEnabled();
   }
 }
-
-
-
-
-

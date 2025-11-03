@@ -81,7 +81,11 @@ export default function ForgotPasswordForm() {
             Wyślij ponownie
           </Button>
           <div className="text-sm text-muted-foreground text-center">
-            <a href="/login" className="text-primary hover:underline font-medium inline-flex items-center gap-1" data-testid="forgot-password-back-to-login-link">
+            <a
+              href="/login"
+              className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+              data-testid="forgot-password-back-to-login-link"
+            >
               <ArrowLeft className="h-3 w-3" />
               Powrót do logowania
             </a>
@@ -115,14 +119,26 @@ export default function ForgotPasswordForm() {
                     Adres e-mail
                   </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} data-testid="forgot-password-email-input" />
+                    <Input
+                      type="email"
+                      placeholder="twoj@email.com"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="forgot-password-email-input"
+                    />
                   </FormControl>
                   <FormMessage data-testid="forgot-password-email-error" />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="forgot-password-submit-button">
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={isLoading}
+              data-testid="forgot-password-submit-button"
+            >
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
@@ -140,7 +156,11 @@ export default function ForgotPasswordForm() {
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <div className="text-sm text-muted-foreground text-center">
-          <a href="/login" className="text-primary hover:underline font-medium inline-flex items-center gap-1" data-testid="forgot-password-login-link">
+          <a
+            href="/login"
+            className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+            data-testid="forgot-password-login-link"
+          >
             <ArrowLeft className="h-3 w-3" />
             Powrót do logowania
           </a>

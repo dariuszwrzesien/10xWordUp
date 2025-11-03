@@ -1,26 +1,22 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect, Locator } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Words Pagination
  * Handles pagination navigation
  */
 export class WordsPaginationComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get pagination() {
-    return this.getByTestId('words-pagination');
+    return this.getByTestId("words-pagination");
   }
 
   get previousButton() {
-    return this.getByTestId('pagination-previous');
+    return this.getByTestId("pagination-previous");
   }
 
   get nextButton() {
-    return this.getByTestId('pagination-next');
+    return this.getByTestId("pagination-next");
   }
 
   // Dynamic locators
@@ -42,13 +38,13 @@ export class WordsPaginationComponent extends BasePage {
   }
 
   async isPreviousDisabled(): Promise<boolean> {
-    const ariaDisabled = await this.previousButton.getAttribute('aria-disabled');
-    return ariaDisabled === 'true';
+    const ariaDisabled = await this.previousButton.getAttribute("aria-disabled");
+    return ariaDisabled === "true";
   }
 
   async isNextDisabled(): Promise<boolean> {
-    const ariaDisabled = await this.nextButton.getAttribute('aria-disabled');
-    return ariaDisabled === 'true';
+    const ariaDisabled = await this.nextButton.getAttribute("aria-disabled");
+    return ariaDisabled === "true";
   }
 
   // Assertions
@@ -61,19 +57,19 @@ export class WordsPaginationComponent extends BasePage {
   }
 
   async expectPreviousEnabled(): Promise<void> {
-    await expect(this.previousButton).not.toHaveAttribute('aria-disabled', 'true');
+    await expect(this.previousButton).not.toHaveAttribute("aria-disabled", "true");
   }
 
   async expectPreviousDisabled(): Promise<void> {
-    await expect(this.previousButton).toHaveAttribute('aria-disabled', 'true');
+    await expect(this.previousButton).toHaveAttribute("aria-disabled", "true");
   }
 
   async expectNextEnabled(): Promise<void> {
-    await expect(this.nextButton).not.toHaveAttribute('aria-disabled', 'true');
+    await expect(this.nextButton).not.toHaveAttribute("aria-disabled", "true");
   }
 
   async expectNextDisabled(): Promise<void> {
-    await expect(this.nextButton).toHaveAttribute('aria-disabled', 'true');
+    await expect(this.nextButton).toHaveAttribute("aria-disabled", "true");
   }
 
   async expectPageButtonVisible(pageNumber: number): Promise<void> {
@@ -82,11 +78,6 @@ export class WordsPaginationComponent extends BasePage {
 
   async expectCurrentPage(pageNumber: number): Promise<void> {
     const pageButton = this.getPageButton(pageNumber);
-    await expect(pageButton).toHaveAttribute('aria-current', 'page');
+    await expect(pageButton).toHaveAttribute("aria-current", "page");
   }
 }
-
-
-
-
-

@@ -17,7 +17,7 @@ export function createErrorResponse(status: number, error: string, message: stri
     error,
     message,
   };
-  
+
   if (details) {
     body.details = details;
   }

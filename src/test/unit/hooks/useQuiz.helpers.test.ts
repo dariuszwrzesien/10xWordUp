@@ -298,6 +298,7 @@ describe("useQuiz helpers", () => {
         translation: "test",
         audio_url: null,
         phonetic: null,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         examples: {} as any,
         created_at: "2024-01-01",
         updated_at: "2024-01-01",
@@ -334,6 +335,7 @@ describe("useQuiz helpers", () => {
               example: "Example 3",
             },
           ],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         created_at: "2024-01-01",
         updated_at: "2024-01-01",
@@ -352,6 +354,7 @@ describe("useQuiz helpers", () => {
         translation: "test",
         audio_url: null,
         phonetic: null,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         examples: "invalid structure" as any,
         created_at: "2024-01-01",
         updated_at: "2024-01-01",

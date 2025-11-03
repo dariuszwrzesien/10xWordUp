@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator } from "@playwright/test";
 
 /**
  * Base Page Object Class
@@ -29,7 +29,7 @@ export class BasePage {
    * Wait for page to load
    */
   async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   /**
@@ -50,7 +50,6 @@ export class BasePage {
    * Wait for element to be visible
    */
   async waitForElement(testId: string): Promise<void> {
-    await this.getByTestId(testId).waitFor({ state: 'visible' });
+    await this.getByTestId(testId).waitFor({ state: "visible" });
   }
 }
-

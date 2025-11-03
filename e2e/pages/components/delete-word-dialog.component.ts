@@ -1,43 +1,39 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Delete Word Dialog
  * Handles word deletion confirmation
  */
 export class DeleteWordDialogComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get dialog() {
-    return this.getByTestId('delete-word-dialog');
+    return this.getByTestId("delete-word-dialog");
   }
 
   get dialogTitle() {
-    return this.getByTestId('delete-word-dialog-title');
+    return this.getByTestId("delete-word-dialog-title");
   }
 
   get dialogDescription() {
-    return this.getByTestId('delete-word-dialog-description');
+    return this.getByTestId("delete-word-dialog-description");
   }
 
   get wordName() {
-    return this.getByTestId('delete-word-name');
+    return this.getByTestId("delete-word-name");
   }
 
   get cancelButton() {
-    return this.getByTestId('delete-word-cancel-button');
+    return this.getByTestId("delete-word-cancel-button");
   }
 
   get confirmButton() {
-    return this.getByTestId('delete-word-confirm-button');
+    return this.getByTestId("delete-word-confirm-button");
   }
 
   // Actions
   async waitForDialog(): Promise<void> {
-    await this.waitForElement('delete-word-dialog');
+    await this.waitForElement("delete-word-dialog");
   }
 
   async clickCancel(): Promise<void> {
@@ -73,8 +69,3 @@ export class DeleteWordDialogComponent extends BasePage {
     await expect(this.wordName).toContainText(word);
   }
 }
-
-
-
-
-

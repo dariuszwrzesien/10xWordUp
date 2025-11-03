@@ -18,7 +18,9 @@ export default function EmptyState({ onAddWord, hasActiveFilter = false }: Empty
           Nie znaleziono słówek pasujących do wybranych filtrów. Spróbuj zmienić kryteria wyszukiwania lub dodaj nowe
           słówko.
         </p>
-        <Button onClick={onAddWord} data-testid="empty-state-add-word-button">Dodaj słówko</Button>
+        <Button onClick={onAddWord} data-testid="empty-state-add-word-button">
+          Dodaj słówko
+        </Button>
       </div>
     );
   }
@@ -32,7 +34,9 @@ export default function EmptyState({ onAddWord, hasActiveFilter = false }: Empty
       <p className="text-muted-foreground text-center mb-6 max-w-md" data-testid="empty-state-message">
         Zacznij budować swoją kolekcję słówek. Dodaj pierwsze słowo i rozpocznij naukę!
       </p>
-      <Button onClick={onAddWord} data-testid="empty-state-add-first-word-button">Dodaj pierwsze słówko</Button>
+      <Button onClick={onAddWord} data-testid="empty-state-add-first-word-button">
+        Dodaj pierwsze słówko
+      </Button>
     </div>
   );
 }

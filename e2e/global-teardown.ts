@@ -7,15 +7,15 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env.test") });
 
 /**
  * Global teardown function for Playwright E2E tests
- * 
+ *
  * This function runs once after all tests complete and cleans up
  * test data from the Supabase database.
- * 
+ *
  * It deletes entries from the following tables:
  * - word_tags (must be deleted first due to foreign key constraints)
  * - words
  * - tags
- * 
+ *
  * The function uses the E2E_USERNAME_ID to ensure only test user's data is deleted.
  */
 async function globalTeardown() {
@@ -56,4 +56,3 @@ async function globalTeardown() {
 }
 
 export default globalTeardown;
-

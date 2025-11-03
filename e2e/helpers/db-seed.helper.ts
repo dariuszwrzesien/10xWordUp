@@ -3,7 +3,7 @@ import type { Database } from "../../src/types/database.types";
 
 /**
  * Database seeding helper for E2E tests
- * 
+ *
  * This helper provides utility functions for creating test data
  * for E2E tests.
  */
@@ -34,17 +34,13 @@ export function createSupabaseClient(config: SupabaseConfig) {
 
 /**
  * Creates test words for a user
- * 
+ *
  * @param userId - The UUID of the test user
  * @param words - Array of test words to create
  * @param config - Supabase configuration (URL and key)
  * @returns Array of created word IDs
  */
-export async function seedWords(
-  userId: string,
-  words: TestWord[],
-  config: SupabaseConfig
-): Promise<string[]> {
+export async function seedWords(userId: string, words: TestWord[], config: SupabaseConfig): Promise<string[]> {
   const supabase = createSupabaseClient(config);
 
   const wordsToInsert = words.map((word) => ({
@@ -56,10 +52,7 @@ export async function seedWords(
     examples: word.examples || null,
   }));
 
-  const { data, error } = await supabase
-    .from("words")
-    .insert(wordsToInsert)
-    .select("id");
+  const { data, error } = await supabase.from("words").insert(wordsToInsert).select("id");
 
   if (error) {
     throw new Error(`Error creating test words: ${error.message}`);
@@ -70,17 +63,13 @@ export async function seedWords(
 
 /**
  * Creates test tags for a user
- * 
+ *
  * @param userId - The UUID of the test user
  * @param tags - Array of test tags to create
  * @param config - Supabase configuration (URL and key)
  * @returns Array of created tag IDs
  */
-export async function seedTags(
-  userId: string,
-  tags: TestTag[],
-  config: SupabaseConfig
-): Promise<string[]> {
+export async function seedTags(userId: string, tags: TestTag[], config: SupabaseConfig): Promise<string[]> {
   const supabase = createSupabaseClient(config);
 
   const tagsToInsert = tags.map((tag) => ({
@@ -88,10 +77,7 @@ export async function seedTags(
     name: tag.name,
   }));
 
-  const { data, error } = await supabase
-    .from("tags")
-    .insert(tagsToInsert)
-    .select("id");
+  const { data, error } = await supabase.from("tags").insert(tagsToInsert).select("id");
 
   if (error) {
     throw new Error(`Error creating test tags: ${error.message}`);
@@ -102,16 +88,12 @@ export async function seedTags(
 
 /**
  * Associates words with tags
- * 
+ *
  * @param wordIds - Array of word IDs
  * @param tagIds - Array of tag IDs
  * @param config - Supabase configuration (URL and key)
  */
-export async function seedWordTags(
-  wordIds: string[],
-  tagIds: string[],
-  config: SupabaseConfig
-): Promise<void> {
+export async function seedWordTags(wordIds: string[], tagIds: string[], config: SupabaseConfig): Promise<void> {
   const supabase = createSupabaseClient(config);
 
   const wordTagsToInsert = wordIds.flatMap((wordId) =>
@@ -130,7 +112,7 @@ export async function seedWordTags(
 
 /**
  * Creates a complete test dataset with words and tags
- * 
+ *
  * @param userId - The UUID of the test user
  * @param config - Supabase configuration (URL and key)
  * @returns Object with created word and tag IDs
@@ -156,12 +138,7 @@ export async function seedQuizTestData(
   const wordIds = await seedWords(userId, testWords, config);
 
   // Create test tags
-  const testTags: TestTag[] = [
-    { name: "basic" },
-    { name: "greetings" },
-    { name: "nouns" },
-    { name: "common" },
-  ];
+  const testTags: TestTag[] = [{ name: "basic" }, { name: "greetings" }, { name: "nouns" }, { name: "common" }];
 
   const tagIds = await seedTags(userId, testTags, config);
 
@@ -177,4 +154,3 @@ export async function seedQuizTestData(
 
   return { wordIds, tagIds };
 }
-

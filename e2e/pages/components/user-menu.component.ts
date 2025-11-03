@@ -1,30 +1,26 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for User Menu
  * Handles user menu interactions (logout, profile)
  */
 export class UserMenuComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get menuTrigger() {
-    return this.getByTestId('user-menu-trigger');
+    return this.getByTestId("user-menu-trigger");
   }
 
   get userEmail() {
-    return this.getByTestId('user-email');
+    return this.getByTestId("user-email");
   }
 
   get menuContent() {
-    return this.getByTestId('user-menu-content');
+    return this.getByTestId("user-menu-content");
   }
 
   get logoutButton() {
-    return this.getByTestId('logout-button');
+    return this.getByTestId("logout-button");
   }
 
   // Actions
@@ -34,37 +30,37 @@ export class UserMenuComponent extends BasePage {
     if (isOpen) {
       return;
     }
-    
+
     // Try clicking with force first
     await this.menuTrigger.click({ force: true });
-    
+
     // Wait for the menu content to appear with a reasonable timeout
     try {
-      await this.menuContent.waitFor({ state: 'visible', timeout: 5000 });
-    } catch (error) {
+      await this.menuContent.waitFor({ state: "visible", timeout: 5000 });
+    } catch {
       // If first click didn't work, try regular click
       await this.menuTrigger.click();
-      await this.menuContent.waitFor({ state: 'visible', timeout: 5000 });
+      await this.menuContent.waitFor({ state: "visible", timeout: 5000 });
     }
   }
 
   async closeMenu(): Promise<void> {
     // Click outside the menu to close it
-    await this.page.keyboard.press('Escape');
+    await this.page.keyboard.press("Escape");
   }
 
   async logout(): Promise<void> {
     await this.openMenu();
-    
+
     // Wait for the logout button to be visible and clickable
-    await this.logoutButton.waitFor({ state: 'visible', timeout: 5000 });
-    
+    await this.logoutButton.waitFor({ state: "visible", timeout: 5000 });
+
     // Use force click to avoid any pointer interception issues
     await this.logoutButton.click({ force: true });
   }
 
   async getUserEmail(): Promise<string> {
-    return await this.userEmail.textContent() || '';
+    return (await this.userEmail.textContent()) || "";
   }
 
   // Assertions
@@ -85,4 +81,3 @@ export class UserMenuComponent extends BasePage {
     await expect(this.menuContent).not.toBeVisible();
   }
 }
-

@@ -33,14 +33,19 @@ export default function DeleteWordDialog({
           <AlertDialogDescription data-testid="delete-word-dialog-description">
             {word && (
               <>
-                Zamierzasz usunąć słówko <span className="font-semibold" data-testid="delete-word-name">&ldquo;{word.word}&rdquo;</span> (
-                {word.translation}). Ta operacja jest nieodwracalna.
+                Zamierzasz usunąć słówko{" "}
+                <span className="font-semibold" data-testid="delete-word-name">
+                  &ldquo;{word.word}&rdquo;
+                </span>{" "}
+                ({word.translation}). Ta operacja jest nieodwracalna.
               </>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting} data-testid="delete-word-cancel-button">Anuluj</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting} data-testid="delete-word-cancel-button">
+            Anuluj
+          </AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isDeleting} data-testid="delete-word-confirm-button">
             {isDeleting ? "Usuwanie..." : "Usuń"}
           </AlertDialogAction>

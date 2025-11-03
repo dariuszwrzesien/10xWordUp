@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  loginSchema,
-  registerSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-} from "@/lib/schemas/auth.schema";
+import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from "@/lib/schemas/auth.schema";
 import { ZodError } from "zod";
 
 describe("auth.schema", () => {
@@ -261,11 +256,7 @@ describe("auth.schema", () => {
     });
 
     it("should accept various valid email formats", () => {
-      const validEmails = [
-        "user@example.com",
-        "test.user+tag@example.co.uk",
-        "user123@test-domain.com",
-      ];
+      const validEmails = ["user@example.com", "test.user+tag@example.co.uk", "user123@test-domain.com"];
 
       validEmails.forEach((email) => {
         const result = forgotPasswordSchema.parse({ email });
@@ -374,4 +365,3 @@ describe("auth.schema", () => {
     });
   });
 });
-

@@ -14,7 +14,9 @@ export default function TagFilter({ tags, selectedTagId, onTagChange }: TagFilte
         <SelectValue placeholder="Filtruj po tagu" />
       </SelectTrigger>
       <SelectContent data-testid="tag-filter-content">
-        <SelectItem value="all" data-testid="tag-filter-all">Wszystkie słówka</SelectItem>
+        <SelectItem value="all" data-testid="tag-filter-all">
+          Wszystkie słówka
+        </SelectItem>
         {tags.map((tag) => (
           <SelectItem key={tag.id} value={tag.id} data-testid={`tag-filter-${tag.name}`}>
             {tag.name}

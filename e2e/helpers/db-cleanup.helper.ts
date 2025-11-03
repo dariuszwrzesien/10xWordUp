@@ -3,7 +3,7 @@ import type { Database } from "../../src/types/database.types";
 
 /**
  * Database cleanup helper for E2E tests
- * 
+ *
  * This helper provides utility functions for cleaning up test data
  * during or after E2E tests.
  */
@@ -28,15 +28,12 @@ export function createSupabaseClient(config: SupabaseConfig) {
 
 /**
  * Cleans up all test data for a specific user
- * 
+ *
  * @param userId - The UUID of the test user
  * @param config - Supabase configuration (URL and key)
  * @returns Statistics about deleted records
  */
-export async function cleanupUserData(
-  userId: string,
-  config: SupabaseConfig
-): Promise<CleanupStats> {
+export async function cleanupUserData(userId: string, config: SupabaseConfig): Promise<CleanupStats> {
   const supabase = createSupabaseClient(config);
 
   const stats: CleanupStats = {
@@ -47,10 +44,7 @@ export async function cleanupUserData(
 
   try {
     // Step 1: Get all word IDs for the user
-    const { data: userWords, error: wordsError } = await supabase
-      .from("words")
-      .select("id")
-      .eq("user_id", userId);
+    const { data: userWords, error: wordsError } = await supabase.from("words").select("id").eq("user_id", userId);
 
     if (wordsError) {
       throw new Error(`Error fetching user words: ${wordsError.message}`);
@@ -105,22 +99,16 @@ export async function cleanupUserData(
 
 /**
  * Deletes all words for a specific user
- * 
+ *
  * @param userId - The UUID of the test user
  * @param config - Supabase configuration (URL and key)
  * @returns Number of deleted words
  */
-export async function cleanupWords(
-  userId: string,
-  config: SupabaseConfig
-): Promise<number> {
+export async function cleanupWords(userId: string, config: SupabaseConfig): Promise<number> {
   const supabase = createSupabaseClient(config);
 
   // First delete word_tags
-  const { data: userWords } = await supabase
-    .from("words")
-    .select("id")
-    .eq("user_id", userId);
+  const { data: userWords } = await supabase.from("words").select("id").eq("user_id", userId);
 
   if (userWords && userWords.length > 0) {
     const wordIds = userWords.map((word) => word.id);
@@ -128,10 +116,7 @@ export async function cleanupWords(
   }
 
   // Then delete words
-  const { error, count } = await supabase
-    .from("words")
-    .delete({ count: "exact" })
-    .eq("user_id", userId);
+  const { error, count } = await supabase.from("words").delete({ count: "exact" }).eq("user_id", userId);
 
   if (error) {
     throw new Error(`Error deleting words: ${error.message}`);
@@ -142,21 +127,15 @@ export async function cleanupWords(
 
 /**
  * Deletes all tags for a specific user
- * 
+ *
  * @param userId - The UUID of the test user
  * @param config - Supabase configuration (URL and key)
  * @returns Number of deleted tags
  */
-export async function cleanupTags(
-  userId: string,
-  config: SupabaseConfig
-): Promise<number> {
+export async function cleanupTags(userId: string, config: SupabaseConfig): Promise<number> {
   const supabase = createSupabaseClient(config);
 
-  const { error, count } = await supabase
-    .from("tags")
-    .delete({ count: "exact" })
-    .eq("user_id", userId);
+  const { error, count } = await supabase.from("tags").delete({ count: "exact" }).eq("user_id", userId);
 
   if (error) {
     throw new Error(`Error deleting tags: ${error.message}`);
@@ -167,15 +146,12 @@ export async function cleanupTags(
 
 /**
  * Verifies that all test data has been cleaned up
- * 
+ *
  * @param userId - The UUID of the test user
  * @param config - Supabase configuration (URL and key)
  * @returns True if no test data exists, false otherwise
  */
-export async function verifyCleanup(
-  userId: string,
-  config: SupabaseConfig
-): Promise<boolean> {
+export async function verifyCleanup(userId: string, config: SupabaseConfig): Promise<boolean> {
   const supabase = createSupabaseClient(config);
 
   const [wordsResult, tagsResult] = await Promise.all([
@@ -188,4 +164,3 @@ export async function verifyCleanup(
 
   return wordsCount === 0 && tagsCount === 0;
 }
-

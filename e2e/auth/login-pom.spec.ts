@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { test as authenticatedTest } from '../fixtures/auth.fixture';
-import { LoginPage, WordsListPage, UserMenuComponent } from '../pages';
+import { test, expect } from "@playwright/test";
+import { test as authenticatedTest } from "../fixtures/auth.fixture";
+import { LoginPage, UserMenuComponent } from "../pages";
 
 /**
  * Authentication E2E Tests using Page Object Model
  * Based on scenarios from docs/64-scenariusze-testowania-e2e.md
- * 
+ *
  * Test Isolation Strategy:
  * - Login/Logout tests use test.use({ storageState: { cookies: [], origins: [] } })
  *   to ensure each test starts with no authentication state
@@ -13,11 +13,11 @@ import { LoginPage, WordsListPage, UserMenuComponent } from '../pages';
  * - Each test gets a fresh browser context with clean storage
  */
 
-test.describe('Authentication - Login Flow', () => {
+test.describe("Authentication - Login Flow", () => {
   // Ensure isolated state for each test - no auth cookies/storage
   test.use({ storageState: { cookies: [], origins: [] } });
-  
-  test('TC-AUTH-005: Successful login with valid credentials', async ({ page }) => {
+
+  test("TC-AUTH-005: Successful login with valid credentials", async ({ page }) => {
     const username = process.env.E2E_USERNAME;
     const password = process.env.E2E_PASSWORD;
 
@@ -26,7 +26,6 @@ test.describe('Authentication - Login Flow', () => {
     }
 
     const loginPage = new LoginPage(page);
-    const wordsListPage = new WordsListPage(page);
     const userMenu = new UserMenuComponent(page);
 
     // Navigate to login page
@@ -37,19 +36,19 @@ test.describe('Authentication - Login Flow', () => {
     await loginPage.login(username, password);
 
     // Wait for redirect and session establishment
-    await page.waitForURL('/', { 
+    await page.waitForURL("/", {
       timeout: 15000,
-      waitUntil: 'load' 
+      waitUntil: "load",
     });
-    await page.waitForLoadState('networkidle', { timeout: 5000 });
+    await page.waitForLoadState("networkidle", { timeout: 5000 });
 
     // Verify successful login
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL("/");
     await userMenu.expectMenuVisible();
     await userMenu.expectUserEmail(username);
   });
 
-  test('TC-AUTH-006: Login with incorrect password', async ({ page }) => {
+  test("TC-AUTH-006: Login with incorrect password", async ({ page }) => {
     const username = process.env.E2E_USERNAME;
 
     if (!username) {
@@ -59,27 +58,26 @@ test.describe('Authentication - Login Flow', () => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await loginPage.login(username, 'wrongpassword', false);
+    await loginPage.login(username, "wrongpassword", false);
 
     // Should stay on login page with error
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL("/login");
     // Add assertion for error message once implemented
   });
 
-  test('TC-AUTH-007: Login with unregistered email', async ({ page }) => {
+  test("TC-AUTH-007: Login with unregistered email", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await loginPage.login('nonexistent@example.com', 'password123', false);
+    await loginPage.login("nonexistent@example.com", "password123", false);
 
     // Should stay on login page with error
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL("/login");
   });
 });
 
-test.describe('Authentication - Logout Flow', () => {
-
-  authenticatedTest('TC-AUTH-008: Successful logout', async ({ page, authenticatedUser }) => {
+test.describe("Authentication - Logout Flow", () => {
+  authenticatedTest("TC-AUTH-008: Successful logout", async ({ page, authenticatedUser }) => {
     // Scenario: TC-AUTH-008 from docs/64-scenariusze-testowania-e2e.md
     // Steps:
     // 1. User is logged in and on dashboard
@@ -94,12 +92,12 @@ test.describe('Authentication - Logout Flow', () => {
     // - Session token is removed
     // - User is redirected to /login
     // - No access to protected routes without login
-    
+
     const userMenu = new UserMenuComponent(page);
     const loginPage = new LoginPage(page);
 
     // Verify user is on dashboard and logged in
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL("/");
     await userMenu.expectMenuVisible();
     await userMenu.expectUserEmail(authenticatedUser.email);
 
@@ -107,63 +105,62 @@ test.describe('Authentication - Logout Flow', () => {
     await userMenu.logout();
 
     // Verify redirect to login page
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL("/login");
     await loginPage.expectFormVisible();
 
     // Verify no UserMenu is visible (user is logged out)
     await expect(userMenu.menuTrigger).not.toBeVisible();
 
     // Verify protected route access is blocked (middleware redirect)
-    await page.goto('/');
-    await expect(page).toHaveURL('/login');
+    await page.goto("/");
+    await expect(page).toHaveURL("/login");
   });
 });
 
-test.describe('Authentication - Navigation Links', () => {
-
-  test('Should navigate from login to register page', async ({ page }) => {
+test.describe("Authentication - Navigation Links", () => {
+  test("Should navigate from login to register page", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
     await loginPage.clickRegisterLink();
 
-    await expect(page).toHaveURL('/register');
+    await expect(page).toHaveURL("/register");
   });
 
-  test('Should navigate from login to forgot password page', async ({ page }) => {
+  test("Should navigate from login to forgot password page", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     await loginPage.navigate();
     await loginPage.clickForgotPassword();
 
-    await expect(page).toHaveURL('/forgot-password');
+    await expect(page).toHaveURL("/forgot-password");
   });
 });
 
-test.describe('Authentication - Complete User Flow', () => {
+test.describe("Authentication - Complete User Flow", () => {
   // Ensure isolated state for each test - fresh browser context with no stored auth
   test.use({ storageState: { cookies: [], origins: [] } });
-  
+
   // Ensure clean state before each test
   test.beforeEach(async ({ context, page }) => {
     // Clear all cookies and storage to ensure clean state
     await context.clearCookies();
-    
+
     // Navigate to a page to execute storage clearing
-    await page.goto('/login');
+    await page.goto("/login");
     await page.evaluate(() => {
       localStorage.clear();
       sessionStorage.clear();
     });
-    
+
     // Ensure cookies are really cleared by reloading
     await page.reload();
-    
+
     // Wait for page to fully load after reload
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
   });
 
-  test('Full workflow: Login -> Add Word -> Logout', async ({ page, context }) => {
+  test("Full workflow: Login -> Add Word -> Logout", async ({ page }) => {
     const username = process.env.E2E_USERNAME;
     const password = process.env.E2E_PASSWORD;
 
@@ -174,17 +171,16 @@ test.describe('Authentication - Complete User Flow', () => {
     // We're already on /login from beforeEach
     // Create page objects
     const loginPage = new LoginPage(page);
-    
+
     // Wait for login form to be visible (ensure we're not being redirected)
     await loginPage.expectFormVisible();
-    
+
     await loginPage.login(username, password);
 
     // Verify user is logged in
-    const wordsListPage = new WordsListPage(page);
     const userMenu = new UserMenuComponent(page);
-    
-    await expect(page).toHaveURL('/');
+
+    await expect(page).toHaveURL("/");
     await userMenu.expectMenuVisible();
     await userMenu.expectUserEmail(username);
 
@@ -192,7 +188,6 @@ test.describe('Authentication - Complete User Flow', () => {
     await userMenu.logout();
 
     // Verify logged out
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL("/login");
   });
 });
-

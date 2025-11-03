@@ -1,22 +1,23 @@
-import { test as base, expect } from '@playwright/test';
-import { LoginPage } from '../pages';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { test as base, expect } from "@playwright/test";
+import { LoginPage } from "../pages";
 
 /**
  * Fixture for authenticated user with proper test isolation
- * 
+ *
  * This fixture ensures each test has its own isolated browser context
  * with a fresh authentication session. This prevents race conditions
  * and session conflicts when running tests in parallel.
- * 
+ *
  * Key improvements for test isolation:
  * - Each test gets a fresh browser context (isolated cookies/storage)
  * - Authentication happens per-test, not shared across tests
  * - Proper cleanup in finally block ensures no state leaks
  * - Works correctly with parallel test execution
- * 
+ *
  * Usage:
  * import { test, expect } from './fixtures/auth.fixture';
- * 
+ *
  * test('my authenticated test', async ({ page, authenticatedUser }) => {
  *   // User is already logged in in isolated context
  *   // page is automatically provided by the fixture
@@ -25,13 +26,13 @@ import { LoginPage } from '../pages';
  * });
  */
 
-type AuthenticatedUser = {
+interface AuthenticatedUser {
   email: string;
   password: string;
   id?: string;
-};
+}
 
-export const test = base.extend<{ 
+export const test = base.extend<{
   authenticatedUser: AuthenticatedUser;
 }>({
   // Override context to provide fresh isolated context per test
@@ -39,7 +40,7 @@ export const test = base.extend<{
   context: async ({ browser }, use) => {
     const context = await browser.newContext({
       // Start with clean storage state - no cookies, no localStorage
-      storageState: { cookies: [], origins: [] }
+      storageState: { cookies: [], origins: [] },
     });
     await use(context);
     await context.close();
@@ -71,24 +72,24 @@ export const test = base.extend<{
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
     await loginPage.login(user.email, user.password);
-    
+
     // Wait for successful login (redirect to home page)
     // Extended timeout to handle Supabase session establishment
-    await page.waitForURL('/', { 
+    await page.waitForURL("/", {
       timeout: 15000,
-      waitUntil: 'load' 
+      waitUntil: "load",
     });
 
     // Additional wait to ensure session is fully established
     // This is critical because Supabase needs time to set auth cookies
     // and the middleware needs to recognize the session
-    await page.waitForLoadState('networkidle', { timeout: 5000 });
+    await page.waitForLoadState("networkidle", { timeout: 5000 });
 
     // Verify we're actually on the home page with authenticated session
     // by checking for authenticated content (words list view)
-    await page.waitForSelector('[data-testid="words-list-view"]', { 
-      state: 'visible',
-      timeout: 5000 
+    await page.waitForSelector('[data-testid="words-list-view"]', {
+      state: "visible",
+      timeout: 5000,
     });
 
     // Pass the authenticated user info to the test
@@ -99,5 +100,3 @@ export const test = base.extend<{
 });
 
 export { expect };
-
-

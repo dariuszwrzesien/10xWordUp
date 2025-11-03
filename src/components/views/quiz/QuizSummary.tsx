@@ -92,7 +92,7 @@ export default function QuizSummary({ totalQuestions, onRepeat, onNew }: QuizSum
         {/* Motivational Message */}
         <div className="mt-8 text-center animate-in fade-in duration-500 delay-300">
           <p className="text-sm text-muted-foreground italic">
-            "Powtórzenie jest matką wiedzy" - Im więcej ćwiczysz, tym lepiej zapamiętasz!
+            &ldquo;Powtórzenie jest matką wiedzy&rdquo; - Im więcej ćwiczysz, tym lepiej zapamiętasz!
           </p>
         </div>
       </div>

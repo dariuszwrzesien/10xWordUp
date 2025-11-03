@@ -1,47 +1,43 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Quiz Summary
  * Handles quiz completion and results
  */
 export class QuizSummaryComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get summaryContainer() {
-    return this.getByTestId('quiz-summary');
+    return this.getByTestId("quiz-summary");
   }
 
   get title() {
-    return this.getByTestId('quiz-summary-title');
+    return this.getByTestId("quiz-summary-title");
   }
 
   get message() {
-    return this.getByTestId('quiz-summary-message');
+    return this.getByTestId("quiz-summary-message");
   }
 
   get summaryCard() {
-    return this.getByTestId('quiz-summary-card');
+    return this.getByTestId("quiz-summary-card");
   }
 
   get repeatButton() {
-    return this.getByTestId('quiz-repeat-button');
+    return this.getByTestId("quiz-repeat-button");
   }
 
   get newQuizButton() {
-    return this.getByTestId('quiz-new-button');
+    return this.getByTestId("quiz-new-button");
   }
 
   get backToWordsButton() {
-    return this.getByTestId('quiz-back-to-words-button');
+    return this.getByTestId("quiz-back-to-words-button");
   }
 
   // Actions
   async waitForSummary(): Promise<void> {
-    await this.waitForElement('quiz-summary');
+    await this.waitForElement("quiz-summary");
   }
 
   async clickRepeat(): Promise<void> {
@@ -57,11 +53,11 @@ export class QuizSummaryComponent extends BasePage {
   }
 
   async getSummaryTitle(): Promise<string> {
-    return await this.title.textContent() || '';
+    return (await this.title.textContent()) || "";
   }
 
   async getSummaryMessage(): Promise<string> {
-    return await this.message.textContent() || '';
+    return (await this.message.textContent()) || "";
   }
 
   // Assertions
@@ -85,8 +81,3 @@ export class QuizSummaryComponent extends BasePage {
     await expect(this.backToWordsButton).toBeVisible();
   }
 }
-
-
-
-
-

@@ -1,71 +1,67 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Question Card
  * Handles individual quiz questions and answers
  */
 export class QuestionCardComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get card() {
-    return this.getByTestId('question-card');
+    return this.getByTestId("question-card");
   }
 
   get prompt() {
-    return this.getByTestId('question-prompt');
+    return this.getByTestId("question-prompt");
   }
 
   get word() {
-    return this.getByTestId('question-word');
+    return this.getByTestId("question-word");
   }
 
   get playAudioButton() {
-    return this.getByTestId('question-play-audio-button');
+    return this.getByTestId("question-play-audio-button");
   }
 
   get revealButton() {
-    return this.getByTestId('question-reveal-button');
+    return this.getByTestId("question-reveal-button");
   }
 
   get answerSection() {
-    return this.getByTestId('question-answer-section');
+    return this.getByTestId("question-answer-section");
   }
 
   get answer() {
-    return this.getByTestId('question-answer');
+    return this.getByTestId("question-answer");
   }
 
   get answerPlayAudioButton() {
-    return this.getByTestId('answer-play-audio-button');
+    return this.getByTestId("answer-play-audio-button");
   }
 
   get examples() {
-    return this.getByTestId('question-examples');
+    return this.getByTestId("question-examples");
   }
 
   get dontKnowButton() {
-    return this.getByTestId('question-answer-dont-know-button');
+    return this.getByTestId("question-answer-dont-know-button");
   }
 
   get knowButton() {
-    return this.getByTestId('question-answer-know-button');
+    return this.getByTestId("question-answer-know-button");
   }
 
   // Actions
   async waitForCard(): Promise<void> {
-    await this.waitForElement('question-card');
+    await this.waitForElement("question-card");
   }
 
   async getQuestionWord(): Promise<string> {
-    return await this.word.textContent() || '';
+    return (await this.word.textContent()) || "";
   }
 
   async getAnswer(): Promise<string> {
-    return await this.answer.textContent() || '';
+    return (await this.answer.textContent()) || "";
   }
 
   async clickPlayAudio(): Promise<void> {
@@ -90,7 +86,7 @@ export class QuestionCardComponent extends BasePage {
 
   async answerQuestion(knew: boolean): Promise<void> {
     await this.clickReveal();
-    
+
     if (knew) {
       await this.clickKnow();
     } else {
@@ -147,8 +143,3 @@ export class QuestionCardComponent extends BasePage {
     await expect(this.knowButton).toBeVisible();
   }
 }
-
-
-
-
-

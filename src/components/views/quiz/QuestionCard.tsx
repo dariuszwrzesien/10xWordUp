@@ -69,11 +69,19 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
           <p className="text-sm text-muted-foreground mb-2" data-testid="question-prompt">
             {direction === "en_pl" ? "Jak przetłumaczysz:" : "Jak powiedzieć po angielsku:"}
           </p>
-          <h2 className="text-4xl font-bold mb-4" data-testid="question-word">{questionWord}</h2>
+          <h2 className="text-4xl font-bold mb-4" data-testid="question-word">
+            {questionWord}
+          </h2>
 
           {/* Audio button - only for English words */}
           {direction === "en_pl" && question.audio && (
-            <Button variant="outline" size="sm" onClick={handlePlayAudio} className="gap-2" data-testid="question-play-audio-button">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePlayAudio}
+              className="gap-2"
+              data-testid="question-play-audio-button"
+            >
               <Volume2 className="h-4 w-4" />
               Posłuchaj wymowy
             </Button>
@@ -92,15 +100,26 @@ export default function QuestionCard({ question, direction, onAnswer }: Question
 
         {/* Answer Section - shown after reveal */}
         {isRevealed && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300" data-testid="question-answer-section">
+          <div
+            className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300"
+            data-testid="question-answer-section"
+          >
             {/* Divider */}
             <div className="border-t pt-6">
               <p className="text-sm text-muted-foreground text-center mb-2">Poprawna odpowiedź:</p>
-              <h3 className="text-3xl font-bold text-center text-primary mb-4" data-testid="question-answer">{answerWord}</h3>
+              <h3 className="text-3xl font-bold text-center text-primary mb-4" data-testid="question-answer">
+                {answerWord}
+              </h3>
               {/* Audio for answer (Polish->English direction) */}
               {direction === "pl_en" && question.audio && (
                 <div className="flex justify-center mb-4">
-                  <Button variant="outline" size="sm" onClick={handlePlayAudio} className="gap-2" data-testid="answer-play-audio-button">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePlayAudio}
+                    className="gap-2"
+                    data-testid="answer-play-audio-button"
+                  >
                     <Volume2 className="h-4 w-4" />
                     Posłuchaj wymowy
                   </Button>

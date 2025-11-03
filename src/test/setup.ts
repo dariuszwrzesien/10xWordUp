@@ -24,17 +24,23 @@ Object.defineProperty(window, "matchMedia", {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   disconnect() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   observe() {}
   takeRecords() {
     return [];
   }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   unobserve() {}
 } as unknown as typeof global.IntersectionObserver;
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   disconnect() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   observe() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   unobserve() {}
 } as unknown as typeof global.ResizeObserver;

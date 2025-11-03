@@ -1,61 +1,57 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 /**
  * Page Object Model for Forgot Password Page
  * Handles password reset request flow
  */
 export class ForgotPasswordPage extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators - Form State
   get formCard() {
-    return this.getByTestId('forgot-password-form-card');
+    return this.getByTestId("forgot-password-form-card");
   }
 
   get form() {
-    return this.getByTestId('forgot-password-form');
+    return this.getByTestId("forgot-password-form");
   }
 
   get emailInput() {
-    return this.getByTestId('forgot-password-email-input');
+    return this.getByTestId("forgot-password-email-input");
   }
 
   get emailError() {
-    return this.getByTestId('forgot-password-email-error');
+    return this.getByTestId("forgot-password-email-error");
   }
 
   get submitButton() {
-    return this.getByTestId('forgot-password-submit-button');
+    return this.getByTestId("forgot-password-submit-button");
   }
 
   get loginLink() {
-    return this.getByTestId('forgot-password-login-link');
+    return this.getByTestId("forgot-password-login-link");
   }
 
   // Locators - Success State
   get successCard() {
-    return this.getByTestId('forgot-password-success-card');
+    return this.getByTestId("forgot-password-success-card");
   }
 
   get successMessage() {
-    return this.getByTestId('forgot-password-success-message');
+    return this.getByTestId("forgot-password-success-message");
   }
 
   get resendButton() {
-    return this.getByTestId('forgot-password-resend-button');
+    return this.getByTestId("forgot-password-resend-button");
   }
 
   get backToLoginLink() {
-    return this.getByTestId('forgot-password-back-to-login-link');
+    return this.getByTestId("forgot-password-back-to-login-link");
   }
 
   // Actions
   async navigate(): Promise<void> {
-    await this.goto('/forgot-password');
-    await this.waitForElement('forgot-password-form-card');
+    await this.goto("/forgot-password");
+    await this.waitForElement("forgot-password-form-card");
   }
 
   async fillEmail(email: string): Promise<void> {
@@ -98,8 +94,3 @@ export class ForgotPasswordPage extends BasePage {
     await expect(this.resendButton).toBeVisible();
   }
 }
-
-
-
-
-

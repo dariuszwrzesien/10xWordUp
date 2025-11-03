@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from './pages';
+import { test, expect } from "@playwright/test";
+import { LoginPage } from "./pages";
 
-test.describe('Login Page', () => {
+test.describe("Login Page", () => {
   let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {
@@ -9,17 +9,17 @@ test.describe('Login Page', () => {
     await loginPage.navigate();
   });
 
-  test('should display login form', async () => {
+  test("should display login form", async () => {
     await loginPage.expectFormVisible();
   });
 
-  test('should show validation error for empty fields', async () => {
+  test("should show validation error for empty fields", async () => {
     await loginPage.clickSubmit();
     // Add your specific validation error checks here
     // Example: await expect(page.getByText(/email is required/i)).toBeVisible();
   });
 
-  test('should login successfully with valid credentials', async ({ page }) => {
+  test("should login successfully with valid credentials", async ({ page }) => {
     const username = process.env.E2E_USERNAME;
     const password = process.env.E2E_PASSWORD;
 
@@ -28,17 +28,15 @@ test.describe('Login Page', () => {
     }
 
     await loginPage.login(username, password);
-    
+
     // Wait for redirect and session establishment
-    await page.waitForURL('/', { 
+    await page.waitForURL("/", {
       timeout: 15000,
-      waitUntil: 'load' 
+      waitUntil: "load",
     });
-    await page.waitForLoadState('networkidle', { timeout: 5000 });
-    
+    await page.waitForLoadState("networkidle", { timeout: 5000 });
+
     // Verify we're on the home page
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL("/");
   });
 });
-
-

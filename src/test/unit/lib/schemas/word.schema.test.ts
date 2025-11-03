@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  createWordSchema,
-  updateWordSchema,
-  getWordsQuerySchema,
-  uuidParamSchema,
-} from "@/lib/schemas/word.schema";
+import { createWordSchema, updateWordSchema, getWordsQuerySchema, uuidParamSchema } from "@/lib/schemas/word.schema";
 import { ZodError } from "zod";
 
 describe("word.schema", () => {
@@ -496,4 +491,3 @@ describe("word.schema", () => {
     });
   });
 });
-

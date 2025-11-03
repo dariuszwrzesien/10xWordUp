@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page } from "@playwright/test";
 
 /**
  * Page Object Model for the Words List Page
@@ -11,11 +11,11 @@ class WordsListPage {
   }
 
   async goto() {
-    await this.page.goto('/words');
+    await this.page.goto("/words");
   }
 
   async getWordItems() {
-    return this.page.getByRole('listitem');
+    return this.page.getByRole("listitem");
   }
 
   async searchWord(term: string) {
@@ -24,11 +24,11 @@ class WordsListPage {
   }
 
   async clickAddWord() {
-    await this.page.getByRole('button', { name: /add word/i }).click();
+    await this.page.getByRole("button", { name: /add word/i }).click();
   }
 }
 
-test.describe('Words List Page', () => {
+test.describe("Words List Page", () => {
   let wordsPage: WordsListPage;
 
   test.beforeEach(async ({ page }) => {
@@ -37,20 +37,18 @@ test.describe('Words List Page', () => {
     // You might want to use a setup with authentication state
   });
 
-  test.skip('should display words list', async ({ page }) => {
+  test.skip("should display words list", async ({ page }) => {
     await wordsPage.goto();
-    
+
     // Check if the page loaded
     await expect(page).toHaveURL(/\/words/);
   });
 
-  test.skip('should filter words by search term', async ({ page }) => {
+  test.skip("should filter words by search term", async () => {
     await wordsPage.goto();
-    
-    await wordsPage.searchWord('test');
-    
+
+    await wordsPage.searchWord("test");
+
     // Add assertions for filtered results
   });
 });
-
-

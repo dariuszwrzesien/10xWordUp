@@ -3,7 +3,7 @@ import { LoginPage, UserMenuComponent } from "../pages";
 
 /**
  * Authentication Flow E2E Tests
- * 
+ *
  * Tests for user authentication scenarios including login success and failure cases.
  */
 
@@ -29,11 +29,11 @@ test.describe("Authentication Flow", () => {
     await loginPage.login(username, password);
 
     // Wait for redirect and session establishment
-    await page.waitForURL('/', { 
+    await page.waitForURL("/", {
       timeout: 15000,
-      waitUntil: 'load' 
+      waitUntil: "load",
     });
-    await page.waitForLoadState('networkidle', { timeout: 5000 });
+    await page.waitForLoadState("networkidle", { timeout: 5000 });
 
     // Verify redirect to main page
     await expect(page).toHaveURL("/");
@@ -63,4 +63,3 @@ test.describe("Authentication Flow", () => {
     });
   });
 });
-

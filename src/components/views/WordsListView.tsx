@@ -97,7 +97,9 @@ function WordsListContent() {
             <p className="text-muted-foreground text-center mb-6 max-w-md">
               Nie udało się załadować słówek. Sprawdź połączenie internetowe i spróbuj ponownie.
             </p>
-            <Button onClick={() => window.location.reload()} data-testid="reload-page-button">Odśwież stronę</Button>
+            <Button onClick={() => window.location.reload()} data-testid="reload-page-button">
+              Odśwież stronę
+            </Button>
           </div>
         </div>
       )}

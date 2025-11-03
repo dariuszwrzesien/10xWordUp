@@ -316,4 +316,3 @@ describe("WordService - Pure Methods", () => {
     });
   });
 });
-

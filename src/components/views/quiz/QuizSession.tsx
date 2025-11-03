@@ -38,11 +38,20 @@ export default function QuizSession({
                 <span className="text-sm font-medium text-muted-foreground" data-testid="quiz-progress-text">
                   Postęp: {answeredCount} / {totalQuestions}
                 </span>
-                <span className="text-sm font-medium text-muted-foreground" data-testid="quiz-progress-percent">{Math.round(progress)}%</span>
+                <span className="text-sm font-medium text-muted-foreground" data-testid="quiz-progress-percent">
+                  {Math.round(progress)}%
+                </span>
               </div>
               <Progress value={progress} className="h-3" data-testid="quiz-progress-bar" />
             </div>
-            <Button variant="ghost" size="sm" onClick={onQuit} className="ml-4" aria-label="Zakończ quiz" data-testid="quiz-quit-button">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onQuit}
+              className="ml-4"
+              aria-label="Zakończ quiz"
+              data-testid="quiz-quit-button"
+            >
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -55,7 +64,9 @@ export default function QuizSession({
                 {settings.direction === "en_pl" ? "Angielski → Polski" : "Polski → Angielski"}
               </span>
             </p>
-            <p className="text-xs text-muted-foreground" data-testid="quiz-question-number">Pytanie nr {currentQuestionIndex + 1} w tej sesji</p>
+            <p className="text-xs text-muted-foreground" data-testid="quiz-question-number">
+              Pytanie nr {currentQuestionIndex + 1} w tej sesji
+            </p>
           </div>
         </div>
 

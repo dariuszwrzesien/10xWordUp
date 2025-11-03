@@ -1,86 +1,82 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from './base.page';
+import { expect } from "@playwright/test";
+import { BasePage } from "./base.page";
 
 /**
  * Page Object Model for Reset Password Page
  * Handles password reset with token
  */
 export class ResetPasswordPage extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators - Checking State
   get checkingCard() {
-    return this.getByTestId('reset-password-checking-card');
+    return this.getByTestId("reset-password-checking-card");
   }
 
   // Locators - Invalid Token State
   get invalidTokenCard() {
-    return this.getByTestId('reset-password-invalid-token-card');
+    return this.getByTestId("reset-password-invalid-token-card");
   }
 
   get invalidTokenMessage() {
-    return this.getByTestId('reset-password-invalid-token-message');
+    return this.getByTestId("reset-password-invalid-token-message");
   }
 
   get requestNewLinkButton() {
-    return this.getByTestId('reset-password-request-new-link-button');
+    return this.getByTestId("reset-password-request-new-link-button");
   }
 
   // Locators - Form State
   get formCard() {
-    return this.getByTestId('reset-password-form-card');
+    return this.getByTestId("reset-password-form-card");
   }
 
   get form() {
-    return this.getByTestId('reset-password-form');
+    return this.getByTestId("reset-password-form");
   }
 
   get passwordInput() {
-    return this.getByTestId('reset-password-password-input');
+    return this.getByTestId("reset-password-password-input");
   }
 
   get passwordError() {
-    return this.getByTestId('reset-password-password-error');
+    return this.getByTestId("reset-password-password-error");
   }
 
   get confirmPasswordInput() {
-    return this.getByTestId('reset-password-confirm-password-input');
+    return this.getByTestId("reset-password-confirm-password-input");
   }
 
   get confirmPasswordError() {
-    return this.getByTestId('reset-password-confirm-password-error');
+    return this.getByTestId("reset-password-confirm-password-error");
   }
 
   get submitButton() {
-    return this.getByTestId('reset-password-submit-button');
+    return this.getByTestId("reset-password-submit-button");
   }
 
   get loginLink() {
-    return this.getByTestId('reset-password-login-link');
+    return this.getByTestId("reset-password-login-link");
   }
 
   get backToLoginLink() {
-    return this.getByTestId('reset-password-back-to-login-link');
+    return this.getByTestId("reset-password-back-to-login-link");
   }
 
   // Locators - Success State
   get successCard() {
-    return this.getByTestId('reset-password-success-card');
+    return this.getByTestId("reset-password-success-card");
   }
 
   get successMessage() {
-    return this.getByTestId('reset-password-success-message');
+    return this.getByTestId("reset-password-success-message");
   }
 
   get goToAppButton() {
-    return this.getByTestId('reset-password-go-to-app-button');
+    return this.getByTestId("reset-password-go-to-app-button");
   }
 
   // Actions
   async navigate(token?: string): Promise<void> {
-    const url = token ? `/reset-password?token=${token}` : '/reset-password';
+    const url = token ? `/reset-password?token=${token}` : "/reset-password";
     await this.goto(url);
   }
 
@@ -146,8 +142,3 @@ export class ResetPasswordPage extends BasePage {
     await expect(this.goToAppButton).toBeVisible();
   }
 }
-
-
-
-
-

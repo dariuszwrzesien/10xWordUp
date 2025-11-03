@@ -1,26 +1,22 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect, Locator } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Tag Filter
  * Handles filtering words by tags
  */
 export class TagFilterComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get filterTrigger() {
-    return this.getByTestId('tag-filter-trigger');
+    return this.getByTestId("tag-filter-trigger");
   }
 
   get filterContent() {
-    return this.getByTestId('tag-filter-content');
+    return this.getByTestId("tag-filter-content");
   }
 
   get allWordsOption() {
-    return this.getByTestId('tag-filter-all');
+    return this.getByTestId("tag-filter-all");
   }
 
   // Dynamic locators
@@ -31,11 +27,11 @@ export class TagFilterComponent extends BasePage {
   // Actions
   async openFilter(): Promise<void> {
     await this.filterTrigger.click();
-    await this.waitForElement('tag-filter-content');
+    await this.waitForElement("tag-filter-content");
   }
 
   async closeFilter(): Promise<void> {
-    await this.page.keyboard.press('Escape');
+    await this.page.keyboard.press("Escape");
   }
 
   async selectAllWords(): Promise<void> {
@@ -49,7 +45,7 @@ export class TagFilterComponent extends BasePage {
   }
 
   async getSelectedFilterText(): Promise<string> {
-    return await this.filterTrigger.textContent() || '';
+    return (await this.filterTrigger.textContent()) || "";
   }
 
   // Assertions
@@ -75,5 +71,3 @@ export class TagFilterComponent extends BasePage {
     await expect(this.filterTrigger).toContainText(text);
   }
 }
-
-

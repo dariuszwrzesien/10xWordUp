@@ -147,6 +147,7 @@ describe("error.helper", () => {
   });
 
   describe("internalServerError", () => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     beforeEach(() => {
@@ -272,9 +273,7 @@ describe("error.helper", () => {
 
     it('should map "Email not confirmed" to Polish message', () => {
       const error = { message: "Email not confirmed" };
-      expect(mapSupabaseAuthError(error)).toBe(
-        "Adres e-mail nie został potwierdzony. Sprawdź swoją skrzynkę e-mail."
-      );
+      expect(mapSupabaseAuthError(error)).toBe("Adres e-mail nie został potwierdzony. Sprawdź swoją skrzynkę e-mail.");
     });
 
     it('should map "User already registered" to Polish message', () => {
@@ -312,7 +311,7 @@ describe("error.helper", () => {
       expect(mapSupabaseAuthError(error)).toBe("Nowe hasło nie może być takie samo jak stare");
     });
 
-    it('should map expired reset link errors to Polish message', () => {
+    it("should map expired reset link errors to Polish message", () => {
       const error1 = { message: "For security purposes, you can only request this once every 60 seconds" };
       expect(mapSupabaseAuthError(error1)).toBe("Link resetujący wygasł. Poproś o nowy link.");
 
@@ -346,4 +345,3 @@ describe("error.helper", () => {
     });
   });
 });
-

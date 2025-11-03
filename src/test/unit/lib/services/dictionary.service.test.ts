@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { DictionaryService, type EnrichedWordData } from "@/lib/services/dictionary.service";
+import { DictionaryService } from "@/lib/services/dictionary.service";
 
 describe("DictionaryService", () => {
   let service: DictionaryService;
@@ -118,6 +118,7 @@ describe("DictionaryService", () => {
     });
 
     it("should return null on API errors", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
@@ -125,10 +126,7 @@ describe("DictionaryService", () => {
       const result = await service.fetchWordData("test");
 
       expect(result).toBeNull();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error fetching dictionary data:",
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error fetching dictionary data:", expect.any(Error));
 
       consoleErrorSpy.mockRestore();
     });
@@ -330,25 +328,21 @@ describe("DictionaryService", () => {
 
       await service.fetchWordData("test word");
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringContaining("test%20word"),
-        expect.any(Object)
-      );
+      expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("test%20word"), expect.any(Object));
     });
 
     it("should handle AbortError on timeout", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      global.fetch = vi.fn().mockRejectedValue(
-        Object.assign(new Error("The operation was aborted"), { name: "AbortError" })
-      );
+      global.fetch = vi
+        .fn()
+        .mockRejectedValue(Object.assign(new Error("The operation was aborted"), { name: "AbortError" }));
 
       const result = await service.fetchWordData("test");
 
       expect(result).toBeNull();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('timeout for word "test"')
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('timeout for word "test"'));
 
       consoleErrorSpy.mockRestore();
     });
@@ -636,4 +630,3 @@ describe("DictionaryService", () => {
     });
   });
 });
-

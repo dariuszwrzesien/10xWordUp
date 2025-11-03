@@ -90,7 +90,13 @@ export default function RegisterForm() {
                     Adres e-mail
                   </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} data-testid="register-email-input" />
+                    <Input
+                      type="email"
+                      placeholder="twoj@email.com"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="register-email-input"
+                    />
                   </FormControl>
                   <FormMessage data-testid="register-email-error" />
                 </FormItem>
@@ -107,7 +113,13 @@ export default function RegisterForm() {
                     Hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} data-testid="register-password-input" />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="register-password-input"
+                    />
                   </FormControl>
                   <FormDescription>Minimum 8 znaków</FormDescription>
                   <FormMessage data-testid="register-password-error" />
@@ -125,14 +137,26 @@ export default function RegisterForm() {
                     Potwierdź hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} data-testid="register-confirm-password-input" />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="register-confirm-password-input"
+                    />
                   </FormControl>
                   <FormMessage data-testid="register-confirm-password-error" />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="register-submit-button">
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={isLoading}
+              data-testid="register-submit-button"
+            >
               {isLoading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />

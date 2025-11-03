@@ -1,74 +1,70 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { BasePage } from '../base.page';
+import { expect, Locator } from "@playwright/test";
+import { BasePage } from "../base.page";
 
 /**
  * Component Object Model for Quiz Setup
  * Handles quiz configuration before starting
  */
 export class QuizSetupComponent extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
-
   // Locators
   get setupContainer() {
-    return this.getByTestId('quiz-setup');
+    return this.getByTestId("quiz-setup");
   }
 
   get backToWordsButton() {
-    return this.getByTestId('quiz-back-to-words-button');
+    return this.getByTestId("quiz-back-to-words-button");
   }
 
   get setupCard() {
-    return this.getByTestId('quiz-setup-card');
+    return this.getByTestId("quiz-setup-card");
   }
 
   // Direction options
   get directionEnPl() {
-    return this.getByTestId('quiz-direction-en-pl');
+    return this.getByTestId("quiz-direction-en-pl");
   }
 
   get directionPlEn() {
-    return this.getByTestId('quiz-direction-pl-en');
+    return this.getByTestId("quiz-direction-pl-en");
   }
 
   // Scope options
   get scopeAll() {
-    return this.getByTestId('quiz-scope-all');
+    return this.getByTestId("quiz-scope-all");
   }
 
   get scopeTag() {
-    return this.getByTestId('quiz-scope-tag');
+    return this.getByTestId("quiz-scope-tag");
   }
 
   // Tag selector
   get tagSelector() {
-    return this.getByTestId('quiz-tag-selector');
+    return this.getByTestId("quiz-tag-selector");
   }
 
   get tagsLoading() {
-    return this.getByTestId('quiz-tags-loading');
+    return this.getByTestId("quiz-tags-loading");
   }
 
   get noTagsMessage() {
-    return this.getByTestId('quiz-no-tags-message');
+    return this.getByTestId("quiz-no-tags-message");
   }
 
   get tagSelectTrigger() {
-    return this.getByTestId('quiz-tag-select-trigger');
+    return this.getByTestId("quiz-tag-select-trigger");
   }
 
   get tagSelectContent() {
-    return this.getByTestId('quiz-tag-select-content');
+    return this.getByTestId("quiz-tag-select-content");
   }
 
   // Start quiz
   get startButton() {
-    return this.getByTestId('quiz-start-button');
+    return this.getByTestId("quiz-start-button");
   }
 
   get validationMessage() {
-    return this.getByTestId('quiz-validation-message');
+    return this.getByTestId("quiz-validation-message");
   }
 
   // Dynamic locators
@@ -78,7 +74,7 @@ export class QuizSetupComponent extends BasePage {
 
   // Actions
   async waitForSetup(): Promise<void> {
-    await this.waitForElement('quiz-setup');
+    await this.waitForElement("quiz-setup");
   }
 
   async clickBackToWords(): Promise<void> {
@@ -111,7 +107,7 @@ export class QuizSetupComponent extends BasePage {
 
   async openTagSelector(): Promise<void> {
     await this.tagSelectTrigger.click();
-    await this.waitForElement('quiz-tag-select-content');
+    await this.waitForElement("quiz-tag-select-content");
   }
 
   async selectTag(tagName: string): Promise<void> {
@@ -123,25 +119,21 @@ export class QuizSetupComponent extends BasePage {
     // Ensure button is enabled before clicking
     await expect(this.startButton).toBeEnabled();
     await this.startButton.click();
-    
+
     // Wait for setup to start disappearing (transition to loading state)
-    await this.setupContainer.waitFor({ state: 'hidden', timeout: 5000 });
+    await this.setupContainer.waitFor({ state: "hidden", timeout: 5000 });
   }
 
-  async setupQuiz(
-    direction: 'en-pl' | 'pl-en',
-    scope: 'all' | 'tag',
-    tagName?: string
-  ): Promise<void> {
+  async setupQuiz(direction: "en-pl" | "pl-en", scope: "all" | "tag", tagName?: string): Promise<void> {
     // Select direction
-    if (direction === 'en-pl') {
+    if (direction === "en-pl") {
       await this.selectDirectionEnPl();
     } else {
       await this.selectDirectionPlEn();
     }
 
     // Select scope
-    if (scope === 'all') {
+    if (scope === "all") {
       await this.selectScopeAll();
     } else {
       await this.selectScopeTag();
@@ -159,18 +151,18 @@ export class QuizSetupComponent extends BasePage {
     await expect(this.setupCard).toBeVisible();
   }
 
-  async expectDirectionSelected(direction: 'en-pl' | 'pl-en'): Promise<void> {
-    const directionContainer = direction === 'en-pl' ? this.directionEnPl : this.directionPlEn;
+  async expectDirectionSelected(direction: "en-pl" | "pl-en"): Promise<void> {
+    const directionContainer = direction === "en-pl" ? this.directionEnPl : this.directionPlEn;
     // Find the RadioGroupItem (button with role="radio") inside the container
     const radioButton = directionContainer.locator('button[role="radio"]');
-    await expect(radioButton).toHaveAttribute('data-state', 'checked');
+    await expect(radioButton).toHaveAttribute("data-state", "checked");
   }
 
-  async expectScopeSelected(scope: 'all' | 'tag'): Promise<void> {
-    const scopeContainer = scope === 'all' ? this.scopeAll : this.scopeTag;
+  async expectScopeSelected(scope: "all" | "tag"): Promise<void> {
+    const scopeContainer = scope === "all" ? this.scopeAll : this.scopeTag;
     // Find the RadioGroupItem (button with role="radio") inside the container
     const radioButton = scopeContainer.locator('button[role="radio"]');
-    await expect(radioButton).toHaveAttribute('data-state', 'checked');
+    await expect(radioButton).toHaveAttribute("data-state", "checked");
   }
 
   async expectTagSelectorVisible(): Promise<void> {
@@ -204,7 +196,3 @@ export class QuizSetupComponent extends BasePage {
     await expect(this.startButton).toBeEnabled();
   }
 }
-
-
-
-

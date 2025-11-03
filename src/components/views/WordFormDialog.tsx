@@ -116,7 +116,9 @@ export default function WordFormDialog({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[525px]" data-testid="word-form-dialog">
         <DialogHeader>
-          <DialogTitle data-testid="word-form-dialog-title">{wordToEdit ? "Edytuj słówko" : "Dodaj nowe słówko"}</DialogTitle>
+          <DialogTitle data-testid="word-form-dialog-title">
+            {wordToEdit ? "Edytuj słówko" : "Dodaj nowe słówko"}
+          </DialogTitle>
           <DialogDescription>
             {wordToEdit
               ? "Wprowadź zmiany w słówku poniżej."
@@ -233,7 +235,13 @@ export default function WordFormDialog({
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving} data-testid="word-form-cancel-button">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                disabled={isSaving}
+                data-testid="word-form-cancel-button"
+              >
                 Anuluj
               </Button>
               <Button type="submit" disabled={isSaving} data-testid="word-form-submit-button">

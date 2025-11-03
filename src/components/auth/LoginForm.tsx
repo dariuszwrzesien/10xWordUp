@@ -77,7 +77,13 @@ export default function LoginForm() {
                     Adres e-mail
                   </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="twoj@email.com" {...field} disabled={isLoading} data-testid="login-email-input" />
+                    <Input
+                      type="email"
+                      placeholder="twoj@email.com"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="login-email-input"
+                    />
                   </FormControl>
                   <FormMessage data-testid="login-email-error" />
                 </FormItem>
@@ -94,7 +100,13 @@ export default function LoginForm() {
                     Hasło
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} data-testid="login-password-input" />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      disabled={isLoading}
+                      data-testid="login-password-input"
+                    />
                   </FormControl>
                   <FormMessage data-testid="login-password-error" />
                 </FormItem>
