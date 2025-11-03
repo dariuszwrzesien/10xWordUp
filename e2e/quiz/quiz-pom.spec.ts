@@ -7,7 +7,7 @@ import {
   QuestionCardComponent,
   QuizSummaryComponent,
 } from "../pages";
-import { seedQuizTestData } from "../helpers/db-seed.helper";
+import { seedQuizTestData, seedWords } from "../helpers/db-seed.helper";
 import { cleanupUserData } from "../helpers/db-cleanup.helper";
 
 /**
@@ -306,18 +306,102 @@ test.describe("Quiz - Setup and Configuration", () => {
     expect(progressText).toMatch(/Postęp: 0 \/ \d+/);
   });
 
-  test.skip("TC-QUIZ-004: Question count exceeds available words", async ({ page }) => {
-    // This test requires specific number of words in database
+  /**
+   * TC-QUIZ-004: Próba rozpoczęcia quizu - liczba pytań większa niż dostępnych słówek
+   * 
+   * Note: The current implementation doesn't have a "number of questions" input.
+   * Instead, it uses ALL available words automatically. This test verifies that
+   * the quiz works correctly when user has very few words (3 words).
+   * 
+   * Preconditions: Użytkownik ma tylko 3 słówka
+   * 
+   * Steps:
+   * 1. Użytkownik otwiera `/quiz`
+   * 2. Użytkownik konfiguruje quiz (kierunek: EN→PL, zakres: wszystkie słówka)
+   * 3. Użytkownik klika "Rozpocznij Quiz"
+   * 4. Quiz automatycznie używa wszystkich dostępnych słówek (3 pytania)
+   * 
+   * Expected Result:
+   * - Quiz rozpoczyna się z 3 pytaniami (wszystkie dostępne słówka)
+   * - Brak błędu
+   * - Progress pokazuje: "Postęp: 0 / 3"
+   * 
+   * Verification:
+   * - Quiz ma tyle pytań, ile jest dostępnych słówek (3)
+   * - Session state is active
+   * - Progress tracking works correctly
+   */
+  authenticatedTest("TC-QUIZ-004: Quiz with limited words (3 words available)", async ({ page, authenticatedUser }) => {
+    // This test requires exactly 3 words in database
+    const userId = process.env.E2E_USERNAME_ID;
+    if (!userId) {
+      throw new Error("E2E_USERNAME_ID must be set in .env.test");
+    }
+
+    const config = {
+      url: process.env.SUPABASE_URL!,
+      key: process.env.SUPABASE_KEY!,
+    };
+
+    // Clean up all existing data
+    await cleanupUserData(userId, config);
+
+    // Seed exactly 3 words (no tags needed for this test)
+    const testWords = [
+      { word: "hello", translation: "cześć" },
+      { word: "goodbye", translation: "do widzenia" },
+      { word: "thank you", translation: "dziękuję" },
+    ];
+    await seedWords(userId, testWords, config);
+
     const quizPage = new QuizPage(page);
     const quizSetup = new QuizSetupComponent(page);
+    const quizSession = new QuizSessionComponent(page);
 
+    // Step 1: Navigate to /quiz page
     await quizPage.navigate();
+    
+    // Wait for setup to load
+    await quizSetup.expectSetupVisible();
 
-    // Try to setup quiz with more questions than words available
-    await quizSetup.setupQuiz("en-pl", "all");
+    // Step 2: Configure quiz - select direction EN→PL
+    await quizSetup.selectDirectionEnPl();
+    
+    // Select scope "all words"
+    await quizSetup.selectScopeAll();
+    
+    // Verify start button is enabled
+    await quizSetup.expectStartButtonEnabled();
 
-    // Expect validation message
-    await quizSetup.expectValidationMessage();
+    // Step 3: Click "Start Quiz"
+    await quizSetup.clickStart();
+
+    // Step 4: Expected Result - Quiz should start with 3 questions
+    // Wait for state transition from "setup" to "loading" to "session"
+    await quizSession.waitForSession();
+    
+    // Verify quiz session is now visible
+    await quizSession.expectSessionVisible();
+    
+    // Verify session state is active
+    expect(await quizPage.isSessionState()).toBe(true);
+    
+    // Verify setup is no longer visible
+    expect(await quizPage.isSetupState()).toBe(false);
+    
+    // Verify progress shows 3 total questions (all available words)
+    const progressText = await quizSession.getProgressText();
+    expect(progressText).toBe("Postęp: 0 / 3");
+    
+    // Verify direction is displayed correctly
+    await expect(quizSession.directionDisplay).toBeVisible();
+    await quizSession.expectDirection("Angielski → Polski");
+    
+    // Verify all session components are visible
+    await expect(quizSession.progressBar).toBeVisible();
+    await expect(quizSession.progressText).toBeVisible();
+    await expect(quizSession.questionNumber).toBeVisible();
+    await expect(quizSession.quitButton).toBeVisible();
   });
 });
 
