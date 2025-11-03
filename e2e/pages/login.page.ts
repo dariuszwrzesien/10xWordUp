@@ -80,12 +80,19 @@ export class LoginPage extends BasePage {
     
     // Wait for navigation after successful login
     if (expectSuccess) {
-      // The frontend uses setTimeout with 500ms delay before redirect
-      // Wait for the URL change with enough timeout to handle the delay
-      await this.page.waitForURL("/", { 
-        timeout: 15000,
-        waitUntil: 'networkidle' // Wait for network to be idle to ensure page is fully loaded
+      // Wait for the success toast to appear (indicates API success)
+      await this.page.getByText(/logowanie pomyślne/i).waitFor({ 
+        state: 'visible',
+        timeout: 5000 
       });
+      
+      // The frontend uses setTimeout with 500ms delay before redirect
+      // Wait a bit to ensure the setTimeout has triggered
+      await this.page.waitForTimeout(600);
+      
+      // Now wait for the actual navigation to complete
+      // Note: We don't wait for URL change here anymore - it's done in the fixture
+      // This method now only ensures the login API call succeeded
     }
   }
 

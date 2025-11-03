@@ -1,4 +1,4 @@
-Dla scenariusza testowego "TC-AUTH-008: Successful logout" z pliku @64-scenariusze-testowania-e2e.md
+Dla scenariusza testowego "TC-QUIZ-001: Configure and start quiz" z pliku @64-scenariusze-testowania-e2e.md
 
 Sprawdź, czy test E2E dla tego scenariusza jest już zaimplementowany.
 Jeśli test istnieje — nie twórz nowego.

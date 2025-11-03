@@ -86,19 +86,27 @@ export class QuizSetupComponent extends BasePage {
   }
 
   async selectDirectionEnPl(): Promise<void> {
-    await this.directionEnPl.click();
+    // Click the radio button itself, not the container
+    const radioButton = this.directionEnPl.locator('button[role="radio"]');
+    await radioButton.click();
   }
 
   async selectDirectionPlEn(): Promise<void> {
-    await this.directionPlEn.click();
+    // Click the radio button itself, not the container
+    const radioButton = this.directionPlEn.locator('button[role="radio"]');
+    await radioButton.click();
   }
 
   async selectScopeAll(): Promise<void> {
-    await this.scopeAll.click();
+    // Click the radio button itself, not the container
+    const radioButton = this.scopeAll.locator('button[role="radio"]');
+    await radioButton.click();
   }
 
   async selectScopeTag(): Promise<void> {
-    await this.scopeTag.click();
+    // Click the radio button itself, not the container
+    const radioButton = this.scopeTag.locator('button[role="radio"]');
+    await radioButton.click();
   }
 
   async openTagSelector(): Promise<void> {
@@ -112,7 +120,12 @@ export class QuizSetupComponent extends BasePage {
   }
 
   async clickStart(): Promise<void> {
+    // Ensure button is enabled before clicking
+    await expect(this.startButton).toBeEnabled();
     await this.startButton.click();
+    
+    // Wait for setup to start disappearing (transition to loading state)
+    await this.setupContainer.waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   async setupQuiz(
@@ -147,13 +160,17 @@ export class QuizSetupComponent extends BasePage {
   }
 
   async expectDirectionSelected(direction: 'en-pl' | 'pl-en'): Promise<void> {
-    const directionElement = direction === 'en-pl' ? this.directionEnPl : this.directionPlEn;
-    await expect(directionElement).toHaveAttribute('data-state', 'checked');
+    const directionContainer = direction === 'en-pl' ? this.directionEnPl : this.directionPlEn;
+    // Find the RadioGroupItem (button with role="radio") inside the container
+    const radioButton = directionContainer.locator('button[role="radio"]');
+    await expect(radioButton).toHaveAttribute('data-state', 'checked');
   }
 
   async expectScopeSelected(scope: 'all' | 'tag'): Promise<void> {
-    const scopeElement = scope === 'all' ? this.scopeAll : this.scopeTag;
-    await expect(scopeElement).toHaveAttribute('data-state', 'checked');
+    const scopeContainer = scope === 'all' ? this.scopeAll : this.scopeTag;
+    // Find the RadioGroupItem (button with role="radio") inside the container
+    const radioButton = scopeContainer.locator('button[role="radio"]');
+    await expect(radioButton).toHaveAttribute('data-state', 'checked');
   }
 
   async expectTagSelectorVisible(): Promise<void> {

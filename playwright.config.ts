@@ -23,7 +23,11 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* IMPORTANT: Using 1 worker to prevent race conditions with shared test user data.
+   * All tests use the same E2E_USERNAME_ID, so parallel execution causes data conflicts.
+   * TODO: Implement per-test user isolation or database locking for parallel execution.
+   */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

@@ -45,7 +45,20 @@ export class QuizSessionComponent extends BasePage {
 
   // Actions
   async waitForSession(): Promise<void> {
-    await this.waitForElement('quiz-session');
+    // Wait for loading spinner to disappear first (if present)
+    const loadingSpinner = this.page.locator('[data-testid], h3').filter({ hasText: 'Przygotowuję quiz...' });
+    try {
+      await loadingSpinner.waitFor({ state: 'hidden', timeout: 5000 });
+    } catch {
+      // Loading spinner might not appear if state transition is fast
+    }
+    
+    // Wait for session with longer timeout as it involves API calls and state transitions
+    // Use a more robust selector that waits for the element to be attached and visible
+    await this.page.waitForSelector('[data-testid="quiz-session"]', { 
+      state: 'visible',
+      timeout: 15000 // Longer timeout to account for API fetch, state transitions, and React hydration
+    });
   }
 
   async clickQuit(): Promise<void> {
@@ -90,6 +103,7 @@ export class QuizSessionComponent extends BasePage {
     await expect(this.questionNumber).toContainText(`${number}`);
   }
 }
+
 
 
 

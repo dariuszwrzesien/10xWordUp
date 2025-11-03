@@ -146,6 +146,7 @@ test.afterEach(async () => {
 - **Full Documentation:** [`docs/68-implementacja-page-object-model.md`](../docs/68-implementacja-page-object-model.md)
 - **Implementation Summary:** [`docs/69-podsumowanie-implementacji-pom.md`](../docs/69-podsumowanie-implementacji-pom.md)
 - **Database Teardown Summary:** [`docs/76-podsumowanie-implementacji-teardown.md`](../docs/76-podsumowanie-implementacji-teardown.md)
+- **Test Isolation Best Practices:** [`docs/77-izolacja-testow-e2e-best-practices.md`](../docs/77-izolacja-testow-e2e-best-practices.md) ⭐ **NEW**
 - **POM Classes Details:** [`pages/README.md`](pages/README.md)
 - **Cleanup Helpers:** [`helpers/README.md`](helpers/README.md)
 
@@ -213,7 +214,7 @@ await pagination.clickNext();
 ```bash
 E2E_USERNAME=your-test-user@example.com
 E2E_PASSWORD=your-secure-password
-E2E_USERNAME_ID=optional-uuid
+E2E_USERNAME_ID=your-user-uuid  # Required for test isolation!
 ```
 
 2. **Start Test Server**:
@@ -224,8 +225,11 @@ npm run dev:e2e
 ### Running Tests
 
 ```bash
-# Run all E2E tests
+# Run all E2E tests (parallel by default)
 npm run test:e2e
+
+# Run tests sequentially (for debugging isolation issues)
+npm run test:e2e -- --workers=1
 
 # Run specific test file
 npx playwright test e2e/auth/login-pom.spec.ts
@@ -239,6 +243,23 @@ npx playwright test --project=chromium
 # Debug mode
 npx playwright test --debug
 ```
+
+### ⚠️ Test Isolation
+
+**Tests are configured to run in parallel** (`fullyParallel: true`). This is fast but requires proper test isolation:
+
+✅ **What's implemented:**
+- Each test gets isolated browser context (no shared cookies/localStorage)
+- Database cleanup before/after tests
+- No race conditions in authentication
+- Tests can run safely in parallel
+
+❌ **Common issues:**
+- "Element not found" errors when tests run in parallel → Fixed with proper cleanup
+- Login timeouts → Fixed with isolated browser contexts
+- Data conflicts → Fixed with beforeEach/afterEach cleanup
+
+📖 **Read more:** [`docs/77-izolacja-testow-e2e-best-practices.md`](../docs/77-izolacja-testow-e2e-best-practices.md)
 
 ## 🔐 Environment Variables
 

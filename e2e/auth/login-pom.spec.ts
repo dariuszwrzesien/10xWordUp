@@ -5,9 +5,17 @@ import { LoginPage, WordsListPage, UserMenuComponent } from '../pages';
 /**
  * Authentication E2E Tests using Page Object Model
  * Based on scenarios from docs/64-scenariusze-testowania-e2e.md
+ * 
+ * Test Isolation Strategy:
+ * - Login/Logout tests use test.use({ storageState: { cookies: [], origins: [] } })
+ *   to ensure each test starts with no authentication state
+ * - This prevents auth state from leaking between parallel test runs
+ * - Each test gets a fresh browser context with clean storage
  */
 
 test.describe('Authentication - Login Flow', () => {
+  // Ensure isolated state for each test - no auth cookies/storage
+  test.use({ storageState: { cookies: [], origins: [] } });
   
   test('TC-AUTH-005: Successful login with valid credentials', async ({ page }) => {
     const username = process.env.E2E_USERNAME;
@@ -27,6 +35,13 @@ test.describe('Authentication - Login Flow', () => {
 
     // Perform login
     await loginPage.login(username, password);
+
+    // Wait for redirect and session establishment
+    await page.waitForURL('/', { 
+      timeout: 15000,
+      waitUntil: 'load' 
+    });
+    await page.waitForLoadState('networkidle', { timeout: 5000 });
 
     // Verify successful login
     await expect(page).toHaveURL('/');
@@ -126,6 +141,28 @@ test.describe('Authentication - Navigation Links', () => {
 });
 
 test.describe('Authentication - Complete User Flow', () => {
+  // Ensure isolated state for each test - fresh browser context with no stored auth
+  test.use({ storageState: { cookies: [], origins: [] } });
+  
+  // Ensure clean state before each test
+  test.beforeEach(async ({ context, page }) => {
+    // Clear all cookies and storage to ensure clean state
+    await context.clearCookies();
+    
+    // Navigate to a page to execute storage clearing
+    await page.goto('/login');
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+    
+    // Ensure cookies are really cleared by reloading
+    await page.reload();
+    
+    // Wait for page to fully load after reload
+    await page.waitForLoadState('networkidle');
+  });
+
   test('Full workflow: Login -> Add Word -> Logout', async ({ page, context }) => {
     const username = process.env.E2E_USERNAME;
     const password = process.env.E2E_PASSWORD;
@@ -134,16 +171,12 @@ test.describe('Authentication - Complete User Flow', () => {
       throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
     }
 
-    // Ensure clean state - clear all cookies and storage
-    await context.clearCookies();
-    await page.goto('/');
-
-    // Login
+    // We're already on /login from beforeEach
+    // Create page objects
     const loginPage = new LoginPage(page);
-    await loginPage.navigate();
     
-    // Wait a bit for the page to settle
-    await page.waitForTimeout(500);
+    // Wait for login form to be visible (ensure we're not being redirected)
+    await loginPage.expectFormVisible();
     
     await loginPage.login(username, password);
 

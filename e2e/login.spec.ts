@@ -29,6 +29,13 @@ test.describe('Login Page', () => {
 
     await loginPage.login(username, password);
     
+    // Wait for redirect and session establishment
+    await page.waitForURL('/', { 
+      timeout: 15000,
+      waitUntil: 'load' 
+    });
+    await page.waitForLoadState('networkidle', { timeout: 5000 });
+    
     // Verify we're on the home page
     await expect(page).toHaveURL('/');
   });

@@ -7,16 +7,24 @@ import {
   TagFilterComponent,
   WordsPaginationComponent 
 } from '../pages';
+import { cleanupUserData } from '../helpers/db-cleanup.helper';
 
 /**
  * Words Management E2E Tests using Page Object Model
  * Based on scenarios from docs/64-scenariusze-testowania-e2e.md
  * 
- * Note: These tests require authenticated user state
- * Use fixtures/auth.fixture.ts for authentication
+ * Test Isolation Strategy:
+ * - Each test suite uses authenticatedTest fixture for isolated browser context
+ * - Tests that require empty state clean up data before running
+ * - Tests that create data clean up after running
+ * - Tests use 1 worker globally to prevent race conditions with shared test user
  */
 
 test.describe('Words List - Display and Navigation', () => {
+  /**
+   * This suite tests display and navigation features
+   * TC-WORDS-001 requires empty state, so we clean before that specific test
+   */
 
   authenticatedTest.beforeEach(async ({ page, authenticatedUser }) => {
     const wordsListPage = new WordsListPage(page);
@@ -24,6 +32,24 @@ test.describe('Words List - Display and Navigation', () => {
   });
 
   authenticatedTest('TC-WORDS-001: Display empty state for new user', async ({ page, authenticatedUser }) => {
+    // This test requires empty state - clean up before running
+    const userId = process.env.E2E_USERNAME_ID;
+    if (!userId) {
+      throw new Error("E2E_USERNAME_ID must be set in .env.test");
+    }
+
+    const config = {
+      url: process.env.SUPABASE_URL!,
+      key: process.env.SUPABASE_KEY!,
+    };
+
+    // Clean up all user data to ensure empty state
+    await cleanupUserData(userId, config);
+
+    // Reload page to see empty state
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
     const wordsListPage = new WordsListPage(page);
     await wordsListPage.expectEmptyState();
   });
@@ -133,11 +159,29 @@ test.describe('Words List - Display and Navigation', () => {
 });
 
 test.describe('Words Management - Create', () => {
+  /**
+   * This suite creates new words - we need cleanup after each test
+   * to prevent data from affecting other tests running in parallel
+   */
 
   authenticatedTest.beforeEach(async ({ page, authenticatedUser }) => {
     const wordsListPage = new WordsListPage(page);
     await wordsListPage.navigate();
     await wordsListPage.waitForWordsToLoad();
+  });
+
+  authenticatedTest.afterEach(async () => {
+    // Clean up created data after each test
+    // Note: afterEach hooks cannot use fixture parameters
+    const userId = process.env.E2E_USERNAME_ID;
+    if (!userId) return;
+
+    const config = {
+      url: process.env.SUPABASE_URL!,
+      key: process.env.SUPABASE_KEY!,
+    };
+
+    await cleanupUserData(userId, config);
   });
 
   authenticatedTest('TC-WORDS-005: Add new word with tags', async ({ page, authenticatedUser }) => {
