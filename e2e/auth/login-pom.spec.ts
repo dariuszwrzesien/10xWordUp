@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { test as authenticatedTest } from '../fixtures/auth.fixture';
 import { LoginPage, WordsListPage, UserMenuComponent } from '../pages';
 
 /**
@@ -63,24 +64,43 @@ test.describe('Authentication - Login Flow', () => {
 
 test.describe('Authentication - Logout Flow', () => {
 
-  test.skip('TC-AUTH-008: Successful logout', async ({ page }) => {
-    // This test requires authenticated state
-    // Use auth.fixture.ts to setup authenticated user
+  authenticatedTest('TC-AUTH-008: Successful logout', async ({ page, authenticatedUser }) => {
+    // Scenario: TC-AUTH-008 from docs/64-scenariusze-testowania-e2e.md
+    // Steps:
+    // 1. User is logged in and on dashboard
+    // 2. User clicks on UserMenu in header
+    // 3. User selects "Logout" from dropdown menu
+    // 4. System calls /api/auth/logout endpoint
+    // 5. System removes session in Supabase Auth
+    // 6. Middleware redirects to /login
+    //
+    // Expected results:
+    // - Toast notification: "Wylogowano pomyślnie" (if implemented)
+    // - Session token is removed
+    // - User is redirected to /login
+    // - No access to protected routes without login
     
-    const wordsListPage = new WordsListPage(page);
     const userMenu = new UserMenuComponent(page);
     const loginPage = new LoginPage(page);
 
-    // Navigate to dashboard (user should be logged in)
-    await wordsListPage.navigate();
+    // Verify user is on dashboard and logged in
+    await expect(page).toHaveURL('/');
     await userMenu.expectMenuVisible();
+    await userMenu.expectUserEmail(authenticatedUser.email);
 
-    // Perform logout
+    // Perform logout through user menu
     await userMenu.logout();
 
-    // Verify redirect to login
+    // Verify redirect to login page
     await expect(page).toHaveURL('/login');
     await loginPage.expectFormVisible();
+
+    // Verify no UserMenu is visible (user is logged out)
+    await expect(userMenu.menuTrigger).not.toBeVisible();
+
+    // Verify protected route access is blocked (middleware redirect)
+    await page.goto('/');
+    await expect(page).toHaveURL('/login');
   });
 });
 
@@ -102,6 +122,44 @@ test.describe('Authentication - Navigation Links', () => {
     await loginPage.clickForgotPassword();
 
     await expect(page).toHaveURL('/forgot-password');
+  });
+});
+
+test.describe('Authentication - Complete User Flow', () => {
+  test('Full workflow: Login -> Add Word -> Logout', async ({ page, context }) => {
+    const username = process.env.E2E_USERNAME;
+    const password = process.env.E2E_PASSWORD;
+
+    if (!username || !password) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
+    }
+
+    // Ensure clean state - clear all cookies and storage
+    await context.clearCookies();
+    await page.goto('/');
+
+    // Login
+    const loginPage = new LoginPage(page);
+    await loginPage.navigate();
+    
+    // Wait a bit for the page to settle
+    await page.waitForTimeout(500);
+    
+    await loginPage.login(username, password);
+
+    // Verify user is logged in
+    const wordsListPage = new WordsListPage(page);
+    const userMenu = new UserMenuComponent(page);
+    
+    await expect(page).toHaveURL('/');
+    await userMenu.expectMenuVisible();
+    await userMenu.expectUserEmail(username);
+
+    // Logout
+    await userMenu.logout();
+
+    // Verify logged out
+    await expect(page).toHaveURL('/login');
   });
 });
 

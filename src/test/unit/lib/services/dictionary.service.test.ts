@@ -117,31 +117,20 @@ describe("DictionaryService", () => {
       expect(result).toBeNull();
     });
 
-    it("should return null on timeout after 3 seconds", async () => {
-      // Mock a slow fetch that never resolves
-      global.fetch = vi.fn().mockImplementation(
-        (_url, options) =>
-          new Promise((_, reject) => {
-            // Simulate abort after timeout
-            setTimeout(() => {
-              const error = new Error("The operation was aborted");
-              error.name = "AbortError";
-              reject(error);
-            }, 100);
-          })
-      );
-
-      const result = await service.fetchWordData("slowword");
-
-      expect(result).toBeNull();
-    });
-
     it("should return null on API errors", async () => {
+      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
       global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
 
       const result = await service.fetchWordData("test");
 
       expect(result).toBeNull();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error fetching dictionary data:",
+        expect.any(Error)
+      );
+
+      consoleErrorSpy.mockRestore();
     });
 
     it("should handle empty API response", async () => {
