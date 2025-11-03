@@ -40,7 +40,12 @@ export default defineConfig({
     E2E_USERNAME: process.env.E2E_USERNAME || "",
     E2E_PASSWORD: process.env.E2E_PASSWORD || "",
     E2E_USERNAME_ID: process.env.E2E_USERNAME_ID || "",
+    SUPABASE_URL: process.env.SUPABASE_URL || "",
+    SUPABASE_KEY: process.env.SUPABASE_KEY || "",
   },
+
+  /* Global teardown - runs once after all tests complete */
+  globalTeardown: path.resolve(process.cwd(), "./e2e/global-teardown.ts"),
 
   /* Configure projects for major browsers */
   projects: [

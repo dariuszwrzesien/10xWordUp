@@ -319,3 +319,4 @@ UI RE-RENDER
 - **Code Splitting** - automatyczne przez Astro
 - **Image Optimization** - Astro Image
 
+

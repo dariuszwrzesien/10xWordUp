@@ -74,6 +74,50 @@ test('Authenticated test', async ({ page, authenticatedUser }) => {
 });
 ```
 
+## 🧹 Database Cleanup
+
+### Automatic Cleanup After Tests
+
+The test suite includes automatic database cleanup that runs **once after all tests complete**. This ensures your test database stays clean between test runs.
+
+**What gets cleaned up:**
+- ✅ All words created by the test user
+- ✅ All tags created by the test user
+- ✅ All word-tag associations
+
+**Configuration:**
+Set `E2E_USERNAME_ID` in `.env.test` to enable automatic cleanup:
+```bash
+E2E_USERNAME_ID=your-test-user-uuid
+```
+
+**Console output after tests:**
+```
+🧹 Starting database cleanup...
+✅ Deleted 42 word_tags entries
+✅ Deleted 15 words
+✅ Deleted 5 tags
+✨ Database cleanup completed successfully!
+```
+
+### Manual Cleanup Helpers
+
+For more granular control, use cleanup helpers in your tests:
+
+```typescript
+import { cleanupWords, cleanupTags, cleanupUserData } from './helpers/db-cleanup.helper';
+
+test.afterEach(async () => {
+  // Clean up only words after each test
+  await cleanupWords(process.env.E2E_USERNAME_ID!, {
+    url: process.env.SUPABASE_URL!,
+    key: process.env.SUPABASE_KEY!,
+  });
+});
+```
+
+**See:** [`helpers/README.md`](helpers/README.md) for full documentation of cleanup helpers.
+
 ## 📁 Available POM Classes
 
 ### Authentication
@@ -99,9 +143,11 @@ test('Authenticated test', async ({ page, authenticatedUser }) => {
 
 ## 📖 Documentation
 
-- **Full Documentation:** [`docs/68-implementacja-page-object-model.md`](../../docs/68-implementacja-page-object-model.md)
-- **Implementation Summary:** [`docs/69-podsumowanie-implementacji-pom.md`](../../docs/69-podsumowanie-implementacji-pom.md)
+- **Full Documentation:** [`docs/68-implementacja-page-object-model.md`](../docs/68-implementacja-page-object-model.md)
+- **Implementation Summary:** [`docs/69-podsumowanie-implementacji-pom.md`](../docs/69-podsumowanie-implementacji-pom.md)
+- **Database Teardown Summary:** [`docs/76-podsumowanie-implementacji-teardown.md`](../docs/76-podsumowanie-implementacji-teardown.md)
 - **POM Classes Details:** [`pages/README.md`](pages/README.md)
+- **Cleanup Helpers:** [`helpers/README.md`](helpers/README.md)
 
 ## 📝 Example Test Files
 
@@ -200,18 +246,27 @@ Tests use environment variables from `.env.test` for test credentials:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
+| `SUPABASE_URL` | ✅ Yes | Supabase project URL |
+| `SUPABASE_KEY` | ✅ Yes | Supabase anon/service key |
+| `SUPABASE_ACCESS_TOKEN` | ⚪ No | Supabase access token (optional) |
 | `E2E_USERNAME` | ✅ Yes | Email of test user |
 | `E2E_PASSWORD` | ✅ Yes | Password of test user |
-| `E2E_USERNAME_ID` | ⚪ No | UUID of test user (optional) |
+| `E2E_USERNAME_ID` | ✅ Yes | UUID of test user (required for database cleanup) |
 
 **Example `.env.test`:**
 ```bash
+# Supabase Configuration
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-anon-key
+SUPABASE_KEY=your-anon-or-service-key
+SUPABASE_ACCESS_TOKEN=optional-access-token
+
+# Test User Credentials
 E2E_USERNAME=test.user@10xwordup.com
 E2E_PASSWORD=SecurePassword123!
 E2E_USERNAME_ID=123e4567-e89b-12d3-a456-426614174000
 ```
+
+**Important:** `E2E_USERNAME_ID` is now required for automatic database cleanup after tests.
 
 **Usage in tests:**
 ```typescript
