@@ -5,6 +5,12 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to build and test"
+        required: true
+        default: "master"
 
 jobs:
   lint:
