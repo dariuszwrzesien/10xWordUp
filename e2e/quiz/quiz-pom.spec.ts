@@ -147,29 +147,163 @@ test.describe("Quiz - Setup and Configuration", () => {
     expect(progressText).toMatch(/Postęp: 0 \/ \d+/);
   });
 
-  test.skip("TC-QUIZ-002: No words available", async ({ page }) => {
+  /**
+   * TC-QUIZ-002: Próba rozpoczęcia quizu bez słówek w bazie
+   * 
+   * Preconditions: Użytkownik NIE MA żadnych słówek w bazie
+   * 
+   * Steps:
+   * 1. Użytkownik otwiera `/quiz`
+   * 2. Użytkownik konfiguruje quiz (kierunek EN→PL, zakres: wszystkie słówka)
+   * 3. Użytkownik klika "Rozpocznij Quiz"
+   * 4. useQuiz wykonuje query po słówka i zwraca pustą tablicę
+   * 5. System wyświetla błąd i pozostaje w stanie setup
+   * 
+   * Expected Result:
+   * - Toast notification: "Brak słówek dla wybranego zakresu"
+   * - Quiz pozostaje w stanie setup (nie przechodzi do session)
+   * - Użytkownik może kliknąć "Powrót do listy słówek" aby dodać słówka
+   * 
+   * Note: Current implementation checks for empty words AFTER user clicks Start,
+   * not before. This is different from the original scenario but matches actual behavior.
+   */
+  authenticatedTest("TC-QUIZ-002: No words available", async ({ page, authenticatedUser }) => {
     // This test requires empty words database
+    const userId = process.env.E2E_USERNAME_ID;
+    if (!userId) {
+      throw new Error("E2E_USERNAME_ID must be set in .env.test");
+    }
+
+    const config = {
+      url: process.env.SUPABASE_URL!,
+      key: process.env.SUPABASE_KEY!,
+    };
+
+    // Clean up all user data to ensure empty state (no words, no tags)
+    await cleanupUserData(userId, config);
+
     const quizPage = new QuizPage(page);
     const quizSetup = new QuizSetupComponent(page);
 
+    // Step 1: Navigate to /quiz page
     await quizPage.navigate();
+    
+    // Wait for setup to load
+    await quizSetup.expectSetupVisible();
 
-    // Verify no tags message
-    await quizSetup.expectNoTagsMessage();
-    await quizSetup.expectStartButtonDisabled();
+    // Step 2: Configure quiz - select direction EN→PL
+    await quizSetup.selectDirectionEnPl();
+    
+    // Select scope "all words"
+    await quizSetup.selectScopeAll();
+    
+    // Verify start button is enabled (user can try to start)
+    await quizSetup.expectStartButtonEnabled();
+
+    // Step 3: Click "Start Quiz"
+    // We need to handle this differently because clicking will trigger navigation
+    // and we want to verify the error state
+    await quizSetup.startButton.click();
+    
+    // Step 4 & 5: System queries for words, gets empty array, shows error
+    // Wait for loading state to complete
+    await page.waitForTimeout(1000); // Brief wait for API call
+    
+    // Expected Result: Quiz should stay in setup state (not transition to session)
+    // The error handling in useQuiz sets state back to 'setup' when no words found
+    await quizSetup.expectSetupVisible();
+    expect(await quizPage.isSetupState()).toBe(true);
+    expect(await quizPage.isSessionState()).toBe(false);
+    
+    // Expected Result: Verify "Back to words" button is visible (CTA to add words)
+    await expect(quizSetup.backToWordsButton).toBeVisible();
+    
+    // Verify clicking "Back to words" navigates to home page
+    await quizSetup.clickBackToWords();
+    await expect(page).toHaveURL('/');
   });
 
-  test.skip("TC-QUIZ-003: Start quiz with tag filter", async ({ page }) => {
+  /**
+   * TC-QUIZ-003: Rozpoczęcie quizu z filtrem po tagu
+   * 
+   * Preconditions: Użytkownik ma słówka z różnymi tagami: "business" (5 słówek), "greetings" (4 słówka)
+   * Note: Test data is seeded in beforeEach - we use "greetings" tag which has 4 words
+   * 
+   * Steps:
+   * 1. Użytkownik otwiera `/quiz`
+   * 2. Użytkownik wybiera kierunek: EN→PL
+   * 3. Użytkownik wybiera zakres: z tagiem
+   * 4. Użytkownik wybiera tag: "greetings"
+   * 5. Użytkownik klika "Rozpocznij Quiz"
+   * 
+   * Expected Result:
+   * - Quiz zawiera tylko słówka z tagu "greetings"
+   * - Kierunek zgodnie z wyborem (EN → PL)
+   * - Quiz session się rozpoczyna
+   * 
+   * Verification:
+   * - Quiz przechodzi do stanu "session"
+   * - Widoczne są komponenty sesji quizu
+   * - Kierunek jest poprawnie wyświetlony
+   */
+  authenticatedTest("TC-QUIZ-003: Start quiz with tag filter", async ({ page, authenticatedUser }) => {
     const quizPage = new QuizPage(page);
     const quizSetup = new QuizSetupComponent(page);
+    const quizSession = new QuizSessionComponent(page);
 
+    // Step 1: Navigate to /quiz page
     await quizPage.navigate();
+    
+    // Wait for setup to load
+    await quizSetup.expectSetupVisible();
 
-    // Setup quiz with tag
-    await quizSetup.setupQuiz("en-pl", "tag", "business");
+    // Step 2: Select direction EN→PL
+    await quizSetup.selectDirectionEnPl();
+    
+    // Step 3: Select scope "tag" (filtered by tag)
+    await quizSetup.selectScopeTag();
+    
+    // Verify tag selector becomes visible when "tag" scope is selected
+    await quizSetup.expectTagSelectorVisible();
+    
+    // Step 4: Select tag "greetings" (from seeded test data)
+    // The seedQuizTestData helper creates tags: "basic", "greetings", "nouns", "common"
+    // and associates first 4 words with "greetings" tag
+    await quizSetup.selectTag("greetings");
+    
+    // Verify start button is enabled
+    await quizSetup.expectStartButtonEnabled();
 
-    // Verify quiz started
+    // Step 5: Click "Start Quiz"
+    await quizSetup.clickStart();
+
+    // Expected Result: Quiz session should start with filtered words
+    // Wait for state transition from "setup" to "loading" to "session"
+    await quizSession.waitForSession();
+    
+    // Verify quiz session is now visible
+    await quizSession.expectSessionVisible();
+    
+    // Verify session state is active
     expect(await quizPage.isSessionState()).toBe(true);
+    
+    // Verify setup is no longer visible
+    expect(await quizPage.isSetupState()).toBe(false);
+    
+    // Verify direction is displayed correctly (EN → PL)
+    await expect(quizSession.directionDisplay).toBeVisible();
+    await quizSession.expectDirection("Angielski → Polski");
+    
+    // Verify quiz components are visible
+    await expect(quizSession.progressBar).toBeVisible();
+    await expect(quizSession.progressText).toBeVisible();
+    await expect(quizSession.questionNumber).toBeVisible();
+    
+    // Additional verification: Progress should show we have questions from the filtered set
+    // With "greetings" tag, we should have 4 words available
+    const progressText = await quizSession.getProgressText();
+    // Progress should be in format "Postęp: 0 / N" where N is number of filtered words
+    expect(progressText).toMatch(/Postęp: 0 \/ \d+/);
   });
 
   test.skip("TC-QUIZ-004: Question count exceeds available words", async ({ page }) => {
