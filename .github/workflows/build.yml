@@ -86,6 +86,22 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Debug - Check environment variables
+        run: |
+          echo "Checking if E2E variables are set..."
+          if [ -z "$E2E_USERNAME" ]; then echo "❌ E2E_USERNAME is NOT set"; else echo "✅ E2E_USERNAME is set"; fi
+          if [ -z "$E2E_PASSWORD" ]; then echo "❌ E2E_PASSWORD is NOT set"; else echo "✅ E2E_PASSWORD is set"; fi
+          if [ -z "$E2E_USERNAME_ID" ]; then echo "❌ E2E_USERNAME_ID is NOT set"; else echo "✅ E2E_USERNAME_ID is set"; fi
+          if [ -z "$SUPABASE_URL" ]; then echo "❌ SUPABASE_URL is NOT set"; else echo "✅ SUPABASE_URL is set"; fi
+          if [ -z "$SUPABASE_KEY" ]; then echo "❌ SUPABASE_KEY is NOT set"; else echo "✅ SUPABASE_KEY is set"; fi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_USERNAME_ID: ${{ secrets.E2E_USERNAME_ID }}
+
       - name: Run E2E tests
         run: npm run test:e2e
         env:

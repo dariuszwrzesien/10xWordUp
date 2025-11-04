@@ -71,5 +71,13 @@ export default defineConfig({
     timeout: 120 * 1000,
     stdout: "pipe",
     stderr: "pipe",
+    env: {
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_KEY: process.env.SUPABASE_KEY,
+      SUPABASE_ACCESS_TOKEN: process.env.SUPABASE_ACCESS_TOKEN,
+      E2E_USERNAME: process.env.E2E_USERNAME,
+      E2E_PASSWORD: process.env.E2E_PASSWORD,
+      E2E_USERNAME_ID: process.env.E2E_USERNAME_ID,
+    },
   },
 });
