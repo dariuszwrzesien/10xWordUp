@@ -14,15 +14,34 @@ Complete Page Object Model architecture for E2E testing with Playwright:
 
 ### 0. Setup Environment Variables
 
-Create a `.env.test` file with your test user credentials:
+#### Local Development
+
+Create a `.env.test` file in the project root with your test user credentials:
 
 ```bash
 E2E_USERNAME=your-test-email@example.com
 E2E_PASSWORD=your-test-password
 E2E_USERNAME_ID=optional-user-uuid
+SUPABASE_URL=your-supabase-url
+SUPABASE_KEY=your-supabase-key
+SUPABASE_ACCESS_TOKEN=your-supabase-access-token
 ```
 
-**Important:** These credentials should match a real user in your test database.
+**Important:** 
+- These credentials should match a real user in your test database
+- The `.env.test` file is gitignored and should NOT be committed
+
+#### CI/CD (GitHub Actions)
+
+In CI environment, variables are provided via GitHub Secrets:
+- `E2E_USERNAME`
+- `E2E_PASSWORD`
+- `E2E_USERNAME_ID`
+- `SUPABASE_URL`
+- `SUPABASE_KEY`
+- `SUPABASE_ACCESS_TOKEN`
+
+The test configuration automatically detects CI environment and uses secrets instead of `.env.test`.
 
 ### 1. Import POM Classes
 

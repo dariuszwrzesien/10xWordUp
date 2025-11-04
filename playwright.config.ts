@@ -2,7 +2,11 @@ import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 
-dotenv.config({ path: path.resolve(process.cwd(), ".env.test") });
+// Load .env.test only if not in CI environment
+// In CI (GitHub Actions), environment variables are provided via secrets
+if (!process.env.CI) {
+  dotenv.config({ path: path.resolve(process.cwd(), ".env.test") });
+}
 
 /**
  * Read environment variables from file.
