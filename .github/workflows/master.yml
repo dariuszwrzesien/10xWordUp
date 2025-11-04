@@ -1,0 +1,131 @@
+name: Production Deployment
+
+on:
+    push:
+        branches: [master]
+    workflow_dispatch:
+
+jobs:
+    lint:
+        name: Lint Code
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: ".nvmrc"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run ESLint
+              run: npm run lint
+
+            - name: Check code formatting
+              run: npm run format -- --check
+
+    unit-tests:
+        name: Unit Tests
+        needs: lint
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: ".nvmrc"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run unit tests with coverage
+              run: npm run test:coverage
+
+            - name: Upload unit test coverage
+              uses: actions/upload-artifact@v5
+              if: always()
+              with:
+                  name: unit-test-coverage
+                  path: coverage/
+                  retention-days: 7
+
+    deploy:
+        name: Deploy to Vercel
+        needs: [lint, unit-tests]
+        runs-on: ubuntu-latest
+        environment: production
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: ".nvmrc"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build application
+              run: npm run build
+              env:
+                  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+                  SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+            - name: Deploy to Vercel
+              uses: amondnet/vercel-action@v41.1.4
+              with:
+                  vercel-token: ${{ secrets.VERCEL_TOKEN }}
+                  vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+                  vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+                  vercel-args: "--prod"
+                  working-directory: ./
+
+    deployment-status:
+        name: Deployment Status
+        needs: [lint, unit-tests, deploy]
+        runs-on: ubuntu-latest
+        if: always()
+
+        steps:
+            - name: Check deployment results
+              id: check_results
+              run: |
+                  LINT_STATUS="${{ needs.lint.result }}"
+                  UNIT_STATUS="${{ needs.unit-tests.result }}"
+                  DEPLOY_STATUS="${{ needs.deploy.result }}"
+
+                  echo "lint_status=$LINT_STATUS" >> $GITHUB_OUTPUT
+                  echo "unit_status=$UNIT_STATUS" >> $GITHUB_OUTPUT
+                  echo "deploy_status=$DEPLOY_STATUS" >> $GITHUB_OUTPUT
+
+                  if [ "$LINT_STATUS" == "success" ] && [ "$UNIT_STATUS" == "success" ] && [ "$DEPLOY_STATUS" == "success" ]; then
+                    echo "overall_status=✅ Deployment successful" >> $GITHUB_OUTPUT
+                    echo "overall_emoji=✅" >> $GITHUB_OUTPUT
+                  else
+                    echo "overall_status=❌ Deployment failed" >> $GITHUB_OUTPUT
+                    echo "overall_emoji=❌" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Create deployment summary
+              run: |
+                  echo "## ${{ steps.check_results.outputs.overall_emoji }} Production Deployment" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+                  echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| Lint | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Overall Status:** ${{ steps.check_results.outputs.overall_status }}" >> $GITHUB_STEP_SUMMARY

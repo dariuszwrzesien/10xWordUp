@@ -6,7 +6,7 @@ export const cookieOptions: CookieOptionsWithName = {
   path: "/",
   // Set secure to false to allow cookies over HTTP (localhost)
   // In production with HTTPS, you should set this to true
-  secure: false,
+  secure: import.meta.env.PROD,
   httpOnly: true,
   sameSite: "lax",
 };

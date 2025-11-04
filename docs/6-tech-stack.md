@@ -16,7 +16,7 @@ Backend - Supabase jako kompleksowe rozwiązanie backendowe:
 CI/CD i Hosting:
 
 - Github Actions do tworzenia pipeline’ów CI/CD
-- DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker
+- Vercel do hostowania aplikacji
 
 Testowanie:
 
