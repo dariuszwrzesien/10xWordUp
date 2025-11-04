@@ -191,8 +191,8 @@ test.describe("Quiz - Setup and Configuration", () => {
       const userId = process.env.E2E_USERNAME_ID;
       if (!userId) {
         throw new Error(
-        "E2E_USERNAME_ID must be set in environment variables (.env.test locally or GitHub secrets in CI)"
-      );
+          "E2E_USERNAME_ID must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+        );
       }
 
       const supabaseUrl = process.env.SUPABASE_URL;
