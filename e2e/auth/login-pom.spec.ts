@@ -22,7 +22,9 @@ test.describe("Authentication - Login Flow", () => {
     const password = process.env.E2E_PASSWORD;
 
     if (!username || !password) {
-      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
+      throw new Error(
+        "E2E_USERNAME and E2E_PASSWORD must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
     }
 
     const loginPage = new LoginPage(page);
@@ -52,7 +54,9 @@ test.describe("Authentication - Login Flow", () => {
     const username = process.env.E2E_USERNAME;
 
     if (!username) {
-      throw new Error("E2E_USERNAME must be set in .env.test");
+      throw new Error(
+        "E2E_USERNAME must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
     }
 
     const loginPage = new LoginPage(page);
@@ -165,7 +169,9 @@ test.describe("Authentication - Complete User Flow", () => {
     const password = process.env.E2E_PASSWORD;
 
     if (!username || !password) {
-      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
+      throw new Error(
+        "E2E_USERNAME and E2E_PASSWORD must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
     }
 
     // We're already on /login from beforeEach

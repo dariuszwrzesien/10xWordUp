@@ -24,7 +24,9 @@ test.describe("Login Page", () => {
     const password = process.env.E2E_PASSWORD;
 
     if (!username || !password) {
-      throw new Error("E2E_USERNAME and E2E_PASSWORD must be set in .env.test");
+      throw new Error(
+        "E2E_USERNAME and E2E_PASSWORD must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
     }
 
     await loginPage.login(username, password);

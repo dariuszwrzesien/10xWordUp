@@ -41,7 +41,9 @@ test.describe("Words List - Display and Navigation", () => {
       // This test requires empty state - clean up before running
       const userId = process.env.E2E_USERNAME_ID;
       if (!userId) {
-        throw new Error("E2E_USERNAME_ID must be set in .env.test");
+        throw new Error(
+          "E2E_USERNAME_ID must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+        );
       }
 
       const supabaseUrl = process.env.SUPABASE_URL;

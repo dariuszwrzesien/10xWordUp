@@ -31,7 +31,9 @@ test.describe("Quiz - Setup and Configuration", () => {
   authenticatedTest.beforeEach(async () => {
     const userId = process.env.E2E_USERNAME_ID;
     if (!userId) {
-      throw new Error("E2E_USERNAME_ID must be set in .env.test");
+      throw new Error(
+        "E2E_USERNAME_ID must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
     }
 
     const supabaseUrl = process.env.SUPABASE_URL;
@@ -188,7 +190,9 @@ test.describe("Quiz - Setup and Configuration", () => {
       // This test requires empty words database
       const userId = process.env.E2E_USERNAME_ID;
       if (!userId) {
-        throw new Error("E2E_USERNAME_ID must be set in .env.test");
+        throw new Error(
+        "E2E_USERNAME_ID must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
       }
 
       const supabaseUrl = process.env.SUPABASE_URL;
@@ -364,7 +368,9 @@ test.describe("Quiz - Setup and Configuration", () => {
     // This test requires exactly 3 words in database
     const userId = process.env.E2E_USERNAME_ID;
     if (!userId) {
-      throw new Error("E2E_USERNAME_ID must be set in .env.test");
+      throw new Error(
+        "E2E_USERNAME_ID must be set in environment variables (.env.test locally or GitHub secrets in CI)"
+      );
     }
 
     const supabaseUrl = process.env.SUPABASE_URL;
