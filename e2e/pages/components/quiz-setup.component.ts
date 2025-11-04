@@ -85,24 +85,32 @@ export class QuizSetupComponent extends BasePage {
     // Click the radio button itself, not the container
     const radioButton = this.directionEnPl.locator('button[role="radio"]');
     await radioButton.click();
+    // Wait for the radio button to be checked
+    await expect(radioButton).toHaveAttribute("data-state", "checked");
   }
 
   async selectDirectionPlEn(): Promise<void> {
     // Click the radio button itself, not the container
     const radioButton = this.directionPlEn.locator('button[role="radio"]');
     await radioButton.click();
+    // Wait for the radio button to be checked
+    await expect(radioButton).toHaveAttribute("data-state", "checked");
   }
 
   async selectScopeAll(): Promise<void> {
     // Click the radio button itself, not the container
     const radioButton = this.scopeAll.locator('button[role="radio"]');
     await radioButton.click();
+    // Wait for the radio button to be checked
+    await expect(radioButton).toHaveAttribute("data-state", "checked");
   }
 
   async selectScopeTag(): Promise<void> {
     // Click the radio button itself, not the container
     const radioButton = this.scopeTag.locator('button[role="radio"]');
     await radioButton.click();
+    // Wait for the radio button to be checked
+    await expect(radioButton).toHaveAttribute("data-state", "checked");
   }
 
   async openTagSelector(): Promise<void> {
