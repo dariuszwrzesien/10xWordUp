@@ -45,11 +45,11 @@ export default defineConfig({
   },
   /* Make environment variables available to tests */
   env: {
-    E2E_USERNAME: process.env.E2E_USERNAME || "",
-    E2E_PASSWORD: process.env.E2E_PASSWORD || "",
-    E2E_USERNAME_ID: process.env.E2E_USERNAME_ID || "",
-    SUPABASE_URL: process.env.SUPABASE_URL || "",
-    SUPABASE_KEY: process.env.SUPABASE_KEY || "",
+    E2E_USERNAME: process.env.E2E_USERNAME?.trim() || "",
+    E2E_PASSWORD: process.env.E2E_PASSWORD?.trim() || "",
+    E2E_USERNAME_ID: process.env.E2E_USERNAME_ID?.trim() || "",
+    SUPABASE_URL: process.env.SUPABASE_URL?.trim() || "",
+    SUPABASE_KEY: process.env.SUPABASE_KEY?.trim() || "",
   },
 
   /* Global teardown - runs once after all tests complete */
@@ -72,12 +72,12 @@ export default defineConfig({
     stdout: "pipe",
     stderr: "pipe",
     env: {
-      SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_KEY: process.env.SUPABASE_KEY,
-      SUPABASE_ACCESS_TOKEN: process.env.SUPABASE_ACCESS_TOKEN,
-      E2E_USERNAME: process.env.E2E_USERNAME,
-      E2E_PASSWORD: process.env.E2E_PASSWORD,
-      E2E_USERNAME_ID: process.env.E2E_USERNAME_ID,
+      SUPABASE_URL: process.env.SUPABASE_URL?.trim() || "",
+      SUPABASE_KEY: process.env.SUPABASE_KEY?.trim() || "",
+      SUPABASE_ACCESS_TOKEN: process.env.SUPABASE_ACCESS_TOKEN?.trim() || "",
+      E2E_USERNAME: process.env.E2E_USERNAME?.trim() || "",
+      E2E_PASSWORD: process.env.E2E_PASSWORD?.trim() || "",
+      E2E_USERNAME_ID: process.env.E2E_USERNAME_ID?.trim() || "",
     },
   },
 });
