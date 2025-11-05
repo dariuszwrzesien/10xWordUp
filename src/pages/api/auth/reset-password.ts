@@ -16,13 +16,18 @@ export const POST: APIRoute = async ({ request }) => {
     // Parse request body
     const body = await request.json();
 
-    // Validate input
+    // Validate input (including password confirmation match)
     const validation = resetPasswordSchema.safeParse(body);
     if (!validation.success) {
       return createValidationErrorResponse(validation.error);
     }
 
-    const { password } = validation.data;
+    const { password, confirmPassword } = validation.data;
+
+    // Double-check passwords match (schema already validates this, but extra safety)
+    if (password !== confirmPassword) {
+      return badRequest("Hasła nie są zgodne");
+    }
 
     // Extract token from headers
     const authHeader = request.headers.get("Authorization");
