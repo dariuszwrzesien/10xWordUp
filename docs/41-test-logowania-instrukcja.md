@@ -99,7 +99,7 @@ Aplikacja powinna wystartować na: `http://localhost:3000`
 
 1. Na stronie `/login` powinieneś zobaczyć:
    - Logo/ikonę LogIn
-   - Tytuł "Witaj ponownie!"
+   - Tytuł "Witaj!"
    - Pole "Adres e-mail"
    - Pole "Hasło"
    - Link "Nie pamiętasz hasła?"

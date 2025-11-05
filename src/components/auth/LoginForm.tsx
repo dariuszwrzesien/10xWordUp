@@ -61,7 +61,7 @@ export default function LoginForm() {
             <LogIn className="h-6 w-6 text-primary" />
           </div>
         </div>
-        <CardTitle className="text-2xl">Witaj ponownie!</CardTitle>
+        <CardTitle className="text-2xl">Witaj!</CardTitle>
         <CardDescription>Zaloguj się do swojego konta 10xWordUp</CardDescription>
       </CardHeader>
       <CardContent>
