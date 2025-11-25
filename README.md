@@ -1,6 +1,6 @@
 # [10xWordUp](https://10xwordup-vercel.vercel.app/)
 
-A web application for saving and learning English vocabulary using a flashcard system. It helps users memorize new words by providing translations, phonetic pronunciation, audio examples, and an interactive quiz mode.
+A web application for saving and learning English vocabulary using a flashcard system. It helps users memorize new words by providing translations, phonetic pronunciation, audio examples, and an interactive quiz mode
 
 **https://10xwordup-vercel.vercel.app/**
 
